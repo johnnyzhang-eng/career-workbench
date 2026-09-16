@@ -1,0 +1,14 @@
+{
+  "checked_at": null,
+  "source": "https://example.com/jobs/demo",
+  "note": "每项说明字段内容、来源和对本人约束的判断；不可把模板改成全 pass 代替核验。",
+  "checks": {
+    "city": {"result": "unknown", "evidence": ""},
+    "degree": {"result": "unknown", "evidence": ""},
+    "cohort": {"result": "unknown", "evidence": ""},
+    "experience": {"result": "unknown", "evidence": ""},
+    "open": {"result": "unknown", "evidence": ""},
+    "hard_requirements": {"result": "unknown", "evidence": ""},
+    "contract": {"result": "unknown", "evidence": ""}
+  }
+}
