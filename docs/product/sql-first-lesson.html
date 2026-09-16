@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL 零基础第一课 · Career Workbench</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #f5f5f5; color: #2d3142; font-family: 'Geist', 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+    main { max-width: 1360px; margin: 0 auto; padding: 40px; }
+    .eyebrow { margin: 0 0 8px; color: #4f5d75; font: 500 12px 'Geist Mono', monospace; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 0 0 12px; font: 400 40px/1.15 'Instrument Serif', 'Songti SC', serif; }
+    .intro { max-width: 860px; margin: 0 0 24px; color: #4f5d75; font-size: 16px; line-height: 1.7; }
+    .scroll { overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 1120px; }
+    .note { border-top: 1px solid rgba(45,49,66,.12); padding-top: 16px; color: #4f5d75; font-size: 14px; line-height: 1.7; }
+    @media (max-width: 720px) { main { padding: 24px 16px; } h1 { font-size: 32px; } }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Learning loop / Draft for review</p>
+  <h1>SQL 零基础第一课</h1>
+  <p class="intro">第一小课只到表、行、列和 SELECT / FROM，不要求先打开 VS Code。WHERE 与聚合留给后续单元。</p>
+  <div class="scroll">
+    <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="sql-first-lesson-title sql-first-lesson-desc">
+      <title id="sql-first-lesson-title">SQL 第一课的练习与复测流程</title>
+      <desc id="sql-first-lesson-desc">零基础学生先认识表行列，再学习 SELECT 与 FROM 并尝试新题；未独立完成时保留失败记录、获得分层提示后换题重做，独立完成后保存证据，48 小时后用变式题复测并据此更新能力状态。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Connectors and branch labels are painted before nodes. -->
+      <line x1="760" y1="100" x2="760" y2="136" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="760" y1="200" x2="760" y2="236" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="760" y1="300" x2="760" y2="336" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="624" y1="392" x2="536" y2="392" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M408 360 V276 Q408 268 416 268 H624" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+      <line x1="760" y1="448" x2="760" y2="484" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <line x1="896" y1="516" x2="944" y2="516" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="1072" y1="548" x2="1072" y2="572" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <rect x="552" y="368" width="56" height="16" rx="4" fill="#f5f5f5"/>
+      <text x="580" y="380" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">未独立</text>
+      <rect x="780" y="452" width="56" height="16" rx="4" fill="#f5f5f5"/>
+      <text x="808" y="464" fill="#b34d21" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">独立</text>
+
+      <rect x="624" y="44" width="272" height="56" rx="28" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)"/>
+      <text x="760" y="80" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">S1 · 零基础入口</text>
+
+      <rect x="624" y="136" width="272" height="64" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="636" y="152" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">S2 · 待建</text>
+      <text x="760" y="176" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">认识表、行、列</text>
+      <text x="760" y="192" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">一份虚构订单表</text>
+
+      <rect x="624" y="236" width="272" height="64" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="636" y="252" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">S3 · 待建</text>
+      <text x="760" y="276" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">读懂 SELECT / FROM</text>
+      <text x="760" y="292" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">自己选两列并运行</text>
+
+      <polygon points="760,336 896,392 760,448 624,392" fill="rgba(235,108,54,0.08)" stroke="#eb6c36"/>
+      <text x="760" y="392" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">S4 · 能自己写出吗？</text>
+      <text x="760" y="412" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">不能只看懂答案</text>
+
+      <rect x="280" y="360" width="256" height="64" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="292" y="376" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">S5 · 待建</text>
+      <text x="408" y="400" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">记录失败，分层提示</text>
+      <text x="408" y="416" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">换新题再独立尝试</text>
+
+      <rect x="624" y="484" width="272" height="64" rx="6" fill="#ffffff" stroke="#4f5d75"/>
+      <text x="636" y="500" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">S6 · 部分已有</text>
+      <text x="760" y="524" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">保存每次尝试</text>
+      <text x="760" y="540" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">首次结果与求助方式</text>
+
+      <rect x="944" y="484" width="256" height="64" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="956" y="500" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">S7 · 待建</text>
+      <text x="1072" y="524" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">48 小时后变式复测</text>
+      <text x="1072" y="540" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">新数据、同类新题</text>
+
+      <rect x="944" y="572" width="256" height="48" rx="24" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)"/>
+      <text x="1072" y="592" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">S8 · 更新能力证据</text>
+      <text x="1072" y="608" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">会 / 未会 / 待确认</text>
+
+      <line x1="80" y1="648" x2="1200" y2="648" stroke="rgba(45,49,66,0.12)" stroke-width="0.8"/>
+      <text x="80" y="672" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="2">LEGEND / 验收口径</text>
+      <text x="280" y="672" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">虚线框：尚未开发</text>
+      <text x="536" y="672" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">橙色决策：独立尝试与看懂答案分开</text>
+    </svg>
+  </div>
+  <p class="note">设计草案：课程目前尚未上线。资源只保存书名、合法链接和具体章节，不复制付费正文。提示后的同题答案不算独立通过；复测未通过时不会自动标为“掌握”。</p>
+</main>
+</body>
+</html>

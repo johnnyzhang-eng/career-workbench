@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>从岗位到学习与投递 · Career Workbench</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #f5f5f5; color: #2d3142; font-family: 'Geist', 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+    main { max-width: 1360px; margin: 0 auto; padding: 40px; }
+    .eyebrow { margin: 0 0 8px; color: #4f5d75; font: 500 12px 'Geist Mono', monospace; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 0 0 12px; font: 400 40px/1.15 'Instrument Serif', 'Songti SC', serif; }
+    .intro { max-width: 860px; margin: 0 0 24px; color: #4f5d75; font-size: 16px; line-height: 1.7; }
+    .scroll { overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 1120px; }
+    .note { border-top: 1px solid rgba(45,49,66,.12); padding-top: 16px; color: #4f5d75; font-size: 14px; line-height: 1.7; }
+    @media (max-width: 720px) { main { padding: 24px 16px; } h1 { font-size: 32px; } }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Product flow / Draft for review</p>
+  <h1>从岗位到学习与投递</h1>
+  <p class="intro">两条路并行：岗位核验后可以由本人继续投递；学习与复测为岗位判断补充证据，不设“必须学会才能投”的门槛。</p>
+  <div class="scroll">
+    <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="workbench-overview-title workbench-overview-desc">
+      <title id="workbench-overview-title">Career Workbench 产品总览</title>
+      <desc id="workbench-overview-desc">目标岗位经核验进入人工投递；岗位要求与个人证据形成学习缺口，练习和面试反馈回流为新的能力证据。节点标出已有、部分已有与待建能力。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Connectors first. The upper path can proceed without completing the lower path. -->
+      <line x1="280" y1="144" x2="360" y2="144" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="560" y1="144" x2="640" y2="144" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <line x1="840" y1="144" x2="920" y2="144" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="460" y1="176" x2="460" y2="288" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="280" y1="328" x2="360" y2="328" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="560" y1="328" x2="640" y2="328" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <line x1="840" y1="328" x2="920" y2="328" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M1020 368 V424 Q1020 432 1012 432 H188 Q180 432 180 424 V368" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+      <path d="M1020 112 V64 Q1020 56 1012 56 H56 Q48 56 48 64 V320 Q48 328 56 328 H80" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+
+      <text x="80" y="100" fill="#4f5d75" font-size="12" font-family="'Geist Mono', 'PingFang SC', monospace" letter-spacing="1">岗位与投递</text>
+      <text x="80" y="276" fill="#4f5d75" font-size="12" font-family="'Geist Mono', 'PingFang SC', monospace" letter-spacing="1">学习与证据</text>
+
+      <rect x="80" y="112" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142"/>
+      <text x="92" y="128" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">01 · 已有</text>
+      <text x="180" y="152" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">保存岗位与 JD</text>
+      <text x="180" y="168" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">本人粘贴原始来源</text>
+
+      <rect x="360" y="112" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142"/>
+      <text x="372" y="128" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">02 · 部分已有</text>
+      <text x="460" y="152" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">核验岗位与资格</text>
+      <text x="460" y="168" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">自动提取要求待建</text>
+
+      <rect x="640" y="112" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142"/>
+      <text x="652" y="128" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">07 · 已有</text>
+      <text x="740" y="152" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">本人决定并投递</text>
+      <text x="740" y="168" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">系统不自动海投</text>
+
+      <rect x="920" y="112" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142"/>
+      <text x="932" y="128" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">08 · 已有</text>
+      <text x="1020" y="152" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">记录回执与反馈</text>
+      <text x="1020" y="168" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">无回执不标为已投</text>
+
+      <rect x="80" y="288" width="200" height="80" rx="6" fill="#ffffff" stroke="#4f5d75"/>
+      <text x="92" y="304" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">03 · 部分已有</text>
+      <text x="180" y="332" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">整理能力证据</text>
+      <text x="180" y="352" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">做过 ≠ 能独立完成</text>
+
+      <rect x="360" y="288" width="200" height="80" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36"/>
+      <text x="372" y="304" fill="#b34d21" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">04 · 待建</text>
+      <text x="460" y="332" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">排定真实缺口</text>
+      <text x="460" y="352" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">显示来源与未知项</text>
+
+      <rect x="640" y="288" width="200" height="80" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="652" y="304" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">05 · 待建</text>
+      <text x="740" y="332" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">今天的一小课</text>
+      <text x="740" y="352" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">资源章节 + 小练习</text>
+
+      <rect x="920" y="288" width="200" height="80" rx="6" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="932" y="304" fill="#4f5d75" font-size="8" font-family="'Geist Mono', 'PingFang SC', monospace">06 · 待建</text>
+      <text x="1020" y="332" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">独立练习与复测</text>
+      <text x="1020" y="352" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif" text-anchor="middle">保留首次失败与求助</text>
+
+      <line x1="80" y1="620" x2="1200" y2="620" stroke="rgba(45,49,66,0.12)" stroke-width="0.8"/>
+      <text x="80" y="644" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="2">LEGEND / 状态</text>
+      <rect x="80" y="664" width="24" height="16" rx="4" fill="#ffffff" stroke="#2d3142"/>
+      <text x="116" y="676" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">已有或部分已有</text>
+      <rect x="376" y="664" width="24" height="16" rx="4" fill="#ffffff" stroke="#7a8399" stroke-dasharray="5 4"/>
+      <text x="412" y="676" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">待开发</text>
+      <line x1="640" y1="672" x2="672" y2="672" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+      <text x="684" y="676" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">证据回流</text>
+      <rect x="936" y="664" width="24" height="16" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36"/>
+      <text x="972" y="676" fill="#4f5d75" font-size="12" font-family="'Geist', 'PingFang SC', sans-serif">核心价值点</text>
+    </svg>
+  </div>
+  <p class="note">设计草案：第一条课程选择 SQL，但它不决定所有人的职业目标。学习结果会影响能力证据，不会自动替用户填写“符合资格”“已掌握”或“已投递”。</p>
+</main>
+</body>
+</html>
