@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py",
-         "docs/*.md", "docs/*.html", "docs/product/*.md", "templates/*.json", "scripts/*.py", "tests/*.py")
+         "docs/*.md", "docs/*.html", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py")
 RULES = {
     "email": re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"),
     "mobile": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
