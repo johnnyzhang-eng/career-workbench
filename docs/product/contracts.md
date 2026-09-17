@@ -1,47 +1,54 @@
-# 数据契约 v0.1（供协作评审，尚未实现）
+# 数据契约 v0.2（供协作评审，尚未实现）
 
-这些名称和字段是模块间的**设计契约**，不是当前 `career.py` 的 JSON 格式，也不是数据库迁移已完成。实现前可在关联 Issue 中调整，但不得默默改变字段含义。对外公开的只有虚构 fixture；真实记录按[隐私边界](../privacy.md)留在本人工作区。
+当前契约服务“岗位要求 → 合适的外部课程章节 → 学习记录”的首片。它不是现有 career.py 的存储格式，也不表示迁移已完成。来源与证据保留未知，课程内容在外站提供。
 
 ## 通用约定
 
-- 每个实体有稳定 `id`、`schema_version`、`created_at`；时间统一带时区。更新保留原事件，不悄悄覆盖首次作答或投递历史。
-- `unknown` 是有效状态，不等于 `false`、`fail`、空字符串或“模型没提到”。模型输出和第三方字段默认 `proposed`，学生确认后才是 `confirmed`。
-- 来源引用用 `source_ref` 指向岗位/作答/资源的具体片段或字段；没有可检查来源就不能产生硬性资格结论。链接可能含个人追踪参数，只在私有记录保存；公开 fixture 用 `example.com`。
-- 原始证据与派生判断分开：模型版本、提示版本或规则变化可重算建议，但不能重写学生当时的作答、求助程度和人工投递回执。
+实体具有稳定 id、schema_version、created_at；时间带时区。内容修订产生明确版本，旧来源引用仍可定位。事件只追加，重复事件 ID 幂等；事件和投影同事务。
 
-## 核心实体
+人工录入/模型候选默认 proposed，确认后才为 confirmed；未确认、未核验和无匹配不能伪装成符合。学习进度与能力判断分开，自报完成不自动变为独立证据。公开 fixture 使用虚构岗位和 example.com 链接。
+
+## 首片实体
 
 | 实体 | 最小字段 | 不变量 |
 |---|---|---|
-| `JobSnapshot` | `id`, `source_kind`, `source_url`, `job_url`, `apply_url?`, `company`, `title`, `location?`, `employment_type?`, `captured_at`, `verified_at?`, `review_state` | 原始职位页与投递页分开；来源/核验时间缺失则不得显示“已核验可投” |
-| `JobRequirement` | `id`, `job_id`, `text`, `category`, `requiredness`, `source_ref`, `review_state` | 每条要求来自具体 JD；学历/届别不由技能匹配推断 |
-| `TargetDirection` | `id`, `name`, `job_ids`, `user_priority`, `updated_at` | 可并存、可调整；方向名不是录用概率 |
-| `EvidenceItem` | `id`, `skill_id`, `kind`, `artifact_ref?`, `assistance`, `observed_at`, `review_state` | 项目经历、AI 辅助作答、独立作答、间隔复测级别不同；个人内容私有 |
-| `GapProposal` | `id`, `target_ids`, `requirement_ids`, `evidence_ids`, `skill_id`, `judgement`, `rationale`, `source_refs`, `model_run_id?`, `review_state` | 只能提出 `needs_practice` / `evidence_present` / `unknown` 等候选判断；不能直接写“已掌握” |
-| `PracticeUnit` | `id`, `skill_ids`, `requirement_ids`, `prerequisites`, `prompt`, `grader_kind`, `hint_levels`, `resource_ids`, `retest_unit_id?` | 题目原创、版本固定；复测用不同题面/数据但同能力目标 |
-| `Attempt` | `id`, `unit_id`, `started_at`, `submitted_at?`, `answer_ref`, `assistance`, `grader_result?`, `independent_claim`, `is_retest` | 首次尝试不可覆盖；得到提示/AI 答案的同题不计独立通过 |
-| `ResourceLink` | `id`, `title`, `url`, `source`, `skill_ids`, `prerequisites`, `access_terms`, `checked_at` | 只存合法引用和元数据，不复制第三方付费内容 |
-| `ApplicationEvent` | `id`, `job_id`, `kind`, `at`, `evidence_ref?`, `human_confirmed` | `submitted` 必须有本人确认的真实回执；练习未完成不阻断投递 |
+| SourceRef | entity_id, revision, locator | 指向本人有权限查看的具体片段或字段；修订不重写历史引用 |
+| JobSnapshot | id, revision, source_url, job_url, apply_url?, title, captured_at, verified_at?, review_state | 具体岗位页与投递页分开；核验状态不能由 HTTP 成功推出 |
+| JobRequirement | id, job_id, text, category, requiredness, source_ref, review_state | 资格与技能分类；没有出处不产生硬资格结论 |
+| TargetDirection | id, name, job_ids, user_priority | 可多个方向并存，不生成录用概率 |
+| SkillDefinition | id, revision, name, definition | 同一能力有统一含义，基础 SQL 不代表全部 SQL |
+| RequirementSkillLink | id, requirement_id, skill_id, source_refs, review_state | 人工确认或待确认；共通技能跨岗位共用 |
+| ResourceLink | id, provider, title, chapter, url, language, format, prerequisites, level, learning_objectives, access_terms, checked_at?, verification_state | 只存元数据和具体章节入口；不复制课程/题库正文，不以可访问证明教学效果 |
+| ResourceSkillLink | id, resource_id, skill_id, source_refs, review_state | 关联要有章节目标依据；不能因标题含 SQL 就覆盖所有 SQL 技能 |
+| ResourceRecommendation | id, requirement_ids, resource_id, rationale, unmet_prerequisites, alternative_resource_ids, origin | 理由可解释；origin 区分规则/人工/模型；无合适项返回 no_match |
+| LearningActivity | id, resource_id, skill_ids, created_at | 可在投递前开始；同一活动可关联多个岗位共通技能 |
+| LearningEvent | id, activity_id, kind, at, evidence_ref? | kind 为 opened/in_progress/completed_self_reported；不能直接更新能力为已掌握 |
+| EvidenceItem | id, skill_id, kind, artifact_ref?, assistance, observed_at, review_state | 首片外部学习记录只作未验证自述；artifact_ref 不赋予读取任意本地文件权限 |
+| ApplicationEvent | id, job_id, kind, at, evidence_ref?, human_confirmed | 原 CLI 状态机继续生效；学习不阻断投递，submitted 需要本人确认的真实回执 |
 
-`source_ref` 应足以让使用者回看其**本人有权限阅读**的原文，而不是仅有模型生成的解释。公开演示不能包含真实 JD 全文、简历片段或面试转写。`model_run_id` 用于追查提议来自哪一次授权调用；不保留不必要的原始提示或响应全文。
+verification_state 区分 unchecked、page_checked、needs_review；检查异常保留原因与旧检查记录，不能把瞬断判为永久失效。opened 只证明点击；completed_self_reported 只证明用户声明，evidence_status 保持 unverified。
 
-## 模块端口（请求 → 响应）
+## 端口
 
-| 端口 | 请求 | 响应 / 出错语义 |
+| 端口 | 输入 → 输出 | 边界 |
 |---|---|---|
-| `JobSource.read` | 用户提供的具体 URL 或经许可的企业站点标识 | `JobSnapshot` 草稿 + 可引用 JD 片段；失败返回 `needs_user_text` / `needs_login` / `unavailable`，不返回“closed” |
-| `JobReview.confirm` | 草稿、学生逐项确认/修正 | 已确认字段与未知项；缺来源的硬门槛仍为 unknown |
-| `ModelPort.proposeGaps` | 经用户预览并授权的最少必要 `JobRequirement[]`、`EvidenceItem[]` | `GapProposal[]` 草稿 + 来源引用 + 模型运行元数据；拒绝/失败不写能力结论 |
-| `Planner.nextAction` | 目标方向、已确认缺口、练习与资源目录 | 小任务及理由；岗位可投路径并行保留 |
-| `Practice.submit` | `PracticeUnit`、作答和求助信息 | 不可变 `Attempt` + 可解释判题结果；模型评语不覆盖可运行测试 |
-| `Evidence.recompute` | 新 `Attempt` / 面试反馈 | 各目标方向的证据摘要，保留未知与反证 |
-| `Application.record` | 本人确认与回执位置 | 新 `ApplicationEvent`；无回执的 submitted 请求被拒绝 |
+| JobReview.confirm | 岗位要求与来源 → 已确认字段/未知项 | 首片人工核对，缺出处的硬门槛仍 unknown |
+| ResourceCatalog.match | 已确认技能、前置与语言偏好 → 推荐、替代或 no_match/needs_review | 确定性筛选，规则与模型来源分开；不编造链接 |
+| Learning.record | 活动、进度与可选证据引用 → 追加事件与待验证摘要 | 事务保存、幂等；不自动读取外站账号/进度 |
+| Evidence.summarize | 已有证据与关联技能 → 各方向证据摘要 | 学习进度不等于能力升级；保留未知和反证 |
+| Application.record | 本人确认与回执位置 → 旧状态机记录 | 不绕过确认、材料版本与回执门槛 |
+| JobSource.read / ModelPort.proposeGaps | 外部岗位 / 授权最小上下文 → 来源草稿 / GapProposal | 首片未配置；明确 not_configured，不伪造成功 |
 
-端口没有指定框架或远端服务。Alpha 先以同一进程的纯函数/对象实现，只有 `JobSource` 和 `ModelPort` 可跨外部网络边界；浏览器 UI 不直接持有模型密钥。
+UI 调用用例服务，服务依赖契约与存储端口，不依赖 HTTP。首片没有外部服务调用；打开课程或招聘网站由用户浏览器完成，不能把这类导航混同后端读取。
 
-## 两个必须先通过的虚构用例
+## 后续能力验证（不进入首片）
 
-1. 两个虚构实习岗都要求基础 SQL，其中一个额外要求流处理。虚构学生只有 AI 辅助完成 SQL 项目的经历。系统可提出“SQL 基础待独立验证”的共通缺口，流处理是方向专属未知；不能把项目经历变成独立掌握，也不能因为没学流处理阻断另一个岗位的人工投递。
-2. 同一学生第一次在提示后答对 `SELECT`/`FROM` 题。`Attempt.assistance` 记录提示，不能改写为独立通过；新题独立答对并在间隔后复测，证据才可上调。若模型离线，原作答和岗位仍可查看，缺口草稿标未分析。
+GapProposal 仍只能表达有来源的 needs_practice/evidence_present/unknown 候选，不能直接标掌握。接入模型时记录授权和运行版本，校验引用与权限。
 
-这两个用例必须在测试中断言行为，而不只是断言 JSON 能通过解析。
+PracticeUnit/Attempt/RetestPlan 不作为当前开发依赖。确需能力验证时，再明确外部证据导入或独立验证方式、题目版本/内容标识、前序尝试、帮助事件、间隔策略、判题结果及其信任边界。不能仅凭 independent_claim 或 is_retest 布尔值提升证据；也不预设工作台必须自建课程或判题器。
+
+## 首片虚构用例
+
+两个岗位共享 SQL 入门要求，其中一个另需流处理。学生查看有出处的映射，按语言与前置选择具体外部章节；SQL 记录跨两个方向可见，流处理保持未知。打开链接、自报完成、填写证据引用后，进度分别保存，能力仍待验证。
+
+模型未配置、没有合适资源、链接核验异常、未知资格、重复请求和存储错误均须保留诚实状态。即使未开始学习，原岗位入口仍可打开。

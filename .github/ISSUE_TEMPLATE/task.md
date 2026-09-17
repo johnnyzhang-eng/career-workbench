@@ -1,8 +1,8 @@
 ---
-name: 产品或开发任务
+name: 开发任务
 about: 一项有来源、边界和验收的可认领工作
 title: ""
-labels: []
+labels: [enhancement]
 assignees: []
 ---
 
@@ -25,3 +25,7 @@ assignees: []
 ## 依赖、隐私和费用
 
 关联 Issue/契约；说明是否涉及个人资料、外部服务、模型调用或收费。
+
+## 分类与认领
+
+选择 FullSpec 或 MiniSpec、相关 area:*，排期明确后选择一个优先级；负责人用 Assignee。提案先用提案模板，未接受的方案不贴 Proposal-Accepted。
