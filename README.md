@@ -4,7 +4,7 @@ Career Workbench 正在构建一个面向求职学生的岗位目标驱动学习
 
 这份目标产品仍处于[产品定义草案](docs/product/README.md)阶段；[边界图](docs/product/boundary-map-draft.html)和[架构基线](docs/product/architecture.md)区分了已有底座、设计建议和待确认事项。个性化补差计划支持用户自带模型，但模型只提出可复核的建议，不替代独立练习。当前可运行的是本地命令行求职记录底座，还没有岗位推荐或职位发现、缺口评估、模型接入、资源聚合、学习导航与证据验证，也没有网站界面。请不要把草案当作已上线功能。真实个人记录保存在被 Git 忽略的 `private/`；公开仓库只放通用方法、代码、测试、空模板和虚构示例。
 
-当前第一条开发切片是 [#9 持续发现岗位与原站投递入口](https://github.com/johnnyzhang-eng/career-workbench/issues/9)：用户按各自条件筛选可重复刷新的公开职位来源，查看原岗位与投递入口，并在原站自行申请；公开来源规则复用，个人偏好与记录分别留在本地私有工作区。[#8 外部课程导航](https://github.com/johnnyzhang-eng/career-workbench/issues/8) 接在岗位入口后，不自建 SQL 课程或站内判题器。两项均尚未实现。
+当前第一条开发切片是 [#9 持续发现岗位与原站投递入口](https://github.com/johnnyzhang-eng/career-workbench/issues/9)：每人用自己的本地 agent 按本人条件寻找候选岗位，通过受控数据契约把来源、原岗位链接和推荐依据交给本地工作台；工作台去重、展示待核验状态与原站投递入口。公开招聘接口可以作为补充来源。个人偏好与记录分别留在各自私有工作区；本人在原站申请。[#8 外部课程导航](https://github.com/johnnyzhang-eng/career-workbench/issues/8) 接在岗位入口后，不自建 SQL 课程或站内判题器。两项尚未合入主线。
 
 ## 试用现有底座
 
