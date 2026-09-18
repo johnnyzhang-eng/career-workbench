@@ -7,12 +7,12 @@
 | 工作流 | 所属 Issue | 可以并行做 | 接口交点 |
 |---|---|---|---|
 | 用户任务验证 | [#1](https://github.com/johnnyzhang-eng/career-workbench/issues/1) | 虚构试用脚本、经同意的观察方案 | 反馈给其他任务的验收标准；不公开真人材料 |
-| 岗位入口与目标 | [#5](https://github.com/johnnyzhang-eng/career-workbench/issues/5) | 链接/JD 导入、来源适配、原站入口、目标比较 | 输出 `JobSnapshot`、`JobRequirement`、`TargetDirection` |
+| 岗位入口与目标 | [#5](https://github.com/johnnyzhang-eng/career-workbench/issues/5)、[#9](https://github.com/johnnyzhang-eng/career-workbench/issues/9) | 本地 agent 候选受控导入、可选公开来源、原站入口、目标比较 | 输出待核验 `JobSnapshot`；后续接 `JobRequirement`、`TargetDirection` |
 | 证据与缺口 | [#3](https://github.com/johnnyzhang-eng/career-workbench/issues/3) | 证据分级、模型端口、来源校验、差距草稿 | 输入岗位要求，输出 `GapProposal`；不得覆盖真实证据 |
 | 练习与资源 | [#2](https://github.com/johnnyzhang-eng/career-workbench/issues/2) | 资源元数据、章节匹配、学习进度 | 输入已确认技能，输出推荐与 `LearningEvent` |
 | 架构与协作基线 | [#6](https://github.com/johnnyzhang-eng/career-workbench/issues/6) | 维护边界、契约和协作规则 | 跨模块字段或隐私规则改变时先在此讨论 |
 
-建议的合并顺序：先确定用例和契约，再做岗位要求到外部章节的资源导航切片，最后接入模型草稿和跨方向证据回流；独立的资源元数据或 UI 草图可并行。任务认领在 Issue 指派或留言，不能仅在聊天中口头声称。每个 PR 关联一个主 Issue；跨接口改动先在关联 Issue 说明影响，再由受影响模块的贡献者 review。没有受影响者的确认，不把字段改名当作“内部重构”。
+建议的合并顺序：先确定用例和契约，再做 #9 本地 agent 候选交接、原站核验与投递入口，然后 #8 岗位要求到外部章节的资源导航；模型草稿、跨方向证据回流和独立能力验证后续验收。独立的资源元数据或 UI 草图可并行。任务认领在 Issue 指派或留言，不能仅在聊天中口头声称。每个 PR 关联一个主 Issue；跨接口改动先在关联 Issue 说明影响，再由受影响模块的贡献者 review。没有受影响者的确认，不把字段改名当作“内部重构”。
 
 ## PR 完成定义
 
