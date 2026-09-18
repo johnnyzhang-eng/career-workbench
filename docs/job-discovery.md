@@ -1,32 +1,72 @@
-# 本地岗位发现：试用指南（Issue #9）
+# 本地岗位候选工作台（Issue #9）
 
-这个切片读取你启用的公开 Ashby 招聘 board，保留上次成功读取的职位，并给出招聘方的职位详情与申请页面。它目前只覆盖这些 board；筛选结果不代表岗位仍开放、资格符合或已经投递。职位申请仍由本人在原站完成。
+不同求职者各自在本地运行自己的岗位搜索 agent。agent 生成有原始来源的候选 JSON；工作台只导入当前用户私有目录中的文件，去重、展示和保存个人筛选。公开 Ashby board 是可选的补充来源。所有候选都待本人核查资格、开放状态和申请入口；工作台不运行 agent、不代投，也不把推荐理由当成资格结论。
 
-## 启动
+## 让本地 agent 交接候选
 
-在仓库根目录运行：
+请让 agent 将下面结构的 JSON 写入当前用户的 `private/alice/agent-batch.json`。例子全是虚构内容，真实求职资料只留在本人的 private workspace：
+
+```json
+{
+  "schema_version": 1,
+  "agent_id": "local_search_agent",
+  "batch_id": "search_20260919_01",
+  "generated_at": "2026-09-19T09:00:00+08:00",
+  "candidates": [
+    {
+      "title": "虚构数据分析实习生",
+      "job_url": "https://careers.example.com/jobs/data-intern",
+      "apply_url": "https://careers.example.com/jobs/data-intern/apply",
+      "location": "Shanghai",
+      "department": "Data",
+      "description": "2027 届与 SQL 要求，须以原站核查",
+      "source": {
+        "name": "虚构雇主招聘页",
+        "url": "https://careers.example.com/jobs/data-intern",
+        "observed_at": "2026-09-19T08:55:00+08:00"
+      },
+      "reason": "岗位描述提到 SQL，与本人选择的数据方向相近；资格尚未核验",
+      "evidence_refs": [
+        {"url": "https://careers.example.com/jobs/data-intern", "locator": "职位描述的要求段落"}
+      ],
+      "unknowns": ["届别资格", "岗位是否仍开放", "签约主体"]
+    }
+  ]
+}
+```
+
+在仓库根目录导入并启动本地网页：
+
+```bash
+python3 -m workbench.import_candidates --workspace private/alice --file private/alice/agent-batch.json
+python3 -m workbench.web --workspace private/alice --port 8765
+```
+
+打开终端显示的 `http://127.0.0.1:8765/`。导入不需要网页运行；网页运行中再次导入后刷新页面即可看到候选。每批最多 100 条、文件最多 1 MiB，路径必须在指定 workspace 内。一个 agent 的同一批次重复导入会返回 `already_imported`；同批次 ID 对应不同内容会拒绝。不同 agent 给出同一规范化职位 URL 时列表只显示一个职位，但各自理由与证据分别保留。不同职位 URL 指向同一个现实岗位时，当前不会自动合并。
+
+所有 URL 只做严格的结构安全检查：HTTPS、公开 DNS 形式、具体路径、无凭据或片段。常见以查询参数指向职位的页面可保留 `gh_jid`、`job_id`、`posting_id`，其余查询参数（含个人跟踪参数）拒绝；例如 `https://careers.example.com/jobs?gh_jid=12345` 可导入。这个小型白名单仍不能覆盖所有招聘站链接格式。工作台不会替你访问或验证 agent 提供的 URL；链接是否真属雇主、职位是否在招、申请页是否可用仍需本人打开原站确认。不能安全去参时保留待人工核查，不编造新链接。证据引用只存 URL 与页面位置说明，不读取本地文件或复制整篇 JD。
+
+## 可选：补充公开 Ashby board
+
+例如增加一个有公开 API 的招聘 board：
 
 ```bash
 python3 -m workbench.web --workspace private/alice --board Ashby --port 8765
 ```
 
-打开终端显示的 `http://127.0.0.1:8765/`，点击“刷新这家公司的岗位”。可以重复传入 `--board`，例如再加入 `--board notion` 或 `--board airwallex`。board 名取自 `https://jobs.ashbyhq.com/<board>` 的末段，只允许字母、数字、下划线和连字符；程序只请求固定的 Ashby 公开 API 主机。一个来源暂不支持时不会假装已有覆盖。
+在页面点击刷新 Ashby board；也可重复传入 `--board notion` 等名称。board 名来自 `https://jobs.ashbyhq.com/<board>` 的末段，程序只读取固定的 Ashby 公开 API 主机。若要在本地服务运行时周期刷新，增加 `--interval-minutes 30`（最短 15 分钟）；默认仅手动刷新。每个 board 有最小请求间隔、超时和失败退避，失败保留上次成功快照。关闭服务后不会继续刷新。无需 Ashby 时不要传 `--board`，页面仍能显示 agent 候选。
 
-运行期间需要本地周期刷新，可加 `--interval-minutes 30`（最短 15 分钟）。默认只手动刷新。每个 board 的请求至少间隔 60 秒；失败会逐步延长重试间隔。关闭本地程序后不再刷新；重开后已保存的职位仍在。首次打开空列表时需要先刷新。
+## 个人筛选与状态
 
-不同求职者应分别使用 `private/alice`、`private/bob` 等独立 workspace。筛选偏好、收藏、已查看状态与 `discovery.sqlite3` 都留在各自本地目录；旧 CLI 的 `state.sqlite3` 仍由 `career.py init` 创建。不要把真实个人资料放进共享示例或 Issue。
+每位求职者分别使用 `private/alice`、`private/bob` 等独立 workspace。`discovery.sqlite3` 保存本人的候选、来源报告、偏好、收藏和已查看状态；旧 CLI 的 `state.sqlite3` 仍由 `career.py init` 创建。导入或刷新不会改变申请状态机。
 
-## 如何读列表
+- 城市匹配来源位置字段；方向匹配职位、部门与团队；关键词和排除词匹配职位与纯文本描述。届别只按来源明确写出的文字匹配；未写出的保持“未知”，可选择保留。筛中不等于资格符合。
+- agent 候选始终显示“待核查”，即使已经收藏或查看。Ashby 的“待核查”还可能表示它在最近一次成功同步中缺席；缺席不等于关闭。打开候选卡可查看各 agent 的理由、证据引用、未知项与来源时间。
+- 职位详情与申请入口分别打开。agent 提供的申请入口标为待核验；缺失时先从职位原页核查。打开链接、收藏或标记已查看绝不会登记 submitted。
+- 本人在原站实际申请后，仍按 `docs/workflow.md` 的旧 CLI 流程核验岗位、准备材料、确认并凭真实回执登记；学习进度不是投递前置条件。
 
-- “新发现”表示本次成功同步才首次看到；“已查看”来自本人在本地点击标记；“待核查”表示上次成功快照有、最近一次成功同步未出现。它**不等于已关闭**。
-- 城市匹配来源位置字段，方向匹配职位/部门/团队，关键词及排除词匹配职位与纯文本描述。届别只按来源明确写出的文字匹配；未写出的保持“未知”，可勾选保留。任何匹配都不等于资格核验。
-- “打开原站职位详情”与“去原站申请”是不同链接。若来源没有安全的独立申请入口，页面提示先从详情页核查。打开链接、标记已查看或收藏不会登记 submitted。
-- 真正申请以后，仍按 `docs/workflow.md` 的现有 CLI 流程核验岗位、准备材料、本人确认，并用真实回执登记状态。发现页面不会绕过这些门槛。
+## 来源范围与验证
 
-## 来源、核查与限制
+Ashby 适配器依据 [官方 Public Job Postings API 文档](https://developers.ashbyhq.com/docs/public-job-posting-api) 的公开 GET、`jobUrl`、`applyUrl` 和 `isListed` 字段，不使用需凭证的写入接口。2026-09-18 16:48 UTC 的一次只读抽样：Ashby 自身 board 返回 73 条 listed 职位，标题中没有明确的 Intern 职位，位置字段没有 China/Shanghai，纯文本描述没有 `2027`。同日 `airwallex` board 有 577 条 listed，其中 20 条位置文字含 China/Shanghai/Beijing、2 条纯文本描述含 `2027`；这些计数未核对资格或开放状态，也不证明中国学生可投。样本会随时间变化。
 
-适配器依据 [Ashby Public Job Postings API 官方文档](https://developers.ashbyhq.com/docs/public-job-posting-api) 的公开 GET、`jobUrl`、`applyUrl`、`isListed` 和原始字段实现；不使用需要凭证的 `jobPosting.list` 或申请提交接口。读取失败、重定向、响应太大或字段异常都保留最后成功快照；本地不会把 404、空响应或缺席职位直接判为“招满”。只保存纯文本描述和必要字段，不渲染来源 HTML。
-
-2026-09-18 16:48 UTC 的一次只读抽样：Ashby 自身 board 返回 73 条 `isListed=true` 职位，73 条都有职位和申请 URL；标题中没有明确的 Intern 职位，位置字段没有 China/Shanghai，纯文本描述没有 `2027`。同日另查 `airwallex` board：577 条 listed，其中 20 条位置文字含 China/Shanghai/Beijing、2 条纯文本描述含 `2027`；这些计数没有核对资格或开放状态，也不能推断中国学生可投。样本随招聘方更新会变；接口能读取与岗位适合某个学生是两件事。当前没有跨招聘站全网覆盖、自动发现所有 board、资格判定或自动投递。
-
-虚构流程与安全验证在 `tests/test_job_discovery.py`；运行 `python3 -m unittest discover -s tests -v` 和 `python3 scripts/check_privacy.py`。测试仅证明本地行为，不代表真实职位申请成功。
+本切片没有内置 agent、跨站全网搜索、申请表代填、自动上传、资格判定、模型收费调用或云端多用户账号。离线测试在 `tests/`；运行 `python3 -m unittest discover -s tests -v` 与 `python3 scripts/check_privacy.py`。浏览器和真实职位页仍需按具体用户任务验证，测试通过不等于真实申请成功。

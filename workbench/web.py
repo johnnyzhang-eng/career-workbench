@@ -11,7 +11,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from .jobs import JobStore, validate_board
+from .jobs import AGENT_BOARD, AGENT_SOURCE, SOURCE, JobStore, validate_board
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FORM = 8192
@@ -31,13 +31,18 @@ def esc(value):
 def safe_link(url, label):
     if not url:
         return '<span class="muted">入口未知，请在职位原页核查</span>'
+    if urllib.parse.urlsplit(url).scheme != "https":
+        return '<span class="muted">链接未通过安全校验</span>'
     return f'<a href="{esc(url)}" target="_blank" rel="noopener noreferrer">{esc(label)}</a>'
 
 
 def render_page(store, boards, csrf_token, notice="", error=False):
     profile = store.profile()
     jobs = store.jobs(boards, profile)
-    source_parts = []
+    agent_state = store.agent_state()
+    source_parts = [f'''<section class="source"><div class="row"><strong>本地 agent 候选</strong><span class="status">主入口</span></div>
+<p>已导入 {agent_state['candidates']} 个候选；最近导入：{esc(agent_state['last_imported_at'] or '尚未导入')}</p>
+<p class="hint">让你的本地 agent 输出带来源的 JSON，再按使用指南运行导入命令。候选仍需本人打开原站核查资格和开放状态。这里不上传文件，也不运行 agent。</p></section>''']
     for board in boards:
         state = store.source_state(board)
         last = esc(state.get("last_success_at") or "尚未成功同步")
@@ -47,10 +52,12 @@ def render_page(store, boards, csrf_token, notice="", error=False):
 <form method="post" action="/refresh"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="board" value="{esc(board)}"><button type="submit">刷新这家公司的岗位</button></form></section>''')
     cards = []
     for job in jobs:
+        is_agent = job["source"] == AGENT_SOURCE
         status = job["list_state"]
         status_class = "review" if status == "待核查" else ""
         freshness = "review" if status == "待核查" else "fresh" if status == "新发现" else ""
         board = esc(job["board"])
+        source = esc(job["source"])
         job_id = esc(job["id"])
         bookmark_action = "取消收藏" if job["bookmarked"] else "收藏"
         bookmark_value = "0" if job["bookmarked"] else "1"
@@ -58,16 +65,25 @@ def render_page(store, boards, csrf_token, notice="", error=False):
         posted = esc(job["published_at"] or "未提供")
         cohort = esc(job["cohort_state"])
         summary = esc(job["description"] or "来源未提供职位描述")
-        cards.append(f'''<article class="job {freshness}"><div class="row"><span class="status {status_class}">{esc(status)}</span>{'<span class="status">已收藏</span>' if job['bookmarked'] else ''}</div>
-<h3>{esc(job['title'])}</h3><p class="meta">{location}　/　{esc(job['department'] or job['team'] or '部门未提供')}　/　发布：{posted}<br>届别：{cohort}；开放状态与资格：待本人核查<br>首次发现：{esc(job['first_seen_at'])}；最近见于来源：{esc(job['last_seen_at'])}</p>
-<div class="actions">{safe_link(job['job_url'], '打开原站职位详情')}{safe_link(job['apply_url'], '去原站申请')}
-<form method="post" action="/flag"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="board" value="{board}"><input type="hidden" name="id" value="{job_id}"><input type="hidden" name="flag" value="viewed"><input type="hidden" name="value" value="1"><button class="tiny secondary" type="submit">标记已查看</button></form>
-<form method="post" action="/flag"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="board" value="{board}"><input type="hidden" name="id" value="{job_id}"><input type="hidden" name="flag" value="bookmarked"><input type="hidden" name="value" value="{bookmark_value}"><button class="tiny secondary" type="submit">{bookmark_action}</button></form></div>
-<details><summary>查看来源描述与原始字段</summary><p class="description">{summary}</p><p class="hint">来源职位 ID：{job_id}；职类：{esc(job['employment_type'] or '未提供')}。来源文字未经资格核验，链接异常时请回原站确认。</p></details></article>''')
+        report_parts = []
+        for report in job["agent_reports"]:
+            refs = ''.join(f'<li>{safe_link(ref["url"], ref["locator"])}</li>' for ref in report["evidence_refs"])
+            unknowns = '、'.join(esc(item) for item in report["unknowns"]) or 'agent 未列出其他未知项'
+            report_parts.append(f'''<div class="report"><strong>{esc(report['agent_id'])} / {esc(report['batch_id'])}</strong>
+<p>推荐理由（待核对）：{esc(report['reason'])}</p><p class="hint">来源：{esc(report['origin_name'])}；来源时间：{esc(report['origin_observed_at'])}；{safe_link(report['origin_url'], '打开引用来源')}</p>
+<ul>{refs}</ul><p class="hint">agent 标注未知：{unknowns}。资格与开放状态始终待本人核查。</p></div>''')
+        report_section = f'<details><summary>查看 {len(job["agent_reports"])} 份 agent 理由与证据</summary>{"".join(report_parts)}</details>' if is_agent else ''
+        source_line = f'agent 候选 / {esc(job["origin_name"])}；来源观察：{esc(job["origin_observed_at"])}；最近导入：{esc(job["last_seen_at"])}' if is_agent else f'Ashby / {board}；最近成功同步：{esc(job["last_success_at"])}'
+        cards.append(f'''<article class="job {freshness}"><div class="row"><span class="status {status_class}">{esc(status)}</span>{'<span class="status">已查看</span>' if is_agent and job['viewed'] else ''}{'<span class="status">已收藏</span>' if job['bookmarked'] else ''}</div>
+<h3>{esc(job['title'])}</h3><p class="meta">{location}　/　{esc(job['department'] or job['team'] or '部门未提供')}　/　来源标注发布时间：{posted}<br>{source_line}<br>届别：{cohort}；开放状态与资格：待本人核查</p>
+<div class="actions">{safe_link(job['job_url'], '打开原站职位详情')}{safe_link(job['apply_url'], '打开待核验申请入口' if is_agent else '去原站申请')}
+<form method="post" action="/flag"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="source" value="{source}"><input type="hidden" name="board" value="{board}"><input type="hidden" name="id" value="{job_id}"><input type="hidden" name="flag" value="viewed"><input type="hidden" name="value" value="1"><button class="tiny secondary" type="submit">标记已查看</button></form>
+<form method="post" action="/flag"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="source" value="{source}"><input type="hidden" name="board" value="{board}"><input type="hidden" name="id" value="{job_id}"><input type="hidden" name="flag" value="bookmarked"><input type="hidden" name="value" value="{bookmark_value}"><button class="tiny secondary" type="submit">{bookmark_action}</button></form></div>
+{report_section}<details><summary>查看来源描述与字段</summary><p class="description">{summary}</p><p class="hint">候选 ID：{esc(job['id'][:12])}；职类：{esc(job['employment_type'] or '未提供')}。来源文字未经资格核验，链接异常时请回原站确认。</p></details></article>''')
     message = f'<div class="notice {"error" if error else ""}" role="status">{esc(notice)}</div>' if notice else ""
     checked = "checked" if profile.get("include_unknown_cohort", True) else ""
     body = f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>岗位发现 · Career Workbench</title><style>{CSS}</style></head><body>
-<header><h1>找到岗位，<br>再去原站核查与申请。</h1><p>定期读取你启用的公开招聘 board。筛选帮你缩小列表；是否符合资格、岗位是否仍开放，仍需在招聘方页面确认。</p></header>
+<header><h1>汇集岗位线索，<br>回原站核查与申请。</h1><p>你的本地 agent 提供带来源的候选；公开招聘 board 可作为补充。筛选帮你缩小列表，资格和开放状态仍需本人确认。</p></header>
 <main><aside><h2>我的筛选条件</h2><p class="hint">仅保存在这个本地工作区。不同用户请使用不同 private workspace。</p><form method="post" action="/profile"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}">
 <label for="city">城市或地区</label><input id="city" name="city" type="text" value="{esc(profile['city'])}" placeholder="例如 Shanghai">
 <label for="direction">岗位方向</label><input id="direction" name="direction" type="text" value="{esc(profile['direction'])}" placeholder="在职位、部门、团队匹配">
@@ -76,7 +92,7 @@ def render_page(store, boards, csrf_token, notice="", error=False):
 <label class="check"><input type="checkbox" name="include_unknown_cohort" value="1" {checked}>保留未写明届别的岗位</label>
 <label for="exclude">排除词</label><input id="exclude" name="exclude" type="text" value="{esc(profile['exclude'])}" placeholder="多个词用逗号分隔">
 <p><button type="submit">保存并筛选</button></p></form></aside><section>{message}{''.join(source_parts)}
-<div class="feedhead"><h2>发现的岗位</h2><p class="muted">当前显示 {len(jobs)} 条</p></div>{''.join(cards) if cards else '<div class="empty"><h3>当前没有匹配的岗位</h3><p>可放宽筛选条件，或刷新已启用的来源。这里不会推断岗位已经关闭。</p></div>'}
+<div class="feedhead"><h2>岗位候选</h2><p class="muted">当前显示 {len(jobs)} 条</p></div>{''.join(cards) if cards else '<div class="empty"><h3>当前没有匹配的岗位</h3><p>让本地 agent 导入候选、放宽筛选条件，或刷新已启用的公开来源。这里不会推断岗位已经关闭。</p></div>'}
 </section></main><footer>打开链接或收藏都不会记为“已投递”。本人在原站实际申请后，仍需使用现有 CLI 核验岗位、确认材料，再凭真实回执登记。此页面不会上传简历或替你提交申请。</footer></body></html>'''
     return body.encode("utf-8")
 
@@ -156,9 +172,12 @@ def make_handler(store, boards, csrf_token=None):
                     code = store.refresh(board)["status"]
                 elif self.path == "/flag":
                     board = values.get("board")
-                    if board not in allowed or values.get("value") not in {"0", "1"}:
+                    source = values.get("source", SOURCE)
+                    if ((source == SOURCE and board not in allowed) or
+                            (source == AGENT_SOURCE and board != AGENT_BOARD) or
+                            source not in {SOURCE, AGENT_SOURCE} or values.get("value") not in {"0", "1"}):
                         return self._reject()
-                    store.set_flag(board, values.get("id", ""), values.get("flag"), values["value"] == "1")
+                    store.set_flag(board, values.get("id", ""), values.get("flag"), values["value"] == "1", source=source)
                     code = "flagged"
                 else:
                     return self._reject(404)
@@ -177,8 +196,8 @@ def make_handler(store, boards, csrf_token=None):
 
 def serve(workspace, boards, port=8765, interval_minutes=0):
     boards = tuple(dict.fromkeys(validate_board(board) for board in boards))
-    if not boards or not 0 <= port <= 65535 or (interval_minutes and interval_minutes < 15):
-        raise ValueError("需要来源 board；周期刷新至少每 15 分钟")
+    if not 0 <= port <= 65535 or (interval_minutes and (interval_minutes < 15 or not boards)):
+        raise ValueError("周期刷新需要至少一个 board，间隔至少 15 分钟")
     store = JobStore(workspace)
     server = ThreadingHTTPServer(("127.0.0.1", port), make_handler(store, boards))
     server.daemon_threads = True
@@ -208,7 +227,7 @@ def main():
     if not workspace.is_relative_to(ROOT / "private"):
         parser.error("workspace 必须在本仓库 private/ 内")
     try:
-        serve(workspace, args.board or ["Ashby"], args.port, args.interval_minutes)
+        serve(workspace, args.board, args.port, args.interval_minutes)
     except ValueError as exc:
         parser.error(str(exc))
 

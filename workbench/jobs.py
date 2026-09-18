@@ -12,10 +12,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 SOURCE = "ashby"
+AGENT_SOURCE = "agent"
+AGENT_BOARD = "local"
 API_HOST = "api.ashbyhq.com"
 JOBS_HOST = "jobs.ashbyhq.com"
 BOARD_RE = re.compile(r"[A-Za-z0-9_-]{1,80}\Z")
 JOB_ID_RE = re.compile(r"[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}\Z")
+AGENT_JOB_ID_RE = re.compile(r"[0-9a-f]{64}\Z")
 MAX_RESPONSE = 15_000_000
 MIN_REFRESH_SECONDS = 60
 
@@ -144,6 +147,14 @@ class JobStore:
                     source TEXT NOT NULL, board TEXT NOT NULL, source_job_id TEXT NOT NULL,
                     viewed INTEGER NOT NULL DEFAULT 0, bookmarked INTEGER NOT NULL DEFAULT 0,
                     PRIMARY KEY(source, board, source_job_id));
+                CREATE TABLE IF NOT EXISTS discovery_agent_batches(
+                    agent_id TEXT NOT NULL, batch_id TEXT NOT NULL, digest TEXT NOT NULL,
+                    generated_at TEXT NOT NULL, imported_at TEXT NOT NULL,
+                    candidate_count INTEGER NOT NULL, PRIMARY KEY(agent_id, batch_id));
+                CREATE TABLE IF NOT EXISTS discovery_agent_reports(
+                    agent_id TEXT NOT NULL, batch_id TEXT NOT NULL, source_job_id TEXT NOT NULL,
+                    payload TEXT NOT NULL, imported_at TEXT NOT NULL,
+                    PRIMARY KEY(agent_id, batch_id, source_job_id));
             """)
 
     @contextmanager
@@ -164,6 +175,13 @@ class JobStore:
         with self._connect() as db:
             row = db.execute("SELECT * FROM discovery_sources WHERE source=? AND board=?", (SOURCE, validate_board(board))).fetchone()
             return dict(row) if row else {"source": SOURCE, "board": board, "source_url": source_url(board), "last_success_at": None, "last_error": None, "next_allowed_at": None}
+
+    def agent_state(self):
+        with self._connect() as db:
+            row = db.execute("SELECT last_success_at FROM discovery_sources WHERE source=? AND board=?", (AGENT_SOURCE, AGENT_BOARD)).fetchone()
+            count = db.execute("SELECT COUNT(*) FROM discovery_jobs WHERE source=? AND board=?", (AGENT_SOURCE, AGENT_BOARD)).fetchone()[0]
+            batches = db.execute("SELECT COUNT(*) FROM discovery_agent_batches").fetchone()[0]
+        return {"last_imported_at": row[0] if row else None, "candidates": count, "batches": batches}
 
     def refresh(self, board, adapter=None, at=None):
         board = validate_board(board)
@@ -212,24 +230,36 @@ class JobStore:
             db.execute("INSERT INTO discovery_profile(singleton,payload) VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET payload=excluded.payload", (json.dumps(safe, ensure_ascii=False),))
         return safe
 
-    def set_flag(self, board, job_id, flag, value=True):
-        board = validate_board(board)
-        if flag not in {"viewed", "bookmarked"} or not JOB_ID_RE.fullmatch(job_id):
+    def set_flag(self, board, job_id, flag, value=True, source=SOURCE):
+        if source == SOURCE:
+            board = validate_board(board)
+            valid_id = isinstance(job_id, str) and JOB_ID_RE.fullmatch(job_id)
+        elif source == AGENT_SOURCE:
+            valid_id = board == AGENT_BOARD and isinstance(job_id, str) and AGENT_JOB_ID_RE.fullmatch(job_id)
+        else:
+            valid_id = False
+        if flag not in {"viewed", "bookmarked"} or not valid_id:
             raise ValueError("收藏或查看参数无效")
         with self._connect() as db:
-            exists = db.execute("SELECT 1 FROM discovery_jobs WHERE source=? AND board=? AND source_job_id=?", (SOURCE, board, job_id)).fetchone()
+            exists = db.execute("SELECT 1 FROM discovery_jobs WHERE source=? AND board=? AND source_job_id=?", (source, board, job_id)).fetchone()
             if not exists:
                 raise ValueError("职位不存在")
-            db.execute(f"INSERT INTO discovery_flags(source,board,source_job_id,{flag}) VALUES(?,?,?,?) ON CONFLICT(source,board,source_job_id) DO UPDATE SET {flag}=excluded.{flag}", (SOURCE, board, job_id, int(bool(value))))
+            db.execute(f"INSERT INTO discovery_flags(source,board,source_job_id,{flag}) VALUES(?,?,?,?) ON CONFLICT(source,board,source_job_id) DO UPDATE SET {flag}=excluded.{flag}", (source, board, job_id, int(bool(value))))
 
     def jobs(self, boards, profile=None):
         profile = profile or self.profile()
         boards = [validate_board(board) for board in boards]
-        if not boards:
-            return []
-        placeholders = ",".join("?" for _ in boards)
+        board_filter = ""
+        params = [AGENT_SOURCE, AGENT_BOARD]
+        if boards:
+            placeholders = ",".join("?" for _ in boards)
+            board_filter = f" OR (j.source=? AND j.board IN ({placeholders}))"
+            params.extend([SOURCE, *boards])
         with self._connect() as db:
-            rows = db.execute(f"SELECT j.*,s.last_success_at,f.viewed,f.bookmarked FROM discovery_jobs j JOIN discovery_sources s ON s.source=j.source AND s.board=j.board LEFT JOIN discovery_flags f ON f.source=j.source AND f.board=j.board AND f.source_job_id=j.source_job_id WHERE j.source=? AND j.board IN ({placeholders}) ORDER BY j.first_seen_at DESC,j.source_job_id", [SOURCE, *boards]).fetchall()
+            rows = db.execute(f"SELECT j.*,s.last_success_at,f.viewed,f.bookmarked FROM discovery_jobs j JOIN discovery_sources s ON s.source=j.source AND s.board=j.board LEFT JOIN discovery_flags f ON f.source=j.source AND f.board=j.board AND f.source_job_id=j.source_job_id WHERE (j.source=? AND j.board=?){board_filter} ORDER BY j.first_seen_at DESC,j.source_job_id", params).fetchall()
+            agent_reports = {}
+            for report in db.execute("SELECT source_job_id,payload FROM discovery_agent_reports ORDER BY imported_at DESC"):
+                agent_reports.setdefault(report["source_job_id"], []).append(json.loads(report["payload"]))
         results = []
         for row in rows:
             job = json.loads(row["payload"])
@@ -249,10 +279,12 @@ class JobStore:
             cohort_state = "未设置" if not cohort else "来源文字匹配" if cohort.casefold() in full_text else "未知"
             if cohort and cohort_state == "未知" and not profile.get("include_unknown_cohort", True):
                 continue
-            job.update(board=row["board"], source=SOURCE, source_url=source_url(row["board"]),
+            is_agent = row["source"] == AGENT_SOURCE
+            job.update(board=row["board"], source=row["source"], source_url=job.get("origin_url") if is_agent else source_url(row["board"]),
                        first_seen_at=row["first_seen_at"], last_seen_at=row["last_seen_at"],
                        last_success_at=row["last_success_at"], present_latest=bool(row["present_latest"]),
                        viewed=bool(row["viewed"]), bookmarked=bool(row["bookmarked"]), cohort_state=cohort_state)
-            job["list_state"] = "待核查" if not row["present_latest"] else "已查看" if row["viewed"] else "新发现" if row["first_seen_at"] == row["last_success_at"] else "已发现"
+            job["agent_reports"] = agent_reports.get(job["id"], []) if is_agent else []
+            job["list_state"] = "待核查" if is_agent or not row["present_latest"] else "已查看" if row["viewed"] else "新发现" if row["first_seen_at"] == row["last_success_at"] else "已发现"
             results.append(job)
         return results

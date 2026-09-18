@@ -1,6 +1,14 @@
 # Issue #9 最小数据与安全契约
 
-状态：首条岗位发现切片的实现契约，2026-09-19。父任务 #5；外部课程 #8 后续接入。
+状态：首条岗位发现切片的实现契约，2026-09-19。父任务 #5；外部课程 #8 后续接入。本地 agent 候选交接是主入口，Ashby 公开 board 是可选辅助来源。
+
+## 本地 agent → 工作台交接（schema_version=1）
+
+唯一写入入口为 `python3 -m workbench.import_candidates --workspace private/<用户> --file private/<用户>/<批次>.json`。文件必须是当前 workspace 内的普通 `.json` 文件；先核对路径归属，再从 workspace 目录逐级用 `O_NOFOLLOW` 打开，拒绝中间目录切换成越界符号链接；上限 1 MiB，不从网页上传，也不由服务端抓取用户给的 URL。顶层字段：`schema_version: 1`、`agent_id`、`batch_id`、`generated_at`（带时区）、`candidates`（1–100 条）。agent 与批次 ID 只用 ASCII 字母、数字、下划线、连字符。
+
+每条候选必填：`title`、`job_url`、`source: {name, url, observed_at}`、`reason`、`evidence_refs: [{url, locator}]`、`unknowns: [文字]`；可选 `apply_url`、`location`、`department`、`team`、`description`、`employment_type`、`published_at`。`source.url` 与证据 URL 必须是具体的 HTTPS 页面；locator 只存定位说明，不读取本地证据文件。外链只做结构检查：公开 DNS 形式、无凭据/自定义端口/片段，只允许 `gh_jid`、`job_id`、`posting_id` 三个职位 ID 查询参数，值限 ASCII ID。拒绝 localhost、内网 IP、`file:`、相对路径和跟踪参数；不在服务端抓取或证明域名归属。申请链接若缺失，显示 unknown 并引导在原职位页查找。
+
+整批先解析校验再开启事务；同一 `agent_id + batch_id` 和相同内容重复导入返回已处理，内容冲突则拒绝。职位以规范化 `job_url` 的 SHA-256 为稳定身份；不同 agent 报告同一 URL 时只展示一个职位，但各自理由、证据与未知项作为独立报告保留。agent 候选写入现有 `discovery_jobs` 的新 `(source='agent', board='local', source_job_id=<哈希>)` 空间，另建批次/报告表；旧 Ashby `(source='ashby', board, UUID)` 行不迁移、不覆盖。无论 agent 如何表述，工作台固定显示资格和开放状态待本人核查，不据推荐理由认定符合或在招。
 
 ## 来源与身份
 
