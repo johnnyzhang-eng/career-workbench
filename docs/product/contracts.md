@@ -1,6 +1,12 @@
 # 数据契约 v0.2（供协作评审，尚未实现）
 
-当前契约服务“岗位要求 → 合适的外部课程章节 → 学习记录”的首片。它不是现有 career.py 的存储格式，也不表示迁移已完成。来源与证据保留未知，课程内容在外站提供。
+2026-09-19 起第一切片为 #9 的“公开来源持续刷新 → 因人筛选 → 原站人工投递”。本页原有岗位到外部课程及学习记录契约保留给第二切片 #8；它不是现有 career.py 的存储格式，也不表示迁移已完成。来源与证据保留未知，课程内容在外站提供。
+
+## 第一切片最小岗位契约（#9）
+
+`JobSource` 保存 provider、公开 board 标识、原始 board URL、读取方式与最近一次成功同步时间；只接受明确允许的公开来源，不将任意用户 URL 当服务器抓取目标。`JobSnapshot` 保存 `(provider, board, source_job_id)` 稳定键、内容修订、标题、地点/方向/届别等原始字段、原职位 URL、原投递 URL（可空）、首次/最近发现时间、来源更新时间（若有）、最近同步状态及未知资格；同键重复刷新为更新而非重复插入。来源变更生成可回看的修订，不覆盖旧岗位快照。
+
+`UserPreference`、收藏与申请事件按本地私有工作区隔离；匹配只根据所展示的条件，未知条件不伪装为符合，且不生成录用概率。首次实现允许一个来源加第二来源接口，不宣称“全网发现”；前次成功数据在网络失败、源返回空值或职位消失时保留待核查。`JobSource.refresh` 返回新增/更新/待核查及同步错误，`JobCatalog.filter` 输入用户条件，`Application.record` 只在本人实际投递、核对回执后调用旧状态机。打开职位或投递 URL 无事件副作用，跳转原站不经过代投接口。HTTP 只在 loopback 运行，写操作校验 Host/Origin，服务端不抓取任意用户 URL；外链只接受安全的原站 HTTPS URL。
 
 ## 通用约定
 
@@ -8,7 +14,9 @@
 
 人工录入/模型候选默认 proposed，确认后才为 confirmed；未确认、未核验和无匹配不能伪装成符合。学习进度与能力判断分开，自报完成不自动变为独立证据。公开 fixture 使用虚构岗位和 example.com 链接。
 
-## 首片实体
+## 后续学习实体（#8）
+
+独立审查指出下表的部分映射仍只引用裸 ID。#8 实施前必须固定 requirement、skill、resource 的具体内容修订（及 SourceRef 片段定位），新增修订不能自动继承旧的 confirmed；参见 [PR #7 契约审查](https://github.com/johnnyzhang-eng/career-workbench/pull/7) 的追踪，不把下表当已冻结的数据库结构。
 
 | 实体 | 最小字段 | 不变量 |
 |---|---|---|
@@ -23,7 +31,7 @@
 | ResourceRecommendation | id, requirement_ids, resource_id, rationale, unmet_prerequisites, alternative_resource_ids, origin | 理由可解释；origin 区分规则/人工/模型；无合适项返回 no_match |
 | LearningActivity | id, resource_id, skill_ids, created_at | 可在投递前开始；同一活动可关联多个岗位共通技能 |
 | LearningEvent | id, activity_id, kind, at, evidence_ref? | kind 为 opened/in_progress/completed_self_reported；不能直接更新能力为已掌握 |
-| EvidenceItem | id, skill_id, kind, artifact_ref?, assistance, observed_at, review_state | 首片外部学习记录只作未验证自述；artifact_ref 不赋予读取任意本地文件权限 |
+| EvidenceItem | id, skill_id, kind, artifact_ref?, assistance, observed_at, review_state | 外部学习记录只作未验证自述；artifact_ref 不赋予读取任意本地文件权限 |
 | ApplicationEvent | id, job_id, kind, at, evidence_ref?, human_confirmed | 原 CLI 状态机继续生效；学习不阻断投递，submitted 需要本人确认的真实回执 |
 
 verification_state 区分 unchecked、page_checked、needs_review；检查异常保留原因与旧检查记录，不能把瞬断判为永久失效。opened 只证明点击；completed_self_reported 只证明用户声明，evidence_status 保持 unverified。
@@ -32,14 +40,14 @@ verification_state 区分 unchecked、page_checked、needs_review；检查异常
 
 | 端口 | 输入 → 输出 | 边界 |
 |---|---|---|
-| JobReview.confirm | 岗位要求与来源 → 已确认字段/未知项 | 首片人工核对，缺出处的硬门槛仍 unknown |
+| JobReview.confirm | 岗位要求与来源 → 已确认字段/未知项 | 人工核对，缺出处的硬门槛仍 unknown |
 | ResourceCatalog.match | 已确认技能、前置与语言偏好 → 推荐、替代或 no_match/needs_review | 确定性筛选，规则与模型来源分开；不编造链接 |
 | Learning.record | 活动、进度与可选证据引用 → 追加事件与待验证摘要 | 事务保存、幂等；不自动读取外站账号/进度 |
 | Evidence.summarize | 已有证据与关联技能 → 各方向证据摘要 | 学习进度不等于能力升级；保留未知和反证 |
 | Application.record | 本人确认与回执位置 → 旧状态机记录 | 不绕过确认、材料版本与回执门槛 |
-| JobSource.read / ModelPort.proposeGaps | 外部岗位 / 授权最小上下文 → 来源草稿 / GapProposal | 首片未配置；明确 not_configured，不伪造成功 |
+| JobSource.read / ModelPort.proposeGaps | 外部岗位 / 授权最小上下文 → 来源草稿 / GapProposal | 岗位读取由 #9 实现；模型仍未配置，不伪造成功 |
 
-UI 调用用例服务，服务依赖契约与存储端口，不依赖 HTTP。首片没有外部服务调用；打开课程或招聘网站由用户浏览器完成，不能把这类导航混同后端读取。
+UI 调用用例服务，服务依赖契约与存储端口，不依赖 HTTP。第一切片只向已配置的公开招聘来源发起受控读取；打开职位/申请/课程页面由用户浏览器完成，不能把导航混同后端读取。
 
 ## 后续能力验证（不进入首片）
 
@@ -47,7 +55,7 @@ GapProposal 仍只能表达有来源的 needs_practice/evidence_present/unknown 
 
 PracticeUnit/Attempt/RetestPlan 不作为当前开发依赖。确需能力验证时，再明确外部证据导入或独立验证方式、题目版本/内容标识、前序尝试、帮助事件、间隔策略、判题结果及其信任边界。不能仅凭 independent_claim 或 is_retest 布尔值提升证据；也不预设工作台必须自建课程或判题器。
 
-## 首片虚构用例
+## 第二切片虚构用例（#8）
 
 两个岗位共享 SQL 入门要求，其中一个另需流处理。学生查看有出处的映射，按语言与前置选择具体外部章节；SQL 记录跨两个方向可见，流处理保持未知。打开链接、自报完成、填写证据引用后，进度分别保存，能力仍待验证。
 
