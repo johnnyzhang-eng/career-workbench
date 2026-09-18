@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py",
          "docs/*.md", "docs/*.html", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py",
+         "workbench/*.py",
          ".agents/skills/*/SKILL.md", ".github/ISSUE_TEMPLATE/*.md", ".github/PULL_REQUEST_TEMPLATE.md",
          ".github/workflows/*.yml")
 RULES = {
@@ -45,7 +46,7 @@ def main():
         if path.is_file() or path.is_symlink():
             files.add(relative.as_posix())
     # Include tracked ignored files: .gitignore cannot protect an already tracked secret.
-    if (ROOT / ".git").is_dir():
+    if (ROOT / ".git").exists():
         result = subprocess.run(["git", "-C", str(ROOT), "ls-files", "-z"], capture_output=True, check=True)
         files.update(x for x in result.stdout.decode().split("\0") if x)
     failures = []
