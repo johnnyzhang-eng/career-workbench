@@ -216,5 +216,66 @@ class AgentImportTests(unittest.TestCase):
             self.assertEqual(JobStore(workspace).agent_state()["candidates"], 1)
 
 
+class AgentPasteWebTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.store = JobStore(Path(self.temp.name) / "web")
+        self.server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(self.store, [], "synthetic-csrf"))
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join(timeout=2)
+        self.temp.cleanup()
+
+    def request(self, method, path, data=None, origin=None):
+        conn = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        headers = {"Host": f"127.0.0.1:{self.server.server_port}"}
+        payload = None
+        if method == "POST":
+            headers.update({"Origin": origin or f"http://127.0.0.1:{self.server.server_port}",
+                            "Content-Type": "application/x-www-form-urlencoded"})
+            payload = urlencode({"csrf_token": "synthetic-csrf", **(data or {})}).encode()
+        conn.request(method, path, body=payload, headers=headers)
+        response = conn.getresponse()
+        body = response.read().decode()
+        status = response.status
+        conn.close()
+        return status, body
+
+    def test_profile_prompt_paste_and_original_links(self):
+        self.assertIn("让自己的 agent 找岗位", self.request("GET", "/")[1])
+        self.assertEqual(self.request("POST", "/profile", {"city": "Shanghai", "direction": "Data"})[0], 303)
+        self.assertIn("城市或地区：Shanghai", self.request("GET", "/")[1])
+        raw = json.dumps(batch(), ensure_ascii=False)
+        self.assertEqual(self.request("POST", "/import", {"agent_json": raw})[0], 303)
+        status, page = self.request("GET", "/?result=imported")
+        self.assertEqual(status, 200)
+        self.assertIn("候选已导入当前工作区", page)
+        self.assertIn(JOB_URL, page)
+        self.assertIn(JOB_URL + "/apply", page)
+        self.assertIn("待本人核查", page)
+        self.assertEqual(self.request("POST", "/import", {"agent_json": raw})[0], 303)
+        self.assertEqual(self.store.agent_state()["candidates"], 1)
+        self.assertFalse((self.store.workspace / "state.sqlite3").exists())
+
+    def test_bad_paste_shows_reason_without_losing_existing_candidate(self):
+        self.request("POST", "/import", {"agent_json": json.dumps(batch())})
+        invalid = batch("agent_two", "run_002")
+        invalid["candidates"][0]["job_url"] = "http://127.0.0.1/private"
+        invalid["candidates"][0]["title"] = "</textarea><script>alert(1)</script>"
+        status, page = self.request("POST", "/import", {"agent_json": json.dumps(invalid)})
+        self.assertEqual(status, 400)
+        self.assertIn("导入未完成", page)
+        self.assertIn("&lt;/textarea&gt;&lt;script&gt;", page)
+        self.assertNotIn("<script>", page)
+        self.assertIn(JOB_URL, page)
+        self.assertEqual(self.store.agent_state()["batches"], 1)
+        self.assertEqual(self.request("POST", "/import", {"agent_json": "{}"}, origin="http://evil.example")[0], 403)
+        self.assertEqual(self.request("POST", "/import", {"csrf_token": "wrong", "agent_json": "{}"})[0], 403)
+
+
 if __name__ == "__main__":
     unittest.main()

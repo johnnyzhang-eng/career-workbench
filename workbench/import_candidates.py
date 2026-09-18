@@ -96,6 +96,16 @@ def _reject_constant(value):
     raise ValueError("JSON 含非标准数值")
 
 
+def parse_batch_json(raw, max_bytes=MAX_FILE):
+    if not isinstance(raw, str) or len(raw.encode("utf-8")) > max_bytes:
+        raise ValueError("候选 JSON 超过允许大小")
+    try:
+        data = json.loads(raw, object_pairs_hook=_unique_json_pairs, parse_constant=_reject_constant)
+    except json.JSONDecodeError as exc:
+        raise ValueError("JSON 内容无效") from exc
+    return parse_batch(data)
+
+
 def parse_batch(data):
     if not isinstance(data, dict) or type(data.get("schema_version")) is not int or data["schema_version"] != 1:
         raise ValueError("需要 schema_version=1")
@@ -182,14 +192,21 @@ def read_batch_file(store, file_path):
         for handle in reversed(handles):
             os.close(handle)
     try:
-        data = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_json_pairs, parse_constant=_reject_constant)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+        decoded = raw.decode("utf-8")
+    except UnicodeError as exc:
         raise ValueError("JSON 内容无效") from exc
-    return parse_batch(data)
+    return parse_batch_json(decoded)
 
 
 def import_file(store, file_path, at=None):
-    batch = read_batch_file(store, file_path)
+    return import_batch(store, read_batch_file(store, file_path), at)
+
+
+def import_json(store, raw, at=None, max_bytes=MAX_FILE):
+    return import_batch(store, parse_batch_json(raw, max_bytes), at)
+
+
+def import_batch(store, batch, at=None):
     digest = hashlib.sha256(json.dumps(batch, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     at = _time(at or utc_now(), "imported_at")
     with store._connect() as db:

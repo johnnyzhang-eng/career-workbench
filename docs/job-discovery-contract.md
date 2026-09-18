@@ -4,7 +4,7 @@
 
 ## 本地 agent → 工作台交接（schema_version=1）
 
-唯一写入入口为 `python3 -m workbench.import_candidates --workspace private/<用户> --file private/<用户>/<批次>.json`。文件必须是当前 workspace 内的普通 `.json` 文件；先核对路径归属，再从 workspace 目录逐级用 `O_NOFOLLOW` 打开，拒绝中间目录切换成越界符号链接；上限 1 MiB，不从网页上传，也不由服务端抓取用户给的 URL。顶层字段：`schema_version: 1`、`agent_id`、`batch_id`、`generated_at`（带时区）、`candidates`（1–100 条）。agent 与批次 ID 只用 ASCII 字母、数字、下划线、连字符。
+两种本地写入入口共用同一校验与事务：页面粘贴 agent JSON（最多约 128 KB，Host/Origin/CSRF 保护），或运行 `python3 -m workbench.import_candidates --workspace private/<用户> --file private/<用户>/<批次>.json`。命令行文件必须是当前 workspace 内的普通 `.json` 文件；先核对路径归属，再从 workspace 目录逐级用 `O_NOFOLLOW` 打开，拒绝中间目录切换成越界符号链接；上限 1 MiB。网页不上传文件到公共服务，也不由服务端抓取用户给的 URL。顶层字段：`schema_version: 1`、`agent_id`、`batch_id`、`generated_at`（带时区）、`candidates`（1–100 条）。agent 与批次 ID 只用 ASCII 字母、数字、下划线、连字符。
 
 每条候选必填：`title`、`job_url`、`source: {name, url, observed_at}`、`reason`、`evidence_refs: [{url, locator}]`、`unknowns: [文字]`；可选 `apply_url`、`location`、`department`、`team`、`description`、`employment_type`、`published_at`。`source.url` 与证据 URL 必须是具体的 HTTPS 页面；locator 只存定位说明，不读取本地证据文件。外链只做结构检查：公开 DNS 形式、无凭据/自定义端口/片段，只允许 `gh_jid`、`job_id`、`posting_id` 三个职位 ID 查询参数，值限 ASCII ID。拒绝 localhost、内网 IP、`file:`、相对路径和跟踪参数；不在服务端抓取或证明域名归属。申请链接若缺失，显示 unknown 并引导在原职位页查找。
 
