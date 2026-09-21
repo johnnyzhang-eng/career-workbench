@@ -51,7 +51,11 @@ class DirectionQuestionnaireTests(unittest.TestCase):
             self.assertFalse(first.direction_profile()["confirmed_by_user"])
             self.assertEqual(second.direction_profile()["priorities"]["main"], "用户运营")
             self.assertIn("请先完成问卷，不开始搜索", agent_task({}, first.direction_profile()))
-            self.assertIn("主线：用户运营", agent_task({}, second.direction_profile()))
+            task = agent_task({}, second.direction_profile())
+            self.assertIn("主线：用户运营", task)
+            self.assertIn("排除门店营业、店员、导购", task)
+            self.assertIn("employment_type 只能写“实习”或“应届正式”", task)
+            self.assertIn("同一雇主最多 2 条", task)
 
     def test_private_text_is_escaped_in_page(self):
         with tempfile.TemporaryDirectory() as tmp:

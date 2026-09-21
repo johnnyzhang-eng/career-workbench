@@ -29,7 +29,7 @@ def batch(agent="agent_one", batch_id="run_001", job_url=JOB_URL):
         "candidates": [{
             "title": "虚构数据实习", "job_url": job_url,
             "apply_url": job_url + "/apply", "location": "Shanghai",
-            "department": "Data", "description": "SQL 2027 届，条件待核查",
+            "department": "Data", "description": "SQL 2027 届，条件待核查", "employment_type": "实习",
             "source": {"name": "虚构雇主招聘页", "url": job_url, "observed_at": AT},
             "reason": "与数据方向关键词相符；资格尚未核验",
             "evidence_refs": [{"url": job_url, "locator": "职位描述的要求段落"}],
@@ -170,25 +170,24 @@ class AgentImportTests(unittest.TestCase):
         self.assertIn(JOB_URL + "/apply", page)
         self.assertNotIn("submitted", page)
 
-    def test_agent_review_tiers_are_visible_and_priority_jobs_sort_first(self):
+    def test_application_tracks_are_visible_and_graduate_jobs_sort_first(self):
         data = batch()
-        data["candidates"][0]["title"] = "方向样本岗位"
-        data["candidates"][0]["reason"] = "方向样本｜用于拆解长期能力要求"
-        priority = deepcopy(data["candidates"][0])
-        priority["title"] = "优先岗位"
-        priority["job_url"] = OTHER_URL
-        priority["apply_url"] = OTHER_URL + "/apply"
-        priority["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
-        priority["evidence_refs"] = [{"url": OTHER_URL, "locator": "职位要求"}]
-        priority["reason"] = "优先核查｜早期职业候选"
-        data["candidates"].append(priority)
+        data["candidates"][0]["title"] = "实习岗位"
+        graduate = deepcopy(data["candidates"][0])
+        graduate["title"] = "应届正式岗位"
+        graduate["employment_type"] = "应届正式"
+        graduate["job_url"] = OTHER_URL
+        graduate["apply_url"] = OTHER_URL + "/apply"
+        graduate["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
+        graduate["evidence_refs"] = [{"url": OTHER_URL, "locator": "职位要求"}]
+        data["candidates"].append(graduate)
         import_file(self.alice, self.write(self.alice, data), AT)
 
         page = render_page(self.alice, [], "synthetic-csrf").decode()
-        self.assertIn("优先核查 1", page)
-        self.assertIn("可选核查 0", page)
-        self.assertIn("方向样本 1", page)
-        self.assertLess(page.index("<h3>优先岗位</h3>"), page.index("<h3>方向样本岗位</h3>"))
+        self.assertIn("应届正式 1", page)
+        self.assertIn("实习 1", page)
+        self.assertNotIn("方向样本 1", page)
+        self.assertLess(page.index("<h3>应届正式岗位</h3>"), page.index("<h3>实习岗位</h3>"))
 
     def test_agent_only_web_list_and_local_flag(self):
         import_file(self.alice, self.write(self.alice, batch()), AT)
