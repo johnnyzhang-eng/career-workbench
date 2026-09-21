@@ -125,10 +125,13 @@ class AgentImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             import_file(self.alice, middle / outside.name, AT)
         self.assertEqual(public_url("https://careers.example.com/jobs?gh_jid=12345", "job_url"), "https://careers.example.com/jobs?gh_jid=12345")
+        moka_url = "https://app.mokahr.com/campus-recruitment/example/1234#/job/04f4b340-ff59-4457-bdf1-38916610c96c"
+        self.assertEqual(public_url(moka_url, "job_url"), moka_url)
         for bad in (
             "file:///private/data", "https://127.0.0.1/jobs/1", "https://user:pass" + "@" + "jobs.example.com/1",
             "https://jobs.example.com/1?" + "tok" + "en=x", "https://jobs.example.com", "javascript:alert(1)",
-            "https://host.local/jobs/1", "https://[::1]/jobs/1",
+            "https://host.local/jobs/1", "https://[::1]/jobs/1", "https://jobs.example.com/1#/job/04f4b340-ff59-4457-bdf1-38916610c96c",
+            "https://app.mokahr.com/campus-recruitment/example/1234#javascript:alert(1)",
         ):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 public_url(bad, "job_url")
