@@ -25,6 +25,7 @@ CSS = """
 *{box-sizing:border-box}body{margin:0;background:#f3f7f8;color:var(--ink);font:16px/1.55 'PingFang SC','Noto Sans CJK SC',system-ui,sans-serif}a{color:var(--sea)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
 header{background:var(--ink);color:#fff;padding:2.2rem max(1.5rem,calc((100vw - 1200px)/2)) 2.5rem}header h1{font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-.035em;line-height:1.15;margin:.3rem 0 .6rem;max-width:13em}header p{max-width:55ch;margin:0;color:#d3e3e6}main{max-width:1200px;margin:0 auto;padding:1.5rem;display:grid;grid-template-columns:minmax(250px,300px) minmax(0,1fr);gap:1.7rem;align-items:start}
 aside,.source,.job{background:var(--paper);border:1px solid var(--line)}aside{padding:1.4rem;position:sticky;top:1rem}h2{font-size:1.35rem;line-height:1.25;margin:0 0 1rem}h3{font-size:1.18rem;line-height:1.3;margin:.15rem 0 .4rem}label{display:block;font-weight:650;margin:1rem 0 .35rem}input[type=text],select{width:100%;border:1px solid #829da6;border-radius:4px;padding:.6rem .7rem;font:inherit;background:#fff}button{font:inherit;cursor:pointer;border:1px solid var(--sea);border-radius:4px;padding:.55rem .8rem;background:var(--sea);color:#fff}button.secondary{background:#fff;color:var(--sea)}button.tiny{padding:.25rem .55rem;font-size:.88rem}.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.check{display:flex;gap:.55rem;align-items:flex-start;font-weight:400}.check input{margin-top:.35rem}small,.muted{color:var(--muted)}.hint{font-size:.88rem;color:var(--muted)}.source{padding:1rem 1.25rem;margin-bottom:1.3rem;border-left:5px solid var(--sea)}.source p{margin:.2rem 0}.feedhead{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}.job{padding:1.2rem 1.35rem;margin:.65rem 0;border-left:5px solid var(--line)}.job.fresh{border-left-color:var(--warm)}.job.review{border-left-color:#9b6d1a}.meta{color:var(--muted);font-size:.9rem;margin:.3rem 0 .8rem}.status{display:inline-block;background:var(--mist);color:var(--sea);padding:.12rem .45rem;border-radius:2px;font-size:.82rem;font-weight:700}.status.review{background:#fff2d9;color:#78520e}.actions{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center}.actions a{font-weight:650}.actions form{display:inline}.empty{background:#fff;border:1px dashed var(--line);padding:1.6rem}.notice{grid-column:1/-1;padding:.75rem 1rem;background:#dcefe7;border-left:4px solid var(--sea);margin-bottom:1rem}.notice.error{background:#fff1e9;border-left-color:var(--warm)}details{margin-top:.75rem}summary{cursor:pointer;color:var(--sea);font-weight:600}.description{white-space:pre-wrap;max-height:19rem;overflow:auto;color:var(--muted)}footer{max-width:1200px;padding:0 1.5rem 3rem;margin:auto;color:var(--muted);font-size:.88rem}
+.status.priority{background:#dcefe7;color:#155a42}.status.optional{background:#e9f0f8;color:#27527a}.status.sample{background:#eef0f1;color:#53636b}.tier-counts{margin:.15rem 0 .9rem}
 @media(max-width:780px){main{display:block}aside{position:static;margin-bottom:1rem}header{padding:2rem 1.5rem}.feedhead{display:block}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 .start{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-top:5px solid var(--sea);padding:1.25rem 1.5rem}.start>summary{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;list-style:none;cursor:pointer;color:var(--ink)}.start>summary::-webkit-details-marker{display:none}.start>summary strong{font-size:1.35rem}.start>summary small{display:block;color:var(--muted);font-weight:400}.start[open]>summary{margin-bottom:1rem}.start-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.start-grid h3{margin:.15rem 0 .5rem}.start-grid p{margin:.35rem 0 .75rem}.start-grid>div+div{border-left:1px solid var(--line);padding-left:1.5rem}textarea{display:block;width:100%;min-height:10rem;padding:.7rem;border:1px solid #829da6;border-radius:4px;font:inherit;line-height:1.5;resize:vertical}.prompt-text{min-height:13rem;font-size:.87rem}.start label{margin:.6rem 0 .35rem}.start .submit-row{margin-top:.7rem}.source.agent{border-left-color:var(--line)}.source.agent p{margin:.15rem 0}
 .direction{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-top:5px solid var(--warm);padding:1.25rem 1.5rem}.direction>summary{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;list-style:none;color:var(--ink)}.direction>summary::-webkit-details-marker{display:none}.direction>summary strong{font-size:1.35rem}.direction[open]>summary{margin-bottom:1rem}.direction-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}.question{display:grid;grid-template-columns:minmax(0,1fr) 9rem;gap:1rem;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--mist)}.question label{margin:0;font-weight:500}.question select{margin:0}.results{background:var(--mist);padding:1rem 1.15rem;margin:1rem 0}.results ol{padding-left:1.35rem}.results li{margin:.55rem 0}.flow{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;color:var(--muted);font-size:.92rem}.flow span{background:var(--mist);padding:.3rem .5rem;border-radius:3px}.flow b{color:var(--warm)}
@@ -57,6 +58,8 @@ def safe_link(url, label):
 def agent_task(profile, direction_profile=None):
     direction_profile = direction_profile or {}
     priorities = direction_profile.get("priorities") or {}
+    constraints = direction_profile.get("constraints") or {}
+    confirmed = bool(direction_profile.get("confirmed_by_user"))
     if direction_profile.get("confirmed_by_user"):
         direction = "；".join(
             f"{label}：{priorities.get(key)}"
@@ -67,12 +70,15 @@ def agent_task(profile, direction_profile=None):
         direction = "方向草案尚未由求职者本人确认；请先完成问卷，不开始搜索"
     else:
         direction = profile.get("direction") or "未设置，请自行补充"
+    city = (constraints.get("cities") if confirmed else "") or profile.get("city")
+    cohort = (constraints.get("cohort") if confirmed else "") or profile.get("cohort")
+    exclusions = (constraints.get("exclusions") if confirmed else "") or profile.get("exclude")
     criteria = [
-        ("城市或地区", profile.get("city") or "未设置，请自行补充"),
+        ("城市或地区", city or "未设置，请自行补充"),
         ("岗位方向", direction),
         ("关键词", profile.get("keywords") or "未设置"),
-        ("届别", profile.get("cohort") or "未设置，不能推断符合资格"),
-        ("排除词", profile.get("exclude") or "未设置"),
+        ("届别", cohort or "未设置，不能推断符合资格"),
+        ("排除词", exclusions or "未设置"),
     ]
     conditions = "\n".join(f"- {label}：{value}" for label, value in criteria)
     return ("请按以下条件寻找真实、具体的岗位。优先使用招聘方原站职位页；其他来源也要保留具体页面和观察时间。\n"
@@ -85,6 +91,17 @@ def agent_task(profile, direction_profile=None):
             "URL 用具体 HTTPS 页面，不带追踪参数；如果职位 ID 必须在查询参数中，仅保留 gh_jid、job_id 或 posting_id。"
             "reason 只是推荐理由，学历、届别、是否开放与申请入口无法确认时写进 unknowns。"
             "不要复制整篇 JD，也不要输出简历、联系信息或密钥。")
+
+
+def agent_tier(job):
+    """Return a review tier without turning an agent reason into eligibility."""
+    reports = job.get("agent_reports") or []
+    reason = reports[0].get("reason", "") if reports else ""
+    if reason.startswith("优先核查｜") or "优先核查" in reason:
+        return "优先核查", "priority", 0
+    if reason.startswith("方向样本｜") or "方向校准标杆" in reason or "目标岗位画像" in reason:
+        return "方向样本", "sample", 2
+    return "可选核查", "optional", 1
 
 
 def render_direction_section(direction_profile, csrf_token):
@@ -141,6 +158,11 @@ def render_page(store, boards, csrf_token, notice="", error=False, paste_value="
     profile = store.profile()
     direction_profile = store.direction_profile()
     jobs = store.jobs(boards, profile)
+    jobs.sort(key=lambda job: agent_tier(job)[2] if job["source"] == AGENT_SOURCE else 1)
+    tier_counts = {"优先核查": 0, "可选核查": 0, "方向样本": 0}
+    for job in jobs:
+        if job["source"] == AGENT_SOURCE:
+            tier_counts[agent_tier(job)[0]] += 1
     agent_state = store.agent_state()
     source_parts = [f'''<section class="source agent"><div class="row"><strong>本地 agent 候选</strong><span class="status">主入口</span></div>
 <p>已导入 {agent_state['candidates']} 个候选；最近导入：{esc(local_time(agent_state['last_imported_at']))}</p>
@@ -176,7 +198,8 @@ def render_page(store, boards, csrf_token, notice="", error=False, paste_value="
 <ul>{refs}</ul><p class="hint">agent 标注未知：{unknowns}。资格与开放状态始终待本人核查。</p></div>''')
         report_section = f'<details><summary>查看 {len(job["agent_reports"])} 份 agent 理由与证据</summary>{"".join(report_parts)}</details>' if is_agent else ''
         source_line = f'agent 候选 / {esc(job["origin_name"])}；agent 标注观察：{esc(local_time(job["origin_observed_at"]))}；最近导入：{esc(local_time(job["last_seen_at"]))}' if is_agent else f'Ashby / {board}；最近成功同步：{esc(local_time(job["last_success_at"]))}'
-        cards.append(f'''<article class="job {freshness}"><div class="row"><span class="status {status_class}">{esc(status)}</span>{'<span class="status">已查看</span>' if is_agent and job['viewed'] else ''}{'<span class="status">已收藏</span>' if job['bookmarked'] else ''}</div>
+        tier_label, tier_class, _ = agent_tier(job) if is_agent else (status, status_class, 1)
+        cards.append(f'''<article class="job {freshness}"><div class="row"><span class="status {tier_class}">{esc(tier_label)}</span>{'<span class="status">已查看</span>' if is_agent and job['viewed'] else ''}{'<span class="status">已收藏</span>' if job['bookmarked'] else ''}</div>
 <h3>{esc(job['title'])}</h3><p class="meta">{location}　/　{esc(job['department'] or job['team'] or '部门未提供')}　/　来源标注发布时间：{posted}<br>{source_line}<br>届别：{cohort}；开放状态与资格：待本人核查</p>
 <div class="actions">{safe_link(job['job_url'], '打开原站职位详情')}{safe_link(job['apply_url'], '打开待核验申请入口' if is_agent else '去原站申请')}
 <form method="post" action="/flag"><input type="hidden" name="csrf_token" value="{esc(csrf_token)}"><input type="hidden" name="source" value="{source}"><input type="hidden" name="board" value="{board}"><input type="hidden" name="id" value="{job_id}"><input type="hidden" name="flag" value="viewed"><input type="hidden" name="value" value="1"><button class="tiny secondary" type="submit">标记已查看</button></form>
@@ -203,7 +226,7 @@ def render_page(store, boards, csrf_token, notice="", error=False, paste_value="
 <label class="check"><input type="checkbox" name="include_unknown_cohort" value="1" {checked}>保留未写明届别的岗位</label>
 <label for="exclude">排除词</label><input id="exclude" name="exclude" type="text" value="{esc(profile['exclude'])}" placeholder="多个词用逗号分隔">
 <p><button type="submit">保存并筛选</button></p></form></aside><section>{''.join(source_parts)}
-<div class="feedhead"><h2>岗位候选</h2><p class="muted">当前显示 {len(jobs)} 条　<a href="#filters">调整筛选</a></p></div>{''.join(cards) if cards else '<div class="empty"><h3>当前没有匹配的岗位</h3><p>让本地 agent 导入候选、放宽筛选条件，或刷新已启用的公开来源。这里不会推断岗位已经关闭。</p></div>'}
+<div class="feedhead"><h2>岗位候选</h2><p class="muted">当前显示 {len(jobs)} 条　<a href="#filters">调整筛选</a></p></div><p class="tier-counts"><span class="status priority">优先核查 {tier_counts['优先核查']}</span> <span class="status optional">可选核查 {tier_counts['可选核查']}</span> <span class="status sample">方向样本 {tier_counts['方向样本']}</span></p>{''.join(cards) if cards else '<div class="empty"><h3>当前没有匹配的岗位</h3><p>让本地 agent 导入候选、放宽筛选条件，或刷新已启用的公开来源。这里不会推断岗位已经关闭。</p></div>'}
 </section></main><footer>打开链接或收藏都不会记为“已投递”。本人在原站实际申请后，仍需使用现有 CLI 核验岗位、确认材料，再凭真实回执登记。此页面不会上传简历或替你提交申请。</footer></body></html>'''
     return body.encode("utf-8")
 

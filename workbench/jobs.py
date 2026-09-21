@@ -23,6 +23,10 @@ JOB_ID_RE = re.compile(r"[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}\Z"
 AGENT_JOB_ID_RE = re.compile(r"[0-9a-f]{64}\Z")
 MAX_RESPONSE = 15_000_000
 MIN_REFRESH_SECONDS = 60
+CITY_ALIASES = {
+    "上海": ("上海", "shanghai"),
+    "shanghai": ("上海", "shanghai"),
+}
 
 
 def utc_now():
@@ -303,7 +307,8 @@ class JobStore:
             title_text = " ".join((job["title"], job["department"], job["team"])).casefold()
             full_text = " ".join((title_text, job["description"].casefold()))
             locations = " ".join((job["location"], *job["secondary_locations"])).casefold()
-            if profile.get("city") and profile["city"].casefold() not in locations:
+            city = profile.get("city", "").strip().casefold()
+            if city and not any(alias in locations for alias in CITY_ALIASES.get(city, (city,))):
                 continue
             if profile.get("direction") and profile["direction"].casefold() not in title_text:
                 continue

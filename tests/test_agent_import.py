@@ -80,6 +80,23 @@ class AgentImportTests(unittest.TestCase):
         self.assertEqual(self.bob.agent_state()["candidates"], 1)
         self.assertNotEqual(self.alice.jobs([])[0]["id"], self.bob.jobs([], {"include_unknown_cohort": True})[0]["id"])
 
+    def test_shanghai_filter_matches_chinese_and_english_location_names(self):
+        data = batch()
+        chinese = deepcopy(data["candidates"][0])
+        chinese["title"] = "上海运营实习"
+        chinese["job_url"] = OTHER_URL
+        chinese["apply_url"] = OTHER_URL + "/apply"
+        chinese["location"] = "上海"
+        chinese["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
+        chinese["evidence_refs"] = [{"url": OTHER_URL, "locator": "地点字段"}]
+        data["candidates"].append(chinese)
+        import_file(self.alice, self.write(self.alice, data), AT)
+
+        for city in ("上海", "Shanghai"):
+            with self.subTest(city=city):
+                self.alice.save_profile({"city": city, "include_unknown_cohort": True})
+                self.assertEqual(len(self.alice.jobs([])), 2)
+
     def test_conflicting_batch_and_invalid_input_leave_old_snapshot(self):
         path = self.write(self.alice, batch())
         import_file(self.alice, path, AT)
@@ -152,6 +169,26 @@ class AgentImportTests(unittest.TestCase):
         self.assertIn("待本人核查", page)
         self.assertIn(JOB_URL + "/apply", page)
         self.assertNotIn("submitted", page)
+
+    def test_agent_review_tiers_are_visible_and_priority_jobs_sort_first(self):
+        data = batch()
+        data["candidates"][0]["title"] = "方向样本岗位"
+        data["candidates"][0]["reason"] = "方向样本｜用于拆解长期能力要求"
+        priority = deepcopy(data["candidates"][0])
+        priority["title"] = "优先岗位"
+        priority["job_url"] = OTHER_URL
+        priority["apply_url"] = OTHER_URL + "/apply"
+        priority["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
+        priority["evidence_refs"] = [{"url": OTHER_URL, "locator": "职位要求"}]
+        priority["reason"] = "优先核查｜早期职业候选"
+        data["candidates"].append(priority)
+        import_file(self.alice, self.write(self.alice, data), AT)
+
+        page = render_page(self.alice, [], "synthetic-csrf").decode()
+        self.assertIn("优先核查 1", page)
+        self.assertIn("可选核查 0", page)
+        self.assertIn("方向样本 1", page)
+        self.assertLess(page.index("<h3>优先岗位</h3>"), page.index("<h3>方向样本岗位</h3>"))
 
     def test_agent_only_web_list_and_local_flag(self):
         import_file(self.alice, self.write(self.alice, batch()), AT)
