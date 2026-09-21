@@ -4,7 +4,7 @@
 
 ## 从页面开始找岗位
 
-在仓库根目录运行 `python3 -m workbench.web --workspace private/me`，打开终端显示的本地网址。第一次进入时，页面上的“开始找岗位”流程会展开：填写并保存本人城市、方向等条件，复制页面生成的找岗任务给自己的本地 agent，再将 agent 返回的纯 JSON 粘贴到页面导入。每次新搜索换一个 `batch_id`；重复粘贴旧批次不会重复记账。职位卡显示来源、发现时间、推荐理由、引用和未知项；本人在原站核验资格与是否开放。网页粘贴上限约 128 KB，更多候选可使用下述文件导入命令（上限 1 MiB）。没有本地 agent 时，可显式添加 Ashby board 读取公开岗位，但这只覆盖该 board。
+在仓库根目录运行 `python3 -m workbench.web --workspace private/me`，打开终端显示的本地网址。第一次进入时，先由求职者本人填写[方向校准问卷](direction-calibration.md)：问卷把任务偏好与简历经历分开，保留多条方向假设；代理录入的草案在本人确认前不会进入找岗任务。确认后再填写并保存本人城市等筛选条件，复制页面生成的找岗任务给自己的本地 agent，将 agent 返回的纯 JSON 粘贴到页面导入。每次新搜索换一个 `batch_id`；重复粘贴旧批次不会重复记账。职位卡显示来源、发现时间、推荐理由、引用和未知项；本人在原站核验资格与是否开放。网页粘贴上限约 128 KB，更多候选可使用下述文件导入命令（上限 1 MiB）。没有本地 agent 时，可显式添加 Ashby board 读取公开岗位，但这只覆盖该 board。
 
 ## agent 的 JSON 契约与文件导入
 
@@ -62,7 +62,7 @@ python3 -m workbench.web --workspace private/alice --board Ashby --port 8765
 
 ## 个人筛选与状态
 
-每位求职者分别使用 `private/alice`、`private/bob` 等独立 workspace。`discovery.sqlite3` 保存本人的候选、来源报告、偏好、收藏和已查看状态；旧 CLI 的 `state.sqlite3` 仍由 `career.py init` 创建。导入或刷新不会改变申请状态机。
+每位求职者分别使用 `private/alice`、`private/bob` 等独立 workspace。`discovery.sqlite3` 保存本人的方向问卷、候选、来源报告、偏好、收藏和已查看状态；旧 CLI 的 `state.sqlite3` 仍由 `career.py init` 创建。导入或刷新不会改变申请状态机。
 
 - 城市匹配来源位置字段；方向匹配职位、部门与团队；关键词和排除词匹配职位与纯文本描述。届别只按来源明确写出的文字匹配；未写出的保持“未知”，可选择保留。筛中不等于资格符合。
 - agent 候选始终显示“待核查”，即使已经收藏或查看。Ashby 的“待核查”还可能表示它在最近一次成功同步中缺席；缺席不等于关闭。打开候选卡可查看各 agent 的理由、证据引用、未知项与来源时间。

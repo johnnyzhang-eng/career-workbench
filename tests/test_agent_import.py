@@ -29,7 +29,7 @@ def batch(agent="agent_one", batch_id="run_001", job_url=JOB_URL):
         "candidates": [{
             "title": "虚构数据实习", "job_url": job_url,
             "apply_url": job_url + "/apply", "location": "Shanghai",
-            "department": "Data", "description": "SQL 2027 届，条件待核查",
+            "department": "Data", "description": "SQL 2027 届，条件待核查", "employment_type": "实习",
             "source": {"name": "虚构雇主招聘页", "url": job_url, "observed_at": AT},
             "reason": "与数据方向关键词相符；资格尚未核验",
             "evidence_refs": [{"url": job_url, "locator": "职位描述的要求段落"}],
@@ -80,6 +80,23 @@ class AgentImportTests(unittest.TestCase):
         self.assertEqual(self.bob.agent_state()["candidates"], 1)
         self.assertNotEqual(self.alice.jobs([])[0]["id"], self.bob.jobs([], {"include_unknown_cohort": True})[0]["id"])
 
+    def test_shanghai_filter_matches_chinese_and_english_location_names(self):
+        data = batch()
+        chinese = deepcopy(data["candidates"][0])
+        chinese["title"] = "上海运营实习"
+        chinese["job_url"] = OTHER_URL
+        chinese["apply_url"] = OTHER_URL + "/apply"
+        chinese["location"] = "上海"
+        chinese["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
+        chinese["evidence_refs"] = [{"url": OTHER_URL, "locator": "地点字段"}]
+        data["candidates"].append(chinese)
+        import_file(self.alice, self.write(self.alice, data), AT)
+
+        for city in ("上海", "Shanghai"):
+            with self.subTest(city=city):
+                self.alice.save_profile({"city": city, "include_unknown_cohort": True})
+                self.assertEqual(len(self.alice.jobs([])), 2)
+
     def test_conflicting_batch_and_invalid_input_leave_old_snapshot(self):
         path = self.write(self.alice, batch())
         import_file(self.alice, path, AT)
@@ -108,10 +125,13 @@ class AgentImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             import_file(self.alice, middle / outside.name, AT)
         self.assertEqual(public_url("https://careers.example.com/jobs?gh_jid=12345", "job_url"), "https://careers.example.com/jobs?gh_jid=12345")
+        moka_url = "https://app.mokahr.com/campus-recruitment/example/1234#/job/04f4b340-ff59-4457-bdf1-38916610c96c"
+        self.assertEqual(public_url(moka_url, "job_url"), moka_url)
         for bad in (
             "file:///private/data", "https://127.0.0.1/jobs/1", "https://user:pass" + "@" + "jobs.example.com/1",
             "https://jobs.example.com/1?" + "tok" + "en=x", "https://jobs.example.com", "javascript:alert(1)",
-            "https://host.local/jobs/1", "https://[::1]/jobs/1",
+            "https://host.local/jobs/1", "https://[::1]/jobs/1", "https://jobs.example.com/1#/job/04f4b340-ff59-4457-bdf1-38916610c96c",
+            "https://app.mokahr.com/campus-recruitment/example/1234#javascript:alert(1)",
         ):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 public_url(bad, "job_url")
@@ -152,6 +172,25 @@ class AgentImportTests(unittest.TestCase):
         self.assertIn("待本人核查", page)
         self.assertIn(JOB_URL + "/apply", page)
         self.assertNotIn("submitted", page)
+
+    def test_application_tracks_are_visible_and_graduate_jobs_sort_first(self):
+        data = batch()
+        data["candidates"][0]["title"] = "实习岗位"
+        graduate = deepcopy(data["candidates"][0])
+        graduate["title"] = "应届正式岗位"
+        graduate["employment_type"] = "应届正式"
+        graduate["job_url"] = OTHER_URL
+        graduate["apply_url"] = OTHER_URL + "/apply"
+        graduate["source"] = {"name": "虚构雇主招聘页", "url": OTHER_URL, "observed_at": AT}
+        graduate["evidence_refs"] = [{"url": OTHER_URL, "locator": "职位要求"}]
+        data["candidates"].append(graduate)
+        import_file(self.alice, self.write(self.alice, data), AT)
+
+        page = render_page(self.alice, [], "synthetic-csrf").decode()
+        self.assertIn("应届正式 1", page)
+        self.assertIn("实习 1", page)
+        self.assertNotIn("方向样本 1", page)
+        self.assertLess(page.index("<h3>应届正式岗位</h3>"), page.index("<h3>实习岗位</h3>"))
 
     def test_agent_only_web_list_and_local_flag(self):
         import_file(self.alice, self.write(self.alice, batch()), AT)

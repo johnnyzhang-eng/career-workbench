@@ -11,6 +11,8 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from .directions import empty_direction_profile, validate_direction_form
+
 SOURCE = "ashby"
 AGENT_SOURCE = "agent"
 AGENT_BOARD = "local"
@@ -21,6 +23,10 @@ JOB_ID_RE = re.compile(r"[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}\Z"
 AGENT_JOB_ID_RE = re.compile(r"[0-9a-f]{64}\Z")
 MAX_RESPONSE = 15_000_000
 MIN_REFRESH_SECONDS = 60
+CITY_ALIASES = {
+    "上海": ("上海", "shanghai"),
+    "shanghai": ("上海", "shanghai"),
+}
 
 
 def utc_now():
@@ -143,6 +149,8 @@ class JobStore:
                     PRIMARY KEY(source, board, source_job_id));
                 CREATE TABLE IF NOT EXISTS discovery_profile(
                     singleton INTEGER PRIMARY KEY CHECK(singleton=1), payload TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS direction_profile(
+                    singleton INTEGER PRIMARY KEY CHECK(singleton=1), payload TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS discovery_flags(
                     source TEXT NOT NULL, board TEXT NOT NULL, source_job_id TEXT NOT NULL,
                     viewed INTEGER NOT NULL DEFAULT 0, bookmarked INTEGER NOT NULL DEFAULT 0,
@@ -230,6 +238,39 @@ class JobStore:
             db.execute("INSERT INTO discovery_profile(singleton,payload) VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET payload=excluded.payload", (json.dumps(safe, ensure_ascii=False),))
         return safe
 
+    def direction_profile(self):
+        with self._connect() as db:
+            row = db.execute("SELECT payload FROM direction_profile WHERE singleton=1").fetchone()
+        return json.loads(row[0]) if row else empty_direction_profile()
+
+    def save_direction_form(self, values):
+        profile = validate_direction_form(values)
+        profile["updated_at"] = utc_now()
+        with self._connect() as db:
+            db.execute(
+                "INSERT INTO direction_profile(singleton,payload) VALUES(1,?) "
+                "ON CONFLICT(singleton) DO UPDATE SET payload=excluded.payload",
+                (json.dumps(profile, ensure_ascii=False),),
+            )
+        return profile
+
+    def save_direction_seed(self, main="", secondary="", watch=""):
+        """Save a proxy-entered hypothesis without pretending the user confirmed it."""
+        profile = empty_direction_profile()
+        profile["priorities"] = {
+            "main": _short(main, 240).strip(),
+            "secondary": _short(secondary, 240).strip(),
+            "watch": _short(watch, 240).strip(),
+        }
+        profile.update(source="proxy", updated_at=utc_now())
+        with self._connect() as db:
+            db.execute(
+                "INSERT INTO direction_profile(singleton,payload) VALUES(1,?) "
+                "ON CONFLICT(singleton) DO UPDATE SET payload=excluded.payload",
+                (json.dumps(profile, ensure_ascii=False),),
+            )
+        return profile
+
     def set_flag(self, board, job_id, flag, value=True, source=SOURCE):
         if source == SOURCE:
             board = validate_board(board)
@@ -266,7 +307,8 @@ class JobStore:
             title_text = " ".join((job["title"], job["department"], job["team"])).casefold()
             full_text = " ".join((title_text, job["description"].casefold()))
             locations = " ".join((job["location"], *job["secondary_locations"])).casefold()
-            if profile.get("city") and profile["city"].casefold() not in locations:
+            city = profile.get("city", "").strip().casefold()
+            if city and not any(alias in locations for alias in CITY_ALIASES.get(city, (city,))):
                 continue
             if profile.get("direction") and profile["direction"].casefold() not in title_text:
                 continue

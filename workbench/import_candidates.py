@@ -19,6 +19,7 @@ ID_RE = re.compile(r"[A-Za-z0-9_-]{1,64}\Z")
 HOST_RE = re.compile(r"[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+\Z")
 JOB_QUERY_KEYS = {"gh_jid", "job_id", "posting_id"}
 QUERY_VALUE_RE = re.compile(r"[A-Za-z0-9_-]{1,100}\Z")
+MOKA_JOB_FRAGMENT_RE = re.compile(r"/job/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\Z", re.I)
 MAX_FILE = 1_000_000
 MAX_CANDIDATES = 100
 
@@ -53,10 +54,15 @@ def public_url(value, field):
     except ValueError as exc:
         raise ValueError(f"{field} 不是安全 URL") from exc
     if (parts.scheme != "https" or not host or parts.username or parts.password or
-            port is not None or parts.fragment or not HOST_RE.fullmatch(host) or
+            port is not None or not HOST_RE.fullmatch(host) or
             parts.path in {"", "/"}):
         raise ValueError(f"{field} 必须是无凭据的公开 HTTPS 具体页面")
     lowered = host.lower()
+    fragment = ""
+    if parts.fragment:
+        if lowered != "app.mokahr.com" or not MOKA_JOB_FRAGMENT_RE.fullmatch(parts.fragment):
+            raise ValueError(f"{field} 片段不是受支持的职位路由")
+        fragment = parts.fragment
     if lowered.endswith((".local", ".internal", ".localhost", ".lan", ".home", ".invalid", ".test")):
         raise ValueError(f"{field} 主机不公开")
     try:
@@ -80,7 +86,7 @@ def public_url(value, field):
                 any(key not in JOB_QUERY_KEYS or not QUERY_VALUE_RE.fullmatch(value) for key, value in pairs)):
             raise ValueError(f"{field} 只接受明确的职位 ID 参数")
         query = urllib.parse.urlencode(sorted(pairs))
-    return urllib.parse.urlunsplit(("https", lowered, path, query, ""))
+    return urllib.parse.urlunsplit(("https", lowered, path, query, fragment))
 
 
 def _unique_json_pairs(pairs):

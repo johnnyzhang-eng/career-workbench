@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 from http.server import ThreadingHTTPServer
 
 from workbench.jobs import JobStore, _NoRedirect, parse_ashby, source_url
+from workbench.directions import QUESTIONS
 from workbench.web import make_handler
 
 BOARD = "ExampleBoard"
@@ -195,6 +196,20 @@ class WebTests(unittest.TestCase):
         body = render_page(other, [BOARD], "synthetic-csrf").decode()
         self.assertIn("&lt;script&gt;", body)
         self.assertNotIn("<script>", body)
+
+    def test_direction_questionnaire_saves_and_requires_valid_ratings(self):
+        form = {
+            "main_directions": "商品运营、用户运营", "secondary_directions": "运营分析",
+            "watch_directions": "产品运营", "cities": "Shanghai", "cohort": "2027",
+            "industries": "消费品牌", "exclusions": "纯销售", "confirmed_by_user": "1",
+            **{question.key: "2" for question in QUESTIONS},
+        }
+        status, _ = self.request("POST", "/directions", form)
+        self.assertEqual(status, 303)
+        self.assertTrue(self.store.direction_profile()["confirmed_by_user"])
+        self.assertEqual(self.store.direction_profile()["priorities"]["main"], "商品运营、用户运营")
+        status, _ = self.request("POST", "/directions", {**form, "data_analysis": "9"})
+        self.assertEqual(status, 400)
 
 
 if __name__ == "__main__":
