@@ -1,0 +1,43 @@
+{
+  "display_scale": 2.0,
+  "elapsed_ms": 2500.75,
+  "engine": "4.7-stable (official)",
+  "events": [
+    {
+      "action": "start",
+      "state": "in_progress",
+      "task": "DEMO-TASK-001"
+    },
+    {
+      "action": "blocked_completion",
+      "state": "in_progress"
+    },
+    {
+      "action": "complete",
+      "state": "completed",
+      "task": "DEMO-TASK-001"
+    },
+    {
+      "action": "defer",
+      "state": "deferred",
+      "task": "DEMO-STUDY-001"
+    },
+    {
+      "check": "proof_pass",
+      "route": "pixel",
+      "size": "(1280.0, 720.0)"
+    }
+  ],
+  "fictional": true,
+  "frame_count": 70,
+  "phase": "day",
+  "route": "pixel",
+  "viewport": [
+    1280.0,
+    720.0
+  ],
+  "window_pixels": [
+    2560,
+    1440
+  ]
+}

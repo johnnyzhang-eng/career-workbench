@@ -1,0 +1,18 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CAPTURE <temporary-frames>/2d-360x320-day-idle.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-000.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-001.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-002.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-003.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-004.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-005.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-006.png
+CAPTURE <temporary-frames>/2d-360x320-day-motion-007.png
+SCRIPT ERROR: Assertion failed.
+          at: _proof (res://comparison/comparison.gd:484)
+          GDScript backtrace (most recent call first):
+              [0] _proof (res://comparison/comparison.gd:484)
+              [1] _click (res://comparison/comparison.gd:478)

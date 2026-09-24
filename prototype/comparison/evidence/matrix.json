@@ -1,0 +1,122 @@
+[
+  {
+    "run": "baseline-1280x720-day",
+    "ok": true,
+    "wall_seconds": 3.334
+  },
+  {
+    "run": "baseline-1280x720-evening",
+    "ok": true,
+    "wall_seconds": 1.271
+  },
+  {
+    "run": "baseline-800x600-day",
+    "ok": true,
+    "wall_seconds": 3.119
+  },
+  {
+    "run": "baseline-800x600-evening",
+    "ok": true,
+    "wall_seconds": 1.23
+  },
+  {
+    "run": "baseline-360x320-day",
+    "ok": true,
+    "wall_seconds": 3.121
+  },
+  {
+    "run": "baseline-360x320-evening",
+    "ok": true,
+    "wall_seconds": 1.251
+  },
+  {
+    "run": "3d-1280x720-day",
+    "ok": true,
+    "wall_seconds": 3.606
+  },
+  {
+    "run": "3d-1280x720-evening",
+    "ok": true,
+    "wall_seconds": 1.299
+  },
+  {
+    "run": "3d-800x600-day",
+    "ok": true,
+    "wall_seconds": 3.14
+  },
+  {
+    "run": "3d-800x600-evening",
+    "ok": true,
+    "wall_seconds": 1.247
+  },
+  {
+    "run": "3d-360x320-day",
+    "ok": true,
+    "wall_seconds": 3.121
+  },
+  {
+    "run": "3d-360x320-evening",
+    "ok": true,
+    "wall_seconds": 1.26
+  },
+  {
+    "run": "2d-1280x720-day",
+    "ok": true,
+    "wall_seconds": 3.027
+  },
+  {
+    "run": "2d-1280x720-evening",
+    "ok": true,
+    "wall_seconds": 1.056
+  },
+  {
+    "run": "2d-800x600-day",
+    "ok": true,
+    "wall_seconds": 2.876
+  },
+  {
+    "run": "2d-800x600-evening",
+    "ok": true,
+    "wall_seconds": 1.013
+  },
+  {
+    "run": "2d-360x320-day",
+    "ok": true,
+    "wall_seconds": 2.898
+  },
+  {
+    "run": "2d-360x320-evening",
+    "ok": true,
+    "wall_seconds": 1.048
+  },
+  {
+    "run": "pixel-1280x720-day",
+    "ok": true,
+    "wall_seconds": 2.956
+  },
+  {
+    "run": "pixel-1280x720-evening",
+    "ok": true,
+    "wall_seconds": 1.053
+  },
+  {
+    "run": "pixel-800x600-day",
+    "ok": true,
+    "wall_seconds": 2.887
+  },
+  {
+    "run": "pixel-800x600-evening",
+    "ok": true,
+    "wall_seconds": 1.008
+  },
+  {
+    "run": "pixel-360x320-day",
+    "ok": true,
+    "wall_seconds": 2.882
+  },
+  {
+    "run": "pixel-360x320-evening",
+    "ok": true,
+    "wall_seconds": 1.055
+  }
+]

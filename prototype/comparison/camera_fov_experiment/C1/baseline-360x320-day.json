@@ -1,0 +1,18 @@
+{
+  "display_scale": 2.0,
+  "elapsed_ms": 730.954,
+  "engine": "4.7-stable (official)",
+  "events": [],
+  "fictional": true,
+  "frame_count": 14,
+  "phase": "day",
+  "route": "baseline",
+  "viewport": [
+    360.0,
+    320.0
+  ],
+  "window_pixels": [
+    720,
+    640
+  ]
+}

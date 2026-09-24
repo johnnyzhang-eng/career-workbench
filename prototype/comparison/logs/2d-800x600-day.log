@@ -1,0 +1,10 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(800, 600) pixels=(1600, 1200) scale=2.0
+CAPTURE <repo>/prototype/comparison/evidence/2d-800x600-day-idle.png
+CAPTURE <repo>/prototype/comparison/evidence/2d-800x600-day-started.png
+CAPTURE <repo>/prototype/comparison/evidence/2d-800x600-day-completed.png
+CAPTURE <repo>/prototype/comparison/evidence/2d-800x600-day-deferred.png
+COMPARISON_PROOF_PASS 2d
+2026-09-24 22:59:35.505 Godot[20461:3789000] error messaging the mach port for IMKCFRunLoopWakeUpReliable

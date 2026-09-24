@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R2 坐姿打字骨骼实验 · 原大审图</title>
+<style>
+  :root{font-family:system-ui,-apple-system,sans-serif;color:#273f39;background:#f9f5e9}
+  body{margin:0 auto;max-width:1500px;padding:24px;line-height:1.55}
+  h1{font-size:1.55rem;margin:0 0 8px}h2{margin:34px 0 12px;font-size:1.1rem}
+  p{max-width:90ch}.note{background:#e8eee5;border-left:4px solid #668a7e;padding:12px 16px}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;align-items:start}
+  figure{margin:0;background:#fff;padding:10px;border:1px solid #d4ded4;border-radius:8px}
+  figcaption{font-size:.9rem;margin:0 0 7px}
+  img{display:block;max-width:100%;height:auto}img.small{width:360px}img.large{width:min(100%,640px)}
+  video{display:block;width:360px;max-width:100%}a{color:#245e57}
+</style>
+<body>
+<h1>R2 · 坐姿打字骨骼实验</h1>
+<p>原 A 房间、镜头、灯光、桌椅、UI 固定。R1 静态坐姿和 R2 均是同仓原创角色；R2 只新增坐姿骨骼、双手交替的短动作和手指。图是 Godot 4.7 实机截图。左侧小窗请按 360 CSS 像素观看。</p>
+<p class="note">观察：全窗能见前臂交替；小窗能辨“人在电脑前”，难辨单手键位。髋部穿入椅面、袖口接缝和站立到坐下过渡尚未解决。本页不宣布角色已精修完成。</p>
+<h2>360×320 白天 · R1 静态与 R2 关键帧</h2>
+<div class="grid">
+  <figure><figcaption>R1：静态电脑坐姿</figcaption><img class="small" src="../character_experiment/R1/baseline-360x320-day-started.png" alt="R1 静态电脑坐姿"></figure>
+  <figure><figcaption>R2：落座动作末帧</figcaption><img class="small" src="R2/360x320-day/sit-end-360x320-day.png" alt="R2 坐姿落定"></figure>
+  <figure><figcaption>R2：左手动作峰值</figcaption><img class="small" src="R2/360x320-day/typing-left-down-360x320-day.png" alt="R2 左手动作峰值"></figure>
+  <figure><figcaption>R2：右手动作峰值</figcaption><img class="small" src="R2/360x320-day/typing-right-down-360x320-day.png" alt="R2 右手动作峰值"></figure>
+</div>
+<h2>360×320 夜晚 · 同机位</h2>
+<div class="grid">
+  <figure><figcaption>R1：静态电脑坐姿</figcaption><img class="small" src="../character_experiment/R1/baseline-360x320-evening-started.png" alt="R1 夜晚静态坐姿"></figure>
+  <figure><figcaption>R2：落座动作末帧</figcaption><img class="small" src="R2/360x320-evening/sit-end-360x320-evening.png" alt="R2 夜晚坐姿落定"></figure>
+  <figure><figcaption>R2：左手动作峰值</figcaption><img class="small" src="R2/360x320-evening/typing-left-down-360x320-evening.png" alt="R2 夜晚左手动作"></figure>
+  <figure><figcaption>R2：右手动作峰值</figcaption><img class="small" src="R2/360x320-evening/typing-right-down-360x320-evening.png" alt="R2 夜晚右手动作"></figure>
+</div>
+<h2>1280×720 白天 · 手臂与椅面审查</h2>
+<div class="grid">
+  <figure><figcaption>R1：静态坐姿</figcaption><img class="large" src="../character_experiment/R1/baseline-1280x720-day-started.png" alt="R1 全窗白天静态坐姿"></figure>
+  <figure><figcaption>R2：动作起帧</figcaption><img class="large" src="R2/1280x720-day/sit-start-1280x720-day.png" alt="R2 全窗白天起帧"></figure>
+  <figure><figcaption>R2：左手动作峰值</figcaption><img class="large" src="R2/1280x720-day/typing-left-down-1280x720-day.png" alt="R2 全窗白天左手峰值"></figure>
+  <figure><figcaption>R2：右手动作峰值</figcaption><img class="large" src="R2/1280x720-day/typing-right-down-1280x720-day.png" alt="R2 全窗白天右手峰值"></figure>
+</div>
+<h2>实机短录屏</h2>
+<p>360×320、白天、3 秒、原生 720×640 位图、30 fps H.264；包含坐姿轻微落定和一轮以上双手交替。</p>
+<video controls preload="metadata" playsinline src="R2/sit-and-type-360x320-day.mp4"></video>
+<p><a href="README.md">实验方法、接点审查与局限</a> · <a href="manifest.json">文件与运行清单</a></p>
+</body>
+</html>

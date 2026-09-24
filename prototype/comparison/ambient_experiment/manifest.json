@@ -1,0 +1,358 @@
+{
+  "purpose": "single-factor A-baseline ambient-light test",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "settings": {
+    "renderer": "GL Compatibility",
+    "route": "baseline",
+    "state": "idle",
+    "changed_parameter": "environment.ambient_light_energy",
+    "A0": {
+      "day": 0.36,
+      "evening": 0.48
+    },
+    "A1": {
+      "day": 0.24,
+      "evening": 0.32
+    }
+  },
+  "records": [
+    {
+      "variant": "A0",
+      "ambient_multiplier": 1.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.719,
+      "reported_ambient_energy": [
+        0.36000001430511,
+        0.36000001430511,
+        0.36000001430511
+      ],
+      "png": "A0/baseline-360x320-day-idle.png",
+      "json": "A0/baseline-360x320-day.json",
+      "log": "A0/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 937.557,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "A0",
+      "ambient_multiplier": 1.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.354,
+      "reported_ambient_energy": [
+        0.47999998927116,
+        0.47999998927116
+      ],
+      "png": "A0/baseline-360x320-evening-idle.png",
+      "json": "A0/baseline-360x320-evening.json",
+      "log": "A0/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 756.374,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "A0",
+      "ambient_multiplier": 1.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.32,
+      "reported_ambient_energy": [
+        0.36000001430511,
+        0.36000001430511,
+        0.36000001430511
+      ],
+      "png": "A0/baseline-1280x720-day-idle.png",
+      "json": "A0/baseline-1280x720-day.json",
+      "log": "A0/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "1095a6516e92a25505c78cfa95f5492be4fa77bc0bf97e532d8f692d8f20730b",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 815.234,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "A0",
+      "ambient_multiplier": 1.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.272,
+      "reported_ambient_energy": [
+        0.47999998927116,
+        0.47999998927116
+      ],
+      "png": "A0/baseline-1280x720-evening-idle.png",
+      "json": "A0/baseline-1280x720-evening.json",
+      "log": "A0/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "6aa68db543e8fb17d36f7a0875eecfadbd25dbd196160357e32636476bfeb6c4",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 805.544,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "A1",
+      "ambient_multiplier": 0.6666666666666666,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.222,
+      "reported_ambient_energy": [
+        0.24000000953674,
+        0.24000000953674,
+        0.24000000953674
+      ],
+      "png": "A1/baseline-360x320-day-idle.png",
+      "json": "A1/baseline-360x320-day.json",
+      "log": "A1/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "e6f14ba4c722dff7dd1f5a9829f9bc5d04f586cff8a056afbb9a3e0fa1423cf6",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 736.754,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "A1",
+      "ambient_multiplier": 0.6666666666666666,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.211,
+      "reported_ambient_energy": [
+        0.31999999284744,
+        0.31999999284744
+      ],
+      "png": "A1/baseline-360x320-evening-idle.png",
+      "json": "A1/baseline-360x320-evening.json",
+      "log": "A1/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "798e9fff9259e12b5466a1cc0f57c90c3795e8156e4f23323e3813fa39ce075e",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 722.094,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "A1",
+      "ambient_multiplier": 0.6666666666666666,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.73,
+      "reported_ambient_energy": [
+        0.24000000953674,
+        0.24000000953674,
+        0.24000000953674
+      ],
+      "png": "A1/baseline-1280x720-day-idle.png",
+      "json": "A1/baseline-1280x720-day.json",
+      "log": "A1/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "4621716e7771d5e258b22ba8aa5752bf66f0e6ea2954364de668f3558da947b9",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 1262.329,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "A1",
+      "ambient_multiplier": 0.6666666666666666,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.292,
+      "reported_ambient_energy": [
+        0.31999999284744,
+        0.31999999284744
+      ],
+      "png": "A1/baseline-1280x720-evening-idle.png",
+      "json": "A1/baseline-1280x720-evening.json",
+      "log": "A1/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "70a86677edf59fd083d34a2a20820f4e46d300ca3dbf4d10d185104eceb95c11",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 818.24,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}
