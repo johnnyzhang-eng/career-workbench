@@ -198,7 +198,7 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
         for index in range(7):
             task_id = _task_id(goal_id, "C", index + 1)
             item_source = (f"{structure['url']}#checked={structure['checked_on']}"
-                           if has_structure and index in {0, 3, 4} else
+                           if has_structure and index in {0, 1, 2, 3, 4, 5} else
                            ("official-structure=unknown" if index == 0 else
                             f"{TEMPLATE_VERSION}:cet6"))
             item = _item(task_id, titles[index], "practice", "goal", goal_id,

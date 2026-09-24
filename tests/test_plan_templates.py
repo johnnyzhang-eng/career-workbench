@@ -54,6 +54,8 @@ class PlanTemplateTests(unittest.TestCase):
                             for i in proposal["items"]))
         self.assertTrue(all(i["reason"] and i["source_ref"] and i["completion_rule"]
                             for i in proposal["items"]))
+        self.assertTrue(all(CET6_STRUCTURE_URL in proposal["items"][index]["source_ref"]
+                            for index in range(6)))
         self.assertIn(CET6_STRUCTURE_URL, proposal["source_ref"])
         self.assertIn("2026-09-24", proposal["source_ref"])
         self.assertTrue(any(u["field"] == "exam_registration" for u in bundle["unknowns"]))
