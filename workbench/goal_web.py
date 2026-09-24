@@ -2,7 +2,7 @@
 
 import json
 import secrets
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
@@ -23,7 +23,7 @@ ROUTES = {"/api/goals": "create_goal", "/api/plans/propose": "propose_plan",
           "/api/actions/resume": "resume_action", "/api/actions/stop": "stop_action"}
 
 
-class GoalHTTPServer(HTTPServer):
+class GoalHTTPServer(ThreadingHTTPServer):
     allow_reuse_address = True
 
     def __init__(self, address, workspace, clock=None):

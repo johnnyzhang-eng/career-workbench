@@ -14,7 +14,8 @@ SCENE_PNG = tuple("docs/scene-assets/" + name for name in (
     "avatar-study.png", "avatar-interview.png", "avatar-rest.png", "desk-front.png"))
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py", "daily.py",
          "workbench/*.py",
-         "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py", *SCENE_PNG)
+         "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py",
+         "prototype/macos/CompanionWindow.swift", "prototype/macos/build.sh", "prototype/macos/README.md", *SCENE_PNG)
 RULES = {
     "email": re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"),
     "mobile": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
