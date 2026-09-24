@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime, timezone
 
 from workbench.goal_app import GoalApp
+from workbench.scene_actions import SceneActionStore
 
 
 class SceneActionTests(unittest.TestCase):
@@ -66,6 +67,35 @@ class SceneActionTests(unittest.TestCase):
         self.assertFalse(stopped["action"]["can_resume"])
         with self.assertRaises(ValueError):
             self.action("resume", "H")
+
+    def test_completion_ends_room_action_and_survives_restart(self):
+        proposal = self.app.propose_plan({"operation_id": "P" * 24,
+                                          "goal_id": self.goal_id, "start_on": "2026-10-05"})
+        pending = proposal["selected"]["pending_proposals"][0]
+        self.app.decide_plan({"operation_id": "D" * 24,
+                              "proposal_id": pending["id"], "decision": "accept"})
+        self.app.sync_plan({"operation_id": "S" * 24, "goal_id": self.goal_id})
+        self.task_id = self.app.state(self.goal_id)["selected"]["today_tasks"][0]["task_id"]
+        self.action("start", "A")
+        completed = self.app.complete_task({
+            "operation_id": "C" * 24, "goal_id": self.goal_id, "task_id": self.task_id,
+            "evidence": {"material_ref": "虚构来源", "first_attempt_ref": "虚构基线记录",
+                         "reflection_ref": "虚构下一步问题"},
+        })
+        self.assertEqual(completed["selected"]["today_tasks"][0]["daily_state"], "completed")
+        self.assertEqual((completed["scene"]["mode"], completed["scene"]["action"]["state"]),
+                         ("idle", "completed"))
+        self.assertEqual(completed["scene"]["activity_state"], "completion_recorded")
+        actions = SceneActionStore(self.temp.name, self.clock)
+        try:
+            self.assertEqual(actions.snapshot(self.goal_id)["state"], "stopped")
+        finally:
+            actions.close()
+        restarted = GoalApp(self.temp.name, self.clock).state(self.goal_id)["scene"]
+        self.assertEqual(restarted["action"]["state"], "completed")
+        self.now = datetime(2026, 10, 6, 2, 0, tzinfo=timezone.utc)
+        tomorrow = GoalApp(self.temp.name, self.clock).state(self.goal_id)["scene"]
+        self.assertEqual(tomorrow["action"]["state"], "none")
 
 
 if __name__ == "__main__":

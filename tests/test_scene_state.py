@@ -53,6 +53,20 @@ class SceneStateTests(unittest.TestCase):
         self.assertEqual(scene["mode"], "idle")
         self.assertEqual(scene["activity_state"], "unknown")
 
+    def test_completed_task_overrides_lingering_active_visual_event(self):
+        scene = scene_state(selected(task(state="completed")), NOW,
+                            action={"state": "active", "task_id": "READ", "at": NOW.isoformat()})
+        self.assertEqual((scene["mode"], scene["action"]["state"]), ("idle", "completed"))
+        self.assertEqual(scene["activity_state"], "completion_recorded")
+
+    def test_confirmed_result_advances_room_caption_state_without_claiming_mastery(self):
+        current = selected(task(state="completed"))
+        current["results"] = [{"task_id": "READ", "outcome": "completed", "basis": "self_report"}]
+        scene = scene_state(current, NOW,
+                            action={"state": "stopped", "task_id": "READ", "at": NOW.isoformat()})
+        self.assertEqual((scene["mode"], scene["action"]["state"]), ("idle", "result_recorded"))
+        self.assertEqual(scene["activity_state"], "result_recorded")
+
     def test_local_clock_drives_phase_and_user_choice_can_show_rest(self):
         evening = datetime(2026, 10, 5, 12, 0, tzinfo=timezone.utc)
         scene = scene_state(selected(), evening, explicit_mode="rest")

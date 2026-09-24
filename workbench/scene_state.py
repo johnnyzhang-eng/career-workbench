@@ -70,10 +70,31 @@ def scene_state(selected, now, *, observations=(), explicit_mode=None, action=No
     if action and action.get("state") != "none":
         action = dict(action)
         stamp = _observed_at(action.get("at"))
+        same_day = bool(stamp and stamp.astimezone(zone).date() == local_now.date())
+        finished = next((task for task in selected.get("today_tasks", ())
+                         if task.get("task_id") == action.get("task_id")
+                         and task.get("daily_state") == "completed"), None)
+        if finished is not None:
+            # Completion is a DailyStore fact. A lingering action event should
+            # not be called a cross-day session or keep the avatar working.
+            result_recorded = any(result.get("task_id") == finished["task_id"]
+                                  and result.get("outcome") == "completed"
+                                  and result.get("basis") == "self_report"
+                                  for result in selected.get("results", ()))
+            action.update(state="result_recorded" if result_recorded else "completed",
+                          can_resume=False)
+            scene.update(activity_state="result_recorded" if result_recorded else "completion_recorded",
+                         source="daily_task",
+                         task_id=finished["task_id"], task_title=finished["title"])
+            scene["action"] = action
+            return scene
         if (action.get("state") == "active" and
-                (stamp is None or stamp.astimezone(zone).date() != local_now.date()
-                 or action.get("task_id") not in by_id)):
+                (not same_day or action.get("task_id") not in by_id)):
             action["state"] = "stale"
+        if action.get("state") == "paused" and not same_day:
+            action["state"] = "stale"
+        if action.get("state") == "stopped" and not same_day:
+            action["state"] = "none"
         action["can_resume"] = (action["state"] in {"paused", "stale"}
                                 and action.get("task_id") in by_id)
         scene["action"] = action
