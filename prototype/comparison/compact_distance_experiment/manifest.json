@@ -1,0 +1,945 @@
+{
+  "purpose": "A-baseline compact-only camera distance along unchanged view ray",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "settings": {
+    "route": "baseline",
+    "changed_parameter": "compact_camera_distance_scale",
+    "P0": 1.0,
+    "P1": 0.93,
+    "fov_degrees": 45.0,
+    "camera_target": [
+      0,
+      1.25,
+      0
+    ],
+    "full_window_distance_scale": 1.0
+  },
+  "records": [
+    {
+      "variant": "P0",
+      "compact_distance_scale": 1.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "wall_seconds": 4.377,
+      "png": "P0/baseline-360x320-day-idle.png",
+      "png_sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+      "json": "P0/baseline-360x320-day.json",
+      "log": "P0/360x320-day.log",
+      "scene_sha256": "77870ea4dab898d8a50273060d56942022905034ff03da95884e46b6e90b683f",
+      "metrics": {
+        "avatar_foot_local": [
+          179.29,
+          93.9
+        ],
+        "avatar_head_local": [
+          179.92,
+          60.89
+        ],
+        "avatar_logic_px": 33.02,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            290.0,
+            150.0,
+            54.0,
+            32.0
+          ],
+          "computer": [
+            16.0,
+            150.0,
+            54.0,
+            32.0
+          ]
+        },
+        "logical_size": [
+          360,
+          320
+        ],
+        "phase": "day",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            163.69,
+            63.75
+          ],
+          "floor_back_right": [
+            234.16,
+            85.26
+          ],
+          "floor_front_left": [
+            109.73,
+            85.42
+          ],
+          "floor_front_right": [
+            188.54,
+            128.34
+          ]
+        },
+        "scene_rect": [
+          8.0,
+          46.0,
+          344.0,
+          141.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 3092.92,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "hotspot_clicks_pass",
+            "scene_size": [
+              344.0,
+              141.0
+            ]
+          },
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 76,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "P0",
+      "compact_distance_scale": 1.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "wall_seconds": 3.858,
+      "png": "P0/baseline-360x320-evening-idle.png",
+      "png_sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+      "json": "P0/baseline-360x320-evening.json",
+      "log": "P0/360x320-evening.log",
+      "scene_sha256": "a3862d5816663f014544ca9d198e7e2f36deedbd9a3eccdf0a53f31c0b5800ad",
+      "metrics": {
+        "avatar_foot_local": [
+          179.29,
+          93.9
+        ],
+        "avatar_head_local": [
+          179.92,
+          60.89
+        ],
+        "avatar_logic_px": 33.02,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            290.0,
+            150.0,
+            54.0,
+            32.0
+          ],
+          "computer": [
+            16.0,
+            150.0,
+            54.0,
+            32.0
+          ]
+        },
+        "logical_size": [
+          360,
+          320
+        ],
+        "phase": "evening",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            163.69,
+            63.75
+          ],
+          "floor_back_right": [
+            234.16,
+            85.26
+          ],
+          "floor_front_left": [
+            109.73,
+            85.42
+          ],
+          "floor_front_right": [
+            188.54,
+            128.34
+          ]
+        },
+        "scene_rect": [
+          8.0,
+          46.0,
+          344.0,
+          141.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2901.474,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "hotspot_clicks_pass",
+            "scene_size": [
+              344.0,
+              141.0
+            ]
+          },
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 76,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "P0",
+      "compact_distance_scale": 1.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "wall_seconds": 5.091,
+      "png": "P0/baseline-1280x720-day-idle.png",
+      "png_sha256": "6b9cdd13dcac0d31d77d2705528a42301c569c3aeb39fff1889320bd834e6485",
+      "json": "P0/baseline-1280x720-day.json",
+      "log": "P0/1280x720-day.log",
+      "scene_sha256": "923fa9ffef87463232c3e6cceaecf9ac6748b37050372758273fc618c617a865",
+      "metrics": {
+        "avatar_foot_local": [
+          489.43,
+          366.29
+        ],
+        "avatar_head_local": [
+          491.9,
+          237.5
+        ],
+        "avatar_logic_px": 128.79,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            577.791931152344,
+            223.186462402344,
+            64.0,
+            35.0
+          ],
+          "computer": [
+            471.350219726562,
+            261.591613769531,
+            64.0,
+            35.0
+          ]
+        },
+        "logical_size": [
+          1280,
+          720
+        ],
+        "phase": "day",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            428.6,
+            248.66
+          ],
+          "floor_back_right": [
+            703.48,
+            332.59
+          ],
+          "floor_front_left": [
+            218.09,
+            333.19
+          ],
+          "floor_front_right": [
+            525.51,
+            500.6
+          ]
+        },
+        "scene_rect": [
+          16.0,
+          94.0,
+          922.0,
+          550.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 943.698,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "P0",
+      "compact_distance_scale": 1.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "wall_seconds": 5.399,
+      "png": "P0/baseline-1280x720-evening-idle.png",
+      "png_sha256": "e1d40250a80e7f26787e3d8956731ed20aa935b80b8fab9e9b9e9c8728237bb0",
+      "json": "P0/baseline-1280x720-evening.json",
+      "log": "P0/1280x720-evening.log",
+      "scene_sha256": "ab43fa25b0fbd3f15e8cbc82bdc4c05b2aa734320f62dc95d1f7a6b02cb1ddf8",
+      "metrics": {
+        "avatar_foot_local": [
+          489.43,
+          366.29
+        ],
+        "avatar_head_local": [
+          491.9,
+          237.5
+        ],
+        "avatar_logic_px": 128.79,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            577.791931152344,
+            223.186462402344,
+            64.0,
+            35.0
+          ],
+          "computer": [
+            471.350219726562,
+            261.591613769531,
+            64.0,
+            35.0
+          ]
+        },
+        "logical_size": [
+          1280,
+          720
+        ],
+        "phase": "evening",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            428.6,
+            248.66
+          ],
+          "floor_back_right": [
+            703.48,
+            332.59
+          ],
+          "floor_front_left": [
+            218.09,
+            333.19
+          ],
+          "floor_front_right": [
+            525.51,
+            500.6
+          ]
+        },
+        "scene_rect": [
+          16.0,
+          94.0,
+          922.0,
+          550.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 950.644,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "P1",
+      "compact_distance_scale": 0.93,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "wall_seconds": 3.935,
+      "png": "P1/baseline-360x320-day-idle.png",
+      "png_sha256": "ad314e01ccd118e47e02ae7015dcd896e27dd29834e4b6cf2a7f7f84d0766594",
+      "json": "P1/baseline-360x320-day.json",
+      "log": "P1/360x320-day.log",
+      "scene_sha256": "003c168ce3029c00d1896876232a252026b2a0cdc473a7fddb018f115cdc555f",
+      "metrics": {
+        "avatar_foot_local": [
+          179.87,
+          95.78
+        ],
+        "avatar_head_local": [
+          180.62,
+          60.04
+        ],
+        "avatar_logic_px": 35.74,
+        "camera_position": [
+          6.97499990463257,
+          5.85349988937378,
+          8.36999988555908
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 0.93,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            290.0,
+            150.0,
+            54.0,
+            32.0
+          ],
+          "computer": [
+            16.0,
+            150.0,
+            54.0,
+            32.0
+          ]
+        },
+        "logical_size": [
+          360,
+          320
+        ],
+        "phase": "day",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            163.25,
+            63.39
+          ],
+          "floor_back_right": [
+            238.65,
+            86.33
+          ],
+          "floor_front_left": [
+            105.22,
+            86.5
+          ],
+          "floor_front_right": [
+            190.39,
+            134.82
+          ]
+        },
+        "scene_rect": [
+          8.0,
+          46.0,
+          344.0,
+          141.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2928.216,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "hotspot_clicks_pass",
+            "scene_size": [
+              344.0,
+              141.0
+            ]
+          },
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 76,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "P1",
+      "compact_distance_scale": 0.93,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "wall_seconds": 3.824,
+      "png": "P1/baseline-360x320-evening-idle.png",
+      "png_sha256": "3aa638476b7cac0e7eeb841499cc41ceb56ffdcb769a3fd2661ffe6b06ed8c13",
+      "json": "P1/baseline-360x320-evening.json",
+      "log": "P1/360x320-evening.log",
+      "scene_sha256": "21060717dae8819fe78441a8c498207820897424198ad0804978e90f817ad7b1",
+      "metrics": {
+        "avatar_foot_local": [
+          179.87,
+          95.78
+        ],
+        "avatar_head_local": [
+          180.62,
+          60.04
+        ],
+        "avatar_logic_px": 35.74,
+        "camera_position": [
+          6.97499990463257,
+          5.85349988937378,
+          8.36999988555908
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 0.93,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            290.0,
+            150.0,
+            54.0,
+            32.0
+          ],
+          "computer": [
+            16.0,
+            150.0,
+            54.0,
+            32.0
+          ]
+        },
+        "logical_size": [
+          360,
+          320
+        ],
+        "phase": "evening",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            163.25,
+            63.39
+          ],
+          "floor_back_right": [
+            238.65,
+            86.33
+          ],
+          "floor_front_left": [
+            105.22,
+            86.5
+          ],
+          "floor_front_right": [
+            190.39,
+            134.82
+          ]
+        },
+        "scene_rect": [
+          8.0,
+          46.0,
+          344.0,
+          141.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2876.731,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "hotspot_clicks_pass",
+            "scene_size": [
+              344.0,
+              141.0
+            ]
+          },
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 76,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "P1",
+      "compact_distance_scale": 0.93,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "wall_seconds": 5.027,
+      "png": "P1/baseline-1280x720-day-idle.png",
+      "png_sha256": "6b9cdd13dcac0d31d77d2705528a42301c569c3aeb39fff1889320bd834e6485",
+      "json": "P1/baseline-1280x720-day.json",
+      "log": "P1/1280x720-day.log",
+      "scene_sha256": "923fa9ffef87463232c3e6cceaecf9ac6748b37050372758273fc618c617a865",
+      "metrics": {
+        "avatar_foot_local": [
+          489.43,
+          366.29
+        ],
+        "avatar_head_local": [
+          491.9,
+          237.5
+        ],
+        "avatar_logic_px": 128.79,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            577.791931152344,
+            223.186462402344,
+            64.0,
+            35.0
+          ],
+          "computer": [
+            471.350219726562,
+            261.591613769531,
+            64.0,
+            35.0
+          ]
+        },
+        "logical_size": [
+          1280,
+          720
+        ],
+        "phase": "day",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            428.6,
+            248.66
+          ],
+          "floor_back_right": [
+            703.48,
+            332.59
+          ],
+          "floor_front_left": [
+            218.09,
+            333.19
+          ],
+          "floor_front_right": [
+            525.51,
+            500.6
+          ]
+        },
+        "scene_rect": [
+          16.0,
+          94.0,
+          922.0,
+          550.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 897.255,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "P1",
+      "compact_distance_scale": 0.93,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "wall_seconds": 5.38,
+      "png": "P1/baseline-1280x720-evening-idle.png",
+      "png_sha256": "e1d40250a80e7f26787e3d8956731ed20aa935b80b8fab9e9b9e9c8728237bb0",
+      "json": "P1/baseline-1280x720-evening.json",
+      "log": "P1/1280x720-evening.log",
+      "scene_sha256": "ab43fa25b0fbd3f15e8cbc82bdc4c05b2aa734320f62dc95d1f7a6b02cb1ddf8",
+      "metrics": {
+        "avatar_foot_local": [
+          489.43,
+          366.29
+        ],
+        "avatar_head_local": [
+          491.9,
+          237.5
+        ],
+        "avatar_logic_px": 128.79,
+        "camera_position": [
+          7.5,
+          6.19999980926514,
+          9.0
+        ],
+        "camera_target": [
+          0,
+          1.25,
+          0
+        ],
+        "distance_scale": 1.0,
+        "fov_degrees": 45.0,
+        "hotspot_buttons": {
+          "calendar": [
+            577.791931152344,
+            223.186462402344,
+            64.0,
+            35.0
+          ],
+          "computer": [
+            471.350219726562,
+            261.591613769531,
+            64.0,
+            35.0
+          ]
+        },
+        "logical_size": [
+          1280,
+          720
+        ],
+        "phase": "evening",
+        "room_floor_corners_local": {
+          "floor_back_left": [
+            428.6,
+            248.66
+          ],
+          "floor_back_right": [
+            703.48,
+            332.59
+          ],
+          "floor_front_left": [
+            218.09,
+            333.19
+          ],
+          "floor_front_right": [
+            525.51,
+            500.6
+          ]
+        },
+        "scene_rect": [
+          16.0,
+          94.0,
+          922.0,
+          550.0
+        ]
+      },
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 938.569,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}
