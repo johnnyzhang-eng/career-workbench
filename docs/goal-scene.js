@@ -23,6 +23,7 @@
       --scene-outfit: #4d7e81;
       --scene-outfit-dark: #32666a;
       display: block;
+      position: relative;
       width: 100%;
       min-width: 0;
       aspect-ratio: 16 / 9;
@@ -31,6 +32,7 @@
       background: #1c2f43;
       box-shadow: 0 13px 32px rgba(22, 44, 62, .16), inset 0 0 0 1px rgba(255,255,255,.2);
     }
+    .scene-stage { position: absolute; inset: 0; width: 100%; height: 100%; }
     :host([avatar="student"]), :host(:not([avatar])) { --scene-hair: #25374c; --scene-skin: #d99f77; --scene-skin-shadow: #b9785c; --scene-outfit: #4d7e81; --scene-outfit-dark: #32666a; }
     :host([avatar="indigo"]) { --scene-hair: #202c44; --scene-skin: #ba826a; --scene-skin-shadow: #955d50; --scene-outfit: #7379a9; --scene-outfit-dark: #545b8e; }
     :host([avatar="amber"]) { --scene-hair: #5d3f32; --scene-skin: #e4b48c; --scene-skin-shadow: #c88e6b; --scene-outfit: #b47750; --scene-outfit-dark: #8c593f; }
@@ -282,6 +284,7 @@
       style.textContent = css;
       root.append(style);
       const stage = document.createElement('div');
+      stage.className = 'scene-stage';
       stage.innerHTML = markup;
       const pixel = document.createElement('div');
       pixel.className = 'pixel-stage';
