@@ -10,6 +10,8 @@ from .daily import DailyStore
 from .goal_daily_bridge import GoalDailyBridge
 from .goals import GoalStore
 from .plan_templates import build_first_plan
+from .scene_state import scene_state
+from .scene_actions import SceneActionStore
 
 
 OPERATION_ID = re.compile(r"[A-Za-z0-9_-]{1,48}\Z")
@@ -60,6 +62,7 @@ class GoalApp:
             result = {"as_of": now.isoformat(), "goals": goal_list, "selected_goal_id": goal_id,
                       "selected": None, "storage": "local", "result_bridge": "pending"}
             if goal_id is None:
+                result["scene"] = scene_state(None, now)
                 return result
             snapshot = goals.snapshot(goal_id)
             goal = snapshot["goal"]
@@ -102,7 +105,46 @@ class GoalApp:
                                   "pending_proposals": pending, "sync": sync,
                                   "today_tasks": today_tasks, "feedback": feedback,
                                   "results": snapshot["results"], "reviews": snapshot["reviews"]}
+            actions = SceneActionStore(self.workspace, self.clock)
+            try:
+                action = actions.snapshot(goal_id)
+            finally:
+                actions.close()
+            result["scene"] = scene_state(result["selected"], now, action=action)
             return result
+
+    def _change_action(self, payload, action):
+        operation = _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        task_id = _required_text(payload.get("task_id"), "任务 ID", 80)
+        current = self.state(goal_id)["selected"]
+        plan = current["active_plan"]
+        if not plan or current["sync"]["state"] != "applied":
+            raise ValueError("计划尚未写入每日清单")
+        task = next((item for item in current["today_tasks"] if item["task_id"] == task_id), None)
+        if task is None or task["sync_state"] != "applied":
+            raise ValueError("行动不属于今日或待处理清单")
+        if action != "stop" and task["daily_state"] in {"completed", "cancelled", "not_scheduled"}:
+            raise ValueError("已结束的任务不能开始或继续")
+        actions = SceneActionStore(self.workspace, self.clock)
+        try:
+            actions.command(action, "E-A-" + operation, goal_id, task_id,
+                            timezone_name=current["goal"]["timezone"])
+        finally:
+            actions.close()
+        return self.state(goal_id)
+
+    def start_action(self, payload):
+        return self._change_action(payload, "start")
+
+    def pause_action(self, payload):
+        return self._change_action(payload, "pause")
+
+    def resume_action(self, payload):
+        return self._change_action(payload, "resume")
+
+    def stop_action(self, payload):
+        return self._change_action(payload, "stop")
 
     def create_goal(self, payload):
         operation = _operation(payload)
