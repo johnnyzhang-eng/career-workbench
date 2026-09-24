@@ -2,8 +2,8 @@
 
 An accepted PlanVersion is the durable source for scheduling. The two stores
 write separate SQLite files, so this projection exposes pending/conflict state
-and can be retried after a crash. Only audited automatic micro-adjustments
-can change an already scheduled task.
+and can be retried after a crash. Audited automatic micro-adjustments and
+explicitly confirmed same-day review edits can change an unstarted task.
 """
 
 import hashlib

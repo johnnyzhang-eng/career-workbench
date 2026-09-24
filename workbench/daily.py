@@ -303,11 +303,11 @@ class DailyStore:
                     require(set(payload) == {"reason", "scheduled_at", "display_order",
                                              "plan_version", "prior_plan_version", "timezone",
                                              "prior_scheduled_at", "prior_display_order"},
-                            "自动微调参数无效")
+                            "计划改期参数无效")
                     require(task["state"] == "scheduled" and task.get("flexible") is True,
-                            "只有未开始的弹性任务可自动调整")
+                            "只有未开始的弹性任务可改期")
                     require(task.get("goal_id") and task.get("due_at") is None,
-                            "目标任务有截止时间或缺少目标归属，不可自动调整")
+                            "目标任务有截止时间或缺少目标归属，不可改期")
                     require(task.get("plan_version") == payload["prior_plan_version"]
                             and type(payload["prior_plan_version"]) is int
                             and type(payload["plan_version"]) is int
@@ -318,16 +318,16 @@ class DailyStore:
                             and type(payload["prior_display_order"]) is int
                             and task["display_order"] == payload["prior_display_order"],
                             "每日任务已被更改，不能覆盖")
-                    require(nonempty(payload["reason"]), "自动微调需要原因")
+                    require(nonempty(payload["reason"]), "计划改期需要原因")
                     require(type(payload["display_order"]) is int and payload["display_order"] >= 0,
                             "display_order 必须是非负整数")
                     viewing_zone = zone(payload["timezone"])
                     before = stamp(task["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
                     after = stamp(payload["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
-                    require(before.date() == after.date(), "自动微调只能在同一个本地日期")
+                    require(before.date() == after.date(), "计划改期只能在同一个本地日期")
                     require(task["scheduled_at"] != payload["scheduled_at"]
                             or task["display_order"] != payload["display_order"],
-                            "自动微调必须实际更改时间或顺序")
+                            "计划改期必须实际更改时间或顺序")
                 elif command in {"block", "cancel"}:
                     require(nonempty(payload.get("reason")) and set(payload) == {"reason"},
                             "该命令需要原因")
