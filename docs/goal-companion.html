@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今日进度 · Career Workbench</title>
+  <style nonce="__CSP_NONCE__">
+    :root{color-scheme:light;--ink:#1c3445;--muted:#59717a;--paper:#f3f7f7;--surface:#fff;--line:#d8e3e2;--sea:#1d777b;--sea-dark:#145d61;--wash:#dceef0;--warm:#f9ead5;--warm-ink:#7b531d;--good:#def0e5;--good-ink:#25644d;--danger:#a33a36;--shadow:0 14px 42px rgba(20,59,67,.12);font-family:"Avenir Next","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    *{box-sizing:border-box}html{background:var(--paper)}body{margin:0;color:var(--ink);font-size:15px;line-height:1.55}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.5}a{color:var(--sea-dark)}:focus-visible{outline:3px solid #e9a846;outline-offset:3px}
+    .app{max-width:1320px;margin:0 auto;padding:25px 28px 70px}.mast{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:0 0 20px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:13px}.brand-mark{height:42px;width:42px;border-radius:13px;background:var(--sea);color:white;display:grid;place-items:center;font-size:25px;box-shadow:inset -5px -5px 0 #17666a}.brand-name{font-size:13px;font-weight:700;letter-spacing:.04em}.brand-sub{font-size:12px;color:var(--muted)}.mast-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.clock{text-align:right;min-width:125px}.clock strong{font-size:21px;font-variant-numeric:tabular-nums;font-weight:650}.clock small{display:block;color:var(--muted);font-size:11px}.mini-link,.plain-button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;text-decoration:none;color:var(--ink);font-weight:650}.mini-link:hover,.plain-button:hover{border-color:var(--sea)}.primary{border:0;background:var(--sea);color:white;border-radius:10px;padding:10px 15px;font-weight:700}.primary:hover{background:var(--sea-dark)}.quiet{border:0;background:transparent;color:var(--sea-dark);padding:8px 6px;font-weight:700}.danger{border:1px solid #ecd4cf;background:#fff;color:var(--danger);border-radius:10px;padding:9px 12px}.eyebrow{font-size:12px;font-weight:700;color:var(--sea-dark);margin:0 0 8px}.page-title{font-size:clamp(28px,4vw,45px);font-weight:750;line-height:1.18;margin:0 0 9px;letter-spacing:-.04em}.lede{color:var(--muted);margin:0;max-width:650px}.hero{padding:34px 0 31px;display:flex;justify-content:space-between;gap:20px;align-items:flex-end}.hero-copy{max-width:680px}.goal-picker{display:flex;align-items:center;gap:8px}.goal-picker label{font-size:12px;color:var(--muted)}.goal-picker select{min-width:175px}.workspace{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.86fr);gap:22px;align-items:start}.stack{display:grid;gap:20px}.panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}.panel h2{font-size:19px;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}.panel p{margin:7px 0}.muted{color:var(--muted)}.small{font-size:12px}.status{display:inline-block;border-radius:99px;background:var(--wash);color:var(--sea-dark);font-size:12px;font-weight:750;padding:4px 10px}.status.pending{background:var(--warm);color:var(--warm-ink)}.status.done{background:var(--good);color:var(--good-ink)}.status.conflict{background:#fae2dd;color:var(--danger)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-head h2{margin:0}.task{padding:15px 0;border-top:1px solid var(--line)}.task:first-of-type{border-top:0}.task-title{display:flex;justify-content:space-between;align-items:start;gap:10px}.task h3{margin:0;font-size:16px}.task-meta{font-size:12px;color:var(--muted);margin:4px 0 0}.task p{font-size:13px;color:var(--muted)}.task .rule{color:var(--ink)}.task-actions{display:flex;gap:7px;align-items:center;margin-top:10px}.timeline{display:grid;gap:0}.day{display:grid;grid-template-columns:72px 1fr;gap:12px;border-top:1px solid var(--line);padding:14px 0}.day:first-child{border-top:0}.day-date{font-variant-numeric:tabular-nums;font-weight:750;color:var(--sea-dark)}.day h3{margin:0;font-size:14px}.day p{font-size:12px;margin:4px 0;color:var(--muted)}.note{border-left:3px solid var(--sea);background:#edf6f5;padding:12px 14px;border-radius:0 11px 11px 0;color:#315661}.caution{border-left-color:#c89142;background:#fbf3e8;color:#7b531d}.proposal-intro{padding:14px;background:#edf6f5;border-radius:12px}.proposal-list{max-height:490px;overflow:auto;padding-right:5px}.proposal-item{border-top:1px solid var(--line);padding:13px 0}.proposal-item:first-child{border:0}.proposal-item h3{margin:0;font-size:15px}.source{overflow-wrap:anywhere;color:var(--muted);font-size:11px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.field{display:grid;gap:5px;margin:13px 0}.field label{font-size:13px;font-weight:650}.field input,.field select,.field textarea,.goal-picker select{border:1px solid #bdcfce;border-radius:10px;background:#fff;color:var(--ink);padding:9px 11px;min-height:42px;width:100%}.field textarea{min-height:74px;resize:vertical}.field .hint{font-size:12px;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.form-grid .wide{grid-column:1/-1}.form-note{font-size:12px;color:var(--muted)}.alert{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:min(92vw,560px);z-index:5;background:var(--ink);color:white;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow)}.empty{padding:32px 10px;text-align:center;color:var(--muted)}.result{padding:8px 0;border-top:1px solid var(--line);font-size:13px}.result:first-child{border-top:0}.privacy{margin-top:25px;font-size:12px;color:var(--muted)}.hidden{display:none!important}
+    html.compact,body.compact{background:transparent}body.compact .app{width:100%;max-width:400px;padding:10px}body.compact .mast{border:0;padding:0 0 10px;align-items:center}body.compact .brand-mark{width:32px;height:32px;font-size:19px;border-radius:10px}body.compact .brand-name{font-size:12px}body.compact .brand-sub,body.compact .mast-actions .clock,body.compact .mast-actions .plain-button{display:none}body.compact .mini-link{font-size:12px;padding:6px 8px}body.compact .hero{padding:15px 0 13px;display:block}body.compact .page-title{font-size:21px;margin-bottom:4px}body.compact .lede{font-size:12px}body.compact .goal-picker{margin-top:12px}body.compact .goal-picker select{min-width:0;min-height:35px;padding:5px 8px}body.compact .workspace{display:block}body.compact .workspace>.stack:last-child{display:none}body.compact .panel{border-radius:16px;padding:15px;box-shadow:0 8px 24px rgba(20,59,67,.16)}body.compact .panel h2{font-size:16px}body.compact .stack{gap:10px}body.compact #new-goal-panel,body.compact #proposal-panel .proposal-list{max-height:300px;overflow:auto}body.compact #plan-panel,body.compact #records-panel{display:none}body.compact .task{padding:11px 0}body.compact .task h3{font-size:14px}body.compact .task .source,body.compact .task .rule{display:none}body.compact .privacy{display:none}
+    @media(max-width:840px){.app{padding:17px 16px 45px}.workspace{grid-template-columns:1fr}.hero{display:block}.goal-picker{margin-top:18px}.mast-actions .clock{display:none}}
+    @media(max-width:520px){.form-grid{display:block}.mast{align-items:center}.brand-sub{display:none}.mast-actions .plain-button{display:none}.panel{padding:17px}.page-title{font-size:29px}}
+    @media(prefers-reduced-motion:no-preference){.panel,.mini-link,.primary{transition:background-color .16s ease,border-color .16s ease}}
+    .shell-grid{display:grid;grid-template-columns:minmax(310px,.86fr) minmax(0,1.14fr);gap:22px;align-items:start}
+    .scene-column{position:sticky;top:18px;min-width:0}.workbench-column{display:grid;gap:18px;min-width:0}
+    .scene-panel{overflow:hidden;padding:0}.scene-heading{padding:17px 19px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .scene-heading h2{margin:0;font-size:17px}.scene-heading small{color:var(--muted)}
+    .scene-frame{background:#e7eff0}.scene-frame goal-room-scene{display:block;width:100%;height:auto;aspect-ratio:16/9}
+    .scene-caption{padding:13px 19px 17px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+    .scene-caption strong{color:var(--ink)}.scene-fallback{display:grid;place-items:center;min-height:240px;color:var(--muted)}
+    .shell-hint{font-size:12px;color:var(--muted);margin:10px 4px 0}.compact-prompt{padding:11px 0;font-size:13px;color:var(--muted)}
+    .photo-panel{margin-top:14px}.photo-panel h2{font-size:15px}.photo-preview{width:80px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block;margin:8px 0}.photo-panel input[type=file]{width:100%;font-size:12px}.photo-panel .actions{margin-top:8px}
+    body.compact .shell-grid{display:block}body.compact .scene-column{position:static}body.compact .scene-panel{margin-bottom:10px}
+    body.compact .scene-heading{padding:10px 12px 8px}body.compact .scene-heading h2{font-size:14px}
+    body.compact .scene-frame goal-room-scene{height:auto;aspect-ratio:16/9}
+    body.compact .scene-caption{padding:9px 12px 11px;font-size:12px}
+    body.compact .workbench-column{gap:10px}body.compact #today-panel{max-height:360px;overflow:auto}
+    body.compact #today-panel .task:nth-of-type(n+3){display:none}body.compact .hero{padding:10px 0}
+    body.compact .privacy{display:block;margin-top:9px;font-size:10px}
+    html.collapsed{background:transparent}body.collapsed{background:transparent}body.collapsed .app{width:74px;padding:7px;margin:0;max-width:none}
+    .collapsed-dock{display:block;width:58px;height:58px;background:var(--sea);border-radius:17px;color:#fff;box-shadow:0 10px 24px rgba(13,65,70,.28);text-decoration:none;border:2px solid #fff}
+    .collapsed-dock svg{display:block;width:100%;height:100%;padding:13px}
+    .collapsed-dock:hover{background:var(--sea-dark)}
+    @media(max-width:840px){.shell-grid{display:block}.scene-column{position:static;margin-bottom:18px}}
+    @media(max-width:520px){.scene-heading{padding:12px 15px 9px}.scene-caption{padding:11px 15px}}
+  </style>
+</head>
+<body>
+<main class="app" id="app" aria-live="polite"><p class="empty">正在读取本机工作台…</p></main>
+<div id="alert" class="alert hidden" role="status"></div>
+<script src="/goal-scene.js" nonce="__CSP_NONCE__"></script>
+<script nonce="__CSP_NONCE__">
+  (() => {
+    const shellMode = location.pathname === '/collapsed' ? 'collapsed' : location.pathname === '/compact' ? 'compact' : 'expanded';
+    const compact = shellMode === 'compact';
+    document.body.classList.toggle('compact', compact);
+    document.body.classList.toggle('collapsed', shellMode === 'collapsed');
+    document.documentElement.classList.toggle('compact', compact);
+    document.documentElement.classList.toggle('collapsed', shellMode === 'collapsed');
+    const app = document.getElementById('app');
+    const alertBox = document.getElementById('alert');
+    let state = null;
+    let selectedTask = null;
+    let showNewGoal = false;
+    let photoStatus = {present:false,generated_avatar:false};
+    let photoPreview = null;
+    const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const id = () => crypto.randomUUID().replaceAll('-', '');
+    const dateLabel = stamp => stamp ? stamp.slice(5,10).replace('-', '月') + '日' : '日期待定';
+    const stateLabel = key => ({scheduled:'未开始',in_progress:'进行中',deferred:'已顺延',blocked:'受阻',completed:'已记录完成',cancelled:'已取消',not_scheduled:'待同步'})[key] || key;
+    const badge = (value, label) => '<span class="status ' + esc(value) + '">' + esc(label) + '</span>';
+    const op = data => ({...data,operation_id:id()});
+    const routeLink = route => route + (state?.selected_goal_id ? '?goal_id=' + encodeURIComponent(state.selected_goal_id) : '');
+    function notify(message) {alertBox.textContent=message;alertBox.classList.remove('hidden');setTimeout(()=>alertBox.classList.add('hidden'),5500)}
+    async function load(goalId) {
+      const url = '/api/state' + (goalId ? '?goal_id=' + encodeURIComponent(goalId) : '');
+      const response = await fetch(url,{cache:'no-store'});
+      const data = await response.json();
+      if(!response.ok) throw Error(data.error || '无法读取本机数据');
+      state=data;
+      const photoResponse=await fetch('/api/avatar/photo/status',{cache:'no-store'});
+      if(photoResponse.ok) photoStatus=await photoResponse.json();
+      if(photoStatus.present && !photoPreview) await fetchPhotoPreview();
+      if(!photoStatus.present && photoPreview){URL.revokeObjectURL(photoPreview);photoPreview=null}
+      render();
+    }
+    async function write(path, payload) {
+      const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(op(payload))});
+      const data=await response.json();
+      if(!response.ok) throw Error(data.error || '操作没有保存');
+      state=data;selectedTask=null;render();
+    }
+    async function fetchPhotoPreview(){
+      const response=await fetch('/api/avatar/photo/image',{headers:{'X-CSRF-Token':state.csrf_token},cache:'no-store'});
+      if(!response.ok) return;
+      const next=URL.createObjectURL(await response.blob());
+      if(photoPreview) URL.revokeObjectURL(photoPreview);
+      photoPreview=next;
+    }
+    async function photoWrite(path,payload){
+      const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(payload)});
+      const data=await response.json();
+      if(!response.ok) throw Error(data.error||'照片未保存');
+      photoStatus=data;
+      if(photoPreview){URL.revokeObjectURL(photoPreview);photoPreview=null}
+      if(data.present) await fetchPhotoPreview();
+      render();
+    }
+    function mast(goal) {
+      if(shellMode==='collapsed') return `<a class="collapsed-dock" href="${routeLink('/compact')}" aria-label="展开今日房间" title="展开今日房间"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 15.5 16 5l13 10.5v12H3v-12Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 27.5v-10h8v10" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></a>`;
+      const zone=goal?.timezone || 'Asia/Shanghai';
+      return `<header class="mast"><div class="brand"><div class="brand-mark" aria-hidden="true">⌂</div><div><div class="brand-name">Career Workbench</div><div class="brand-sub">目标陪伴 · 本机保存</div></div></div><div class="mast-actions"><div class="clock"><strong id="clock">--:--</strong><small>${esc(zone)} · 现实时间</small></div><a class="mini-link" href="${routeLink('/collapsed')}">收起</a><a class="mini-link" href="${routeLink(compact?'/':'/compact')}">${compact?'展开工作台':'角落小窗'}</a>${compact?'':'<button class="plain-button" type="button" data-action="new-goal">新建目标</button>'}</div></header>`;
+    }
+    function scenePanel(goal, selected) {
+      const scene=state.scene||{};
+      const mode=['idle','desk','study','interview','rest'].includes(scene.mode)?scene.mode:'idle';
+      const phase=['day','evening'].includes(scene.phase)?scene.phase:'day';
+      const suggested=['idle','desk','study','interview','rest'].includes(scene.suggested_mode)?scene.suggested_mode:'idle';
+      const modeLabels={idle:'待机',desk:'整理',study:'学习',interview:'面试准备',rest:'休息'};
+      const next=scene.task_title ? `下一项：${esc(scene.task_title)}` : '还没有今日行动';
+      const actionState=scene.action?.state||'none';
+      const caption=actionState==='paused' ? '行动已暂停。继续前，房间保持待机。' :
+        actionState==='stale' ? '已跨日回到待机；如仍要继续，请明确点击“继续行动”。' :
+        actionState==='stopped' ? '这次行动已结束；任务完成仍要单独记录依据。' : mode==='idle' ?
+        (suggested==='idle' ? '房间待机。开始任务后才会改变场景。' : `当前待机。${next}；建议场景：${modeLabels[suggested]}。`) :
+        `房间显示：${modeLabels[mode]}。这只反映已声明或已连接的活动线索，不代表任务完成。`;
+      return `<section class="panel scene-panel" aria-label="实时房间"><div class="scene-heading"><h2>你的小房间</h2><small>现实时间 · ${phase==='day'?'白天':'夜晚'}</small></div><div class="scene-frame"><goal-room-scene mode="${mode}" phase="${phase}" avatar="student" renderer="pixel" room-day-src="/scene-assets/room-day.png" room-evening-src="/scene-assets/room-evening.png" avatar-idle-src="/scene-assets/avatar-idle.png" avatar-desk-src="/scene-assets/avatar-desk.png" avatar-study-src="/scene-assets/avatar-study.png" avatar-interview-src="/scene-assets/avatar-interview.png" avatar-rest-src="/scene-assets/avatar-rest.png"><span class="scene-fallback">场景载入中；今日任务仍可正常使用。</span></goal-room-scene></div><div class="scene-caption"><strong>${modeLabels[mode]}</strong>　${caption}</div></section><p class="shell-hint">这是可试的场景与窗口层级，角色和视觉方向待一起评审。</p>`;
+    }
+    function photoPanel(){
+      const summary=photoStatus.present?`已选本机原照 · ${esc(photoStatus.mime_type)} · ${Math.ceil(photoStatus.byte_size/1024)} KB`:'尚未选择原照';
+      return `<section class="panel photo-panel" aria-label="个人角色原照"><h2>个人角色原照</h2><p class="small muted">仅存在本机私有工作区；目前尚未生成游戏角色。照片可能保留原有 EXIF 信息，不会上传到外部服务。</p>${photoPreview?`<img class="photo-preview" src="${photoPreview}" alt="本人选的角色参考原照">`:''}<p class="small">${summary}</p><form data-form="photo"><label class="small" for="avatar_photo">选择 PNG 或 JPEG（最多 2 MB）</label><input id="avatar_photo" type="file" name="photo" accept="image/png,image/jpeg" required><div class="actions"><button class="plain-button" type="submit">仅存本机</button>${photoStatus.present?'<button class="danger" type="button" data-action="delete-photo">删除原照</button>':''}</div></form></section>`;
+    }
+    function goalForm() {
+      return `<section class="panel" id="new-goal-panel"><h2>设定一个目标</h2><p class="muted small">先说明真实起点和可用时间；计划会单独提出，由你确认后才执行。</p><form data-form="goal"><div class="form-grid"><div class="field"><label for="path">路径</label><select id="path" name="path"><option value="cet6">CET6 学习</option><option value="recruiting">秋招求职</option></select></div><div class="field"><label for="weekly_minutes">每周可用分钟</label><input id="weekly_minutes" name="weekly_minutes" type="number" min="105" max="10080" value="300" required></div><div class="field wide"><label for="goal_title">目标名称</label><input id="goal_title" name="title" maxlength="100" placeholder="例如：八周内完成 CET6 练习与复盘" required></div><div class="field wide"><label for="baseline">目前起点</label><textarea id="baseline" name="baseline" maxlength="1000" placeholder="填你已知的实际起点；还未测过也可以说明"></textarea></div><div class="field wide"><label for="success">你怎样判断有进展</label><textarea id="success" name="success_criterion" maxlength="500" placeholder="例如：每周保存首次作答和错因，下一周独立复测" required></textarea></div><div class="field wide"><label for="target">本人设定的目标日期（可选）</label><input id="target" name="target" type="date"><span class="hint">这是你自己设的日期，不是官方考试或岗位截止。</span></div></div><button class="primary" type="submit">创建目标</button></form></section>`;
+    }
+    function proposalPanel(selected) {
+      const pending=selected.pending_proposals[0];
+      if(!selected.active_plan && !pending) return `<section class="panel" id="proposal-panel"><h2>先看七日建议</h2><p class="muted">模板会根据你填写的时间生成可审阅的任务。每天 20:00 只是建议时段；不会直接安排进清单。</p><form data-form="proposal" class="actions"><div class="field"><label for="start_on">从哪天开始</label><input id="start_on" name="start_on" type="date" required></div><button class="primary" type="submit">生成首版计划</button></form></section>`;
+      if(!pending) return '';
+      const items=pending.items.map((item,index)=>`<div class="proposal-item"><h3>${index+1}. ${esc(item.title)} <span class="muted small">${dateLabel(item.scheduled_at)} · ${item.estimated_minutes} 分钟</span></h3><p>${esc(item.reason)}</p><p class="source">依据：${esc(item.source_ref)}</p><p class="small">完成时记录：${esc(item.completion_rule)}</p></div>`).join('');
+      return `<section class="panel" id="proposal-panel"><div class="section-head"><h2>待你决定的七日计划</h2>${badge('pending','尚未生效')}</div><p class="proposal-intro small">${esc(pending.reason)}</p><div class="proposal-list">${items}</div><div class="actions"><button class="primary" data-action="accept" data-id="${esc(pending.id)}">接受计划</button><button class="danger" data-action="decline" data-id="${esc(pending.id)}">拒绝此版</button></div><p class="form-note">接受后仍需写入每日清单；同步状态会单独显示。</p></section>`;
+    }
+    function evidenceForm(item) {
+      if(!selectedTask || selectedTask!==item.task_id) return '';
+      if(item.task_kind==='practice') return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>练习材料位置</label><input name="material_ref" maxlength="1000" placeholder="本机路径或你保存的来源" required></div><div class="field"><label>首次作答位置</label><input name="first_attempt_ref" maxlength="1000" placeholder="首次答案或测量记录" required></div><div class="field"><label>错因／复盘位置</label><input name="reflection_ref" maxlength="1000" placeholder="记录尚不会的部分" required></div><p class="form-note">这里只记录依据，不判断你已掌握，也不等于考试通过。</p><button class="primary" type="submit">保存完成依据</button></form>`;
+      return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>行动产物位置</label><input name="result_ref" maxlength="1000" placeholder="你实际写下或保存的结果" required></div><button class="primary" type="submit">保存完成依据</button></form>`;
+    }
+    function taskCard(item) {
+      const completable=item.sync_state==='applied' && ['practice','custom'].includes(item.task_kind) && !['completed','cancelled'].includes(item.daily_state);
+      const status=item.daily_state==='completed'?'done':item.sync_state==='conflict'?'conflict':item.sync_state==='sync_pending'?'pending':'';
+      const action=state.scene?.action||{state:'none',task_id:null};
+      const ownsAction=action.task_id===item.task_id;
+      const startable=item.sync_state==='applied' && !['completed','cancelled'].includes(item.daily_state) && ['none','stopped'].includes(action.state);
+      const control=startable?`<button class="quiet" data-action="start" data-id="${esc(item.task_id)}">开始行动</button>`:
+        ownsAction&&action.state==='active'?`<button class="quiet" data-action="pause" data-id="${esc(item.task_id)}">暂停</button><button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:
+        ownsAction&&['paused','stale'].includes(action.state)?`${action.can_resume?`<button class="quiet" data-action="resume" data-id="${esc(item.task_id)}">继续行动</button>`:''}<button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:'';
+      return `<article class="task"><div class="task-title"><div><h3>${esc(item.title)}</h3><div class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</div></div>${badge(status,stateLabel(item.daily_state))}</div><p>${esc(item.reason)}</p><p class="rule">完成条件：${esc(item.completion_rule)}</p><p class="source">依据：${esc(item.source_ref)}</p>${item.daily_state==='deferred'?'<p class="small">延期原因：'+esc(item.carryover_reason)+'</p>':''}<div class="task-actions">${control}${completable?`<button class="quiet" data-action="evidence" data-id="${esc(item.task_id)}">${selectedTask===item.task_id?'收起依据':'记录完成依据'}</button>`:''}</div>${completable?evidenceForm(item):''}${item.sync_state==='conflict'?'<p class="small">同步存在冲突，请在完整工作台查看并处理。</p>':''}</article>`;
+    }
+    function todayPanel(selected) {
+      const plan=selected.active_plan;
+      if(!plan) return '';
+      const sync=selected.sync;
+      const banner=sync.state==='sync_pending'?`<div class="note caution"><strong>计划已接受，等待写入每日清单。</strong><p>写入成功前，任务不会显示为已安排。</p><button class="primary" data-action="sync">写入每日清单</button></div>`:sync.state==='conflict'?`<div class="note caution"><strong>计划和每日清单有冲突。</strong><p>${esc(sync.items.filter(i=>i.state==='conflict').map(i=>i.reason).join('；'))}</p></div>`:'';
+      const cards=selected.today_tasks.length?selected.today_tasks.map(taskCard).join(''):'<p class="empty">今天没有到期行动。可以查看七日计划，下一项会按现实时间到来。</p>';
+      const more=compact&&selected.today_tasks.length>2?`<p class="form-note">还有 ${selected.today_tasks.length-2} 项；展开工作台查看全部。</p>`:'';
+      return `<section class="panel" id="today-panel"><div class="section-head"><h2>今天的行动</h2>${badge(sync.state==='applied'?'done':'pending',sync.state==='applied'?'清单已同步':sync.state==='conflict'?'需处理冲突':'待同步')}</div>${banner}<p class="note small">${esc(selected.feedback)}</p>${cards}${more}</section>`;
+    }
+    function planPanel(selected) {
+      const plan=selected.active_plan;
+      if(!plan) return `<section class="panel" id="plan-panel"><h2>计划如何生效</h2><p class="muted">创建目标 → 查看有来源的建议 → 本人决定 → 安排每日任务。没有确认前不会自动执行。</p></section>`;
+      const rows=plan.items.map((item,index)=>`<div class="day"><div class="day-date">${dateLabel(item.current_scheduled_at||item.scheduled_at)}</div><div><h3>${index+1}. ${esc(item.title)}</h3><p>${esc(item.reason)} · ${item.estimated_minutes} 分钟</p><p class="source">${esc(item.source_ref)}</p>${badge(item.daily_state==='completed'?'done':item.sync_state==='conflict'?'conflict':'',stateLabel(item.daily_state))}</div></div>`).join('');
+      return `<section class="panel" id="plan-panel"><div class="section-head"><h2>七日计划</h2>${badge('done','第 '+plan.version+' 版')}</div><div class="timeline">${rows}</div></section>`;
+    }
+    function recordsPanel(selected) {
+      const results=selected.results.map(r=>`<div class="result"><strong>${esc(r.task_id)}</strong>：${esc(r.outcome)} · ${esc(r.note||'本人记录')}</div>`).join('');
+      const reviews=selected.reviews.map(r=>`<div class="result"><strong>复盘：</strong>${esc(r.finding)}</div>`).join('');
+      return `<section class="panel" id="records-panel"><h2>结果与复盘</h2>${results||reviews?results+reviews:'<p class="muted small">当前没有目标结果或复盘记录。每日任务的完成依据会保存在本机；结果与复盘自动衔接仍待接入。</p>'}<p class="form-note">任务打勾不代表考试通过、能力掌握或岗位已投递。</p></section>`;
+    }
+    function render() {
+      const selected=state.selected,goal=selected?.goal;
+      if(shellMode==='collapsed') {app.innerHTML=mast(goal);return}
+      const goalOptions=state.goals.map(g=>`<option value="${esc(g.id)}" ${g.id===state.selected_goal_id?'selected':''}>${esc(g.title)}</option>`).join('');
+      const picker=goal?`<div class="goal-picker"><label for="goal_switch">当前目标</label><select id="goal_switch">${goalOptions}</select></div>`:'';
+      const title=goal?esc(goal.title):'把大目标落到今天';
+      const lede=goal?`每周 ${goal.weekly_minutes} 分钟 · ${goal.active_version?'计划第 '+goal.active_version+' 版':'尚无生效计划'} · ${esc(goal.timezone)}`:'先创建一个目标，再审阅每天具体做什么。';
+      const compactBody=goal ? (selected.active_plan ? todayPanel(selected) :
+        `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
+        `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
+      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+planPanel(selected)+recordsPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
+      app.innerHTML=mast(goal)+`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section><div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
+      const start=document.getElementById('start_on');
+      if(start&&!start.value){
+        const localHour=Number(selected.local_time.slice(11,13));
+        const suggested=new Date(selected.today+'T12:00:00Z');
+        if(localHour>=20)suggested.setUTCDate(suggested.getUTCDate()+1);
+        start.value=suggested.toISOString().slice(0,10);
+      }
+      tick();
+    }
+    function tick(){const zone=state?.selected?.goal?.timezone||'Asia/Shanghai';const el=document.getElementById('clock');if(el) el.textContent=new Intl.DateTimeFormat('zh-CN',{timeZone:zone,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
+    app.addEventListener('click',async event=>{
+      const button=event.target.closest('[data-action]');if(!button)return;
+      const action=button.dataset.action;button.disabled=true;
+      try{
+        if(action==='new-goal'){showNewGoal=!showNewGoal;render()}
+        if(action==='evidence'){selectedTask=selectedTask===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='accept'||action==='decline'){await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
+        if(action==='sync'){await write('/api/plans/sync',{goal_id:state.selected_goal_id})}
+        if(['start','pause','resume','stop'].includes(action)){await write('/api/actions/'+action,{goal_id:state.selected_goal_id,task_id:button.dataset.id})}
+        if(action==='delete-photo'){await photoWrite('/api/avatar/photo/delete',{});notify('本机原照已删除')}
+      }catch(error){notify(error.message)}finally{button.disabled=false}
+    });
+    app.addEventListener('change',event=>{if(event.target.id==='goal_switch'){selectedTask=null;history.replaceState(null,'',location.pathname+'?goal_id='+encodeURIComponent(event.target.value));load(event.target.value).catch(error=>notify(error.message))}});
+    app.addEventListener('submit',async event=>{
+      const form=event.target.closest('[data-form]');if(!form)return;event.preventDefault();
+      const submit=form.querySelector('[type=submit]');submit.disabled=true;
+      const fields=Object.fromEntries(new FormData(form));
+      try{
+        if(form.dataset.form==='goal'){
+          const target=fields.target?fields.target+'T20:00:00+08:00':null;
+          await write('/api/goals',{path:fields.path,title:fields.title,weekly_minutes:Number(fields.weekly_minutes),baseline:fields.baseline,success_criterion:fields.success_criterion,target_at:target,timezone:'Asia/Shanghai'});
+          showNewGoal=false;render();notify('目标已保存在本机');
+        }
+        if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
+        if(form.dataset.form==='complete'){await write('/api/tasks/complete',{goal_id:state.selected_goal_id,task_id:form.dataset.id,evidence:fields});notify('完成依据已保存；尚未判定掌握程度')}
+        if(form.dataset.form==='photo'){
+          const file=fields.photo;
+          if(!(file instanceof File)||!['image/png','image/jpeg'].includes(file.type)||!file.size||file.size>2000000) throw Error('请选择 2 MB 以内的 PNG 或 JPEG');
+          const encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',',2)[1]);reader.onerror=()=>reject(Error('无法读取照片'));reader.readAsDataURL(file)});
+          await photoWrite('/api/avatar/photo',{mime_type:file.type,data_base64:encoded});notify('原照仅存本机；尚未生成角色');
+        }
+      }catch(error){notify(error.message)}finally{submit.disabled=false}
+    });
+    setInterval(tick,1000);
+    setInterval(()=>{if(!selectedTask)load(state?.selected_goal_id).catch(error=>notify(error.message))},60000);
+    load(new URLSearchParams(location.search).get('goal_id')).catch(error=>{app.textContent='无法读取本机工作台：'+error.message});
+  })();
+</script>
+</body>
+</html>
