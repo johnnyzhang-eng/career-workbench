@@ -21,4 +21,15 @@
   <figure><figcaption>L0 原版 · 夜晚 · 已开始</figcaption><a href="L0/baseline-360x320-evening-started.png"><img src="L0/baseline-360x320-evening-started.png" alt="原版小窗夜晚已开始"></a></figure>
   <figure><figcaption>L1 房间优先 · 夜晚 · 已开始</figcaption><a href="L1/baseline-360x320-evening-started.png"><img src="L1/baseline-360x320-evening-started.png" alt="房间优先小窗夜晚已开始"></a></figure>
 </div>
+<h2>同一 R2 骨骼角色：固定打字关键帧</h2>
+<p>下方改用 <a href="../rigged_character_experiment/index.html">PR #35 的 R2 可编辑骨骼角色</a>；L0/L1 仍只改变小窗给房间的高度。两列都固定在 TypingLoop 的同一关键帧 0.45 秒。这能比较动作姿态的显示面积，但不能从静帧判断动作连续性或键盘接触质量。</p>
+<div class="grid">
+  <figure><figcaption>R2＋L0 · 白天 · 打字帧</figcaption><a href="rigged/L0/baseline-360x320-day-started.png"><img src="rigged/L0/baseline-360x320-day-started.png" alt="R2 原布局白天打字帧"></a></figure>
+  <figure><figcaption>R2＋L1 · 白天 · 打字帧</figcaption><a href="rigged/L1/baseline-360x320-day-started.png"><img src="rigged/L1/baseline-360x320-day-started.png" alt="R2 房间优先布局白天打字帧"></a></figure>
+  <figure><figcaption>R2＋L0 · 夜晚 · 打字帧</figcaption><a href="rigged/L0/baseline-360x320-evening-started.png"><img src="rigged/L0/baseline-360x320-evening-started.png" alt="R2 原布局夜晚打字帧"></a></figure>
+  <figure><figcaption>R2＋L1 · 夜晚 · 打字帧</figcaption><a href="rigged/L1/baseline-360x320-evening-started.png"><img src="rigged/L1/baseline-360x320-evening-started.png" alt="R2 房间优先布局夜晚打字帧"></a></figure>
+</div>
+<h2>R2＋L1 连续动作</h2>
+<p>以下 2.5 秒为真实 Godot 小窗连续采帧，先 SitToType，后 TypingLoop。原大观看时手部位移仍很弱，无法清楚读出敲键节奏；它是下一轮角色动作设计的待解决问题。</p>
+<video controls width="360" height="320" style="max-width:100%" poster="rigged/L1/baseline-360x320-day-started.png"><source src="rigged/L1/sit-and-type-focus-360x320-day.mp4" type="video/mp4">浏览器不支持视频预览。</video>
 </html>

@@ -48,7 +48,7 @@ def run():
                 cmd = [str(GODOT), "--path", str(PROJECT), SCENE, "--",
                        "--route=baseline", f"--size={width}x{height}",
                        f"--phase={phase}", f"--out={folder}",
-                       "--capture", "--proof", "--quit"]
+                       "--fixed-clock", "--capture", "--proof", "--quit"]
                 if focus:
                     cmd.append("--activity-focus-layout")
                 start = time.monotonic()
@@ -80,6 +80,10 @@ def run():
         "source_sha256": {str(path.relative_to(ROOT)): digest(path) for path in SOURCES},
         "records": records,
     }, ensure_ascii=False, indent=2) + "\n")
+    for phase in PHASES:
+        left = OUT / "L0" / f"baseline-1280x720-{phase}-idle.png"
+        right = OUT / "L1" / f"baseline-1280x720-{phase}-idle.png"
+        assert digest(left) == digest(right), "布局试验不应改动全窗待机画面"
 
 
 if __name__ == "__main__":

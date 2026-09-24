@@ -1,6 +1,6 @@
 {
   "display_scale": 2.0,
-  "elapsed_ms": 6826.236,
+  "elapsed_ms": 2261.152,
   "engine": "4.7-stable (official)",
   "events": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "fictional": true,
-  "frame_count": 192,
+  "frame_count": 50,
   "phase": "day",
   "route": "baseline",
   "viewport": [

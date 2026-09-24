@@ -1,0 +1,74 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CHARACTER_POSE idle_static
+CHARACTER_IMPORTED idle_meshes=38 typing_meshes=40 camera_fov=45.0
+CHARACTER_POSE idle_static
+R2_GODOT_IMPORT skeleton_bones=8 animations=["SitToType", "TypingLoop"] meshes=1 camera_fov=45.0 typing_loop_mode=1
+CHARACTER_POSE idle_static
+CHARACTER_POSE idle_static
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-idle.png
+CHARACTER_POSE typing_static
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-000.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-001.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-002.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-003.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-004.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-005.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-006.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-007.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-008.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-009.png
+R2_LOOP_STARTED
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-010.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-011.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-012.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-013.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-014.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-015.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-016.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-017.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-018.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-019.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-020.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-021.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-022.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-023.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-024.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-025.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-026.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-027.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-028.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-029.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-030.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-031.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-032.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-033.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-034.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-035.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-036.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-037.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-038.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-039.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-040.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-041.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-042.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-043.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-044.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-045.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-046.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-047.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-048.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-049.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-050.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-051.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-052.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-053.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-054.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-055.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-056.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-057.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-058.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-focus-motion-059.png
+CAPTURE <repo>/prototype/comparison/activity_focus_layout/rigged/L1/_video_frames/baseline-360x320-day-started.png

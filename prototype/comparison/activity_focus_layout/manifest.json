@@ -6,7 +6,7 @@
     "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
     "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
     "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
-    "prototype/godot/comparison/activity_focus_layout.gd": "6ff7b4f3703ddc5c38b0ea80f734c9510f34f43527c5de517e48b4c5fdbee622",
+    "prototype/godot/comparison/activity_focus_layout.gd": "1f1beb0aad7be2914ad3d5f4e15d328e33703217c891d3823af72673d32ecd4c",
     "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
   },
   "records": [
@@ -19,7 +19,7 @@
       ],
       "phase": "day",
       "ok": true,
-      "wall_seconds": 7.502,
+      "wall_seconds": 3.265,
       "captures": [
         {
           "state": "idle",
@@ -37,12 +37,12 @@
             720,
             640
           ],
-          "sha256": "04b2a0eae865c5a6f6bb41f6dd03575f98b5fd2c8ed08cd618ef85509971dde8"
+          "sha256": "8005da03d64a604aaf232c7126aa4d74b53bf7b69e0762278d45dd98a49f8935"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 6826.236,
+        "elapsed_ms": 2261.152,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -52,7 +52,7 @@
           }
         ],
         "fictional": true,
-        "frame_count": 192,
+        "frame_count": 50,
         "phase": "day",
         "route": "baseline",
         "viewport": [
@@ -74,7 +74,7 @@
       ],
       "phase": "evening",
       "ok": true,
-      "wall_seconds": 2.62,
+      "wall_seconds": 2.704,
       "captures": [
         {
           "state": "idle",
@@ -92,12 +92,12 @@
             720,
             640
           ],
-          "sha256": "b8d9cc144a1f0f51cd5bc3209caac4f79d69e35657ca9e68af188c9dfe22411a"
+          "sha256": "0ab4821dda8ea0d7bd1bf6a995e253866bd5d5f220a4b0a1106c27cd05c0a163"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 2006.403,
+        "elapsed_ms": 1972.308,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -129,7 +129,7 @@
       ],
       "phase": "day",
       "ok": true,
-      "wall_seconds": 2.586,
+      "wall_seconds": 2.625,
       "captures": [
         {
           "state": "idle",
@@ -138,7 +138,7 @@
             2560,
             1440
           ],
-          "sha256": "c5dbda996d22a9ba210c2efdfee0d338aab25bbee938ac57dad921ad49daba46"
+          "sha256": "d96067d72f0d272a3439d7c60866f5221932179f10fdff271df1f86658c034bb"
         },
         {
           "state": "started",
@@ -147,12 +147,12 @@
             2560,
             1440
           ],
-          "sha256": "882e39cd529ab37cac827f4e09cd9411b1ed50bd8dd8ad0f3c7e6f0c49db4d91"
+          "sha256": "9c4f6ec907d2666c4c40d4c319348e1755666b0ca18e2e3c1ffb0f1f6c0a7f44"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 2099.518,
+        "elapsed_ms": 2089.481,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -184,7 +184,7 @@
       ],
       "phase": "evening",
       "ok": true,
-      "wall_seconds": 2.594,
+      "wall_seconds": 2.558,
       "captures": [
         {
           "state": "idle",
@@ -193,7 +193,7 @@
             2560,
             1440
           ],
-          "sha256": "47c9b37551b2ffcb9c605f8906bb16585d41b37ac4e28bbf3053f8cef4ccf75b"
+          "sha256": "e1e79fd8c03b473774e5604e2432c4b7710b9311c7d36bf4986964c99e7e5c23"
         },
         {
           "state": "started",
@@ -202,12 +202,12 @@
             2560,
             1440
           ],
-          "sha256": "81d0cbbbd3b1b13e9c837b7aec2f4ea54bf4bc2453d892b4bb036856f8d49bc1"
+          "sha256": "3e7c1d9cee42b23cea325cd70ff8901ed72a164212ec4c2ba07937d36d965566"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 2066.337,
+        "elapsed_ms": 2067.629,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -239,7 +239,7 @@
       ],
       "phase": "day",
       "ok": true,
-      "wall_seconds": 2.536,
+      "wall_seconds": 2.477,
       "captures": [
         {
           "state": "idle",
@@ -257,12 +257,12 @@
             720,
             640
           ],
-          "sha256": "d1daba9e676efb2b2dd6d9f2fb5832bb6383503307b0a4b95881d7b7b5d57658"
+          "sha256": "8e7d4d2c0468d62607b657540365d059e6647889790f92a78c0baeb401fb19f4"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 1962.902,
+        "elapsed_ms": 1943.355,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -294,7 +294,7 @@
       ],
       "phase": "evening",
       "ok": true,
-      "wall_seconds": 2.541,
+      "wall_seconds": 2.476,
       "captures": [
         {
           "state": "idle",
@@ -312,12 +312,12 @@
             720,
             640
           ],
-          "sha256": "10d9f9c6e95f93c4dad2e882d808067a3b2b0f6ddfa1f216c1174f9e4cad8897"
+          "sha256": "85e77433dfcdfffcdf39594b0893a979818d5b2461b0725c499a99793e378b42"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 1960.823,
+        "elapsed_ms": 1948.038,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -349,7 +349,7 @@
       ],
       "phase": "day",
       "ok": true,
-      "wall_seconds": 2.535,
+      "wall_seconds": 2.539,
       "captures": [
         {
           "state": "idle",
@@ -358,7 +358,7 @@
             2560,
             1440
           ],
-          "sha256": "c5dbda996d22a9ba210c2efdfee0d338aab25bbee938ac57dad921ad49daba46"
+          "sha256": "d96067d72f0d272a3439d7c60866f5221932179f10fdff271df1f86658c034bb"
         },
         {
           "state": "started",
@@ -367,12 +367,12 @@
             2560,
             1440
           ],
-          "sha256": "ee17296b83834f5b5adfb800353eb5c56c0a44f1f139f6c3abde082dbe8d12d4"
+          "sha256": "52112b91f9133f6632c24f6d66e51613fe2efbddf1f7178876849ceddd54125a"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 2053.593,
+        "elapsed_ms": 2064.55,
         "engine": "4.7-stable (official)",
         "events": [
           {
@@ -404,7 +404,7 @@
       ],
       "phase": "evening",
       "ok": true,
-      "wall_seconds": 2.611,
+      "wall_seconds": 2.536,
       "captures": [
         {
           "state": "idle",
@@ -413,7 +413,7 @@
             2560,
             1440
           ],
-          "sha256": "47c9b37551b2ffcb9c605f8906bb16585d41b37ac4e28bbf3053f8cef4ccf75b"
+          "sha256": "e1e79fd8c03b473774e5604e2432c4b7710b9311c7d36bf4986964c99e7e5c23"
         },
         {
           "state": "started",
@@ -422,12 +422,12 @@
             2560,
             1440
           ],
-          "sha256": "137033fc8af3fe66a5805f2eb90d0f6b02684a91754d54cbb82d23ce33fde8c7"
+          "sha256": "1487c4486cfb1c7cfac0c563843c4ad088feb049eedac948a2505ea8299f6e79"
         }
       ],
       "capture_meta": {
         "display_scale": 2.0,
-        "elapsed_ms": 2062.341,
+        "elapsed_ms": 2036.73,
         "engine": "4.7-stable (official)",
         "events": [
           {

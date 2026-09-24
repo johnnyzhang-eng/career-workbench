@@ -1,0 +1,13 @@
+{
+  "godot_frames": 60,
+  "encode_fps": 24,
+  "input": "R2 SitToType then TypingLoop in L1 compact room",
+  "video": "sit-and-type-focus-360x320-day.mp4",
+  "sha256": "7310b3b6d3e52ce5122386c6ab1cae0f6efbb39a4aec2c44ad635920034dce89",
+  "ffprobe": {
+    "format": {
+      "duration": "2.500000",
+      "size": "37751"
+    }
+  }
+}
