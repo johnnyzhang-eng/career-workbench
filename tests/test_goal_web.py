@@ -2,8 +2,10 @@
 
 import http.client
 import json
+import socket
 import tempfile
 import threading
+import time
 import unittest
 import base64
 from datetime import datetime, timezone
@@ -172,6 +174,25 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(self.request("GET", "/scene-assets/../goal-scene.js")[0], 404)
         self.assertEqual(self.request("GET", "/scene-assets/unlisted.png")[0], 404)
         self.assertEqual(self.request("GET", "/scene-assets/desk-front.png?extra=1")[0], 404)
+
+    def test_idle_client_does_not_block_other_requests(self):
+        idle = socket.create_connection(("127.0.0.1", self.port), timeout=2)
+        try:
+            # A browser may open a speculative connection before sending a request.
+            idle.sendall(b"GET /compact HTTP/1.1\r\n")
+            time.sleep(0.2)
+            start = time.monotonic()
+            connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=1)
+            try:
+                connection.request("GET", "/compact", headers={"Host": f"127.0.0.1:{self.port}"})
+                response = connection.getresponse()
+                self.assertEqual(response.status, 200)
+                response.read()
+            finally:
+                connection.close()
+            self.assertLess(time.monotonic() - start, 1)
+        finally:
+            idle.close()
 
     def test_explicit_room_actions_do_not_complete_daily_task(self):
         token = self.request("GET", "/api/state")[1]["csrf_token"]
