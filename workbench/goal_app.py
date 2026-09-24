@@ -1,5 +1,7 @@
 """Local goal workbench commands and a truthful, persisted read model."""
 
+import hashlib
+import json
 import re
 from contextlib import contextmanager
 from datetime import date, datetime, timezone
@@ -8,6 +10,7 @@ from zoneinfo import ZoneInfo
 
 from .daily import DailyStore
 from .goal_daily_bridge import GoalDailyBridge
+from .goal_result_bridge import GoalResultBridge
 from .goals import GoalStore
 from .plan_templates import build_first_plan
 from .scene_state import scene_state
@@ -29,6 +32,34 @@ def _operation(payload):
     if not isinstance(value, str) or not OPERATION_ID.fullmatch(value):
         raise ValueError("operation_id 无效")
     return value
+
+
+def _stable_id(prefix, *parts):
+    material = json.dumps(parts, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return prefix + hashlib.sha256(material.encode("utf-8")).hexdigest()[:40].upper()
+
+
+def _result_fields(payload):
+    minutes = payload.get("actual_minutes")
+    if type(minutes) is not int or not 0 <= minutes <= 10080:
+        raise ValueError("实际分钟需要本人填写 0–10080 的整数")
+    metric = payload.get("metric")
+    if metric is not None:
+        if not isinstance(metric, dict) or not metric or set(metric) - {"correct", "total", "expected"}:
+            raise ValueError("成绩只接受 correct、total、expected 数字")
+        if not {"correct", "total"} <= set(metric):
+            raise ValueError("成绩需要正确数与总题数")
+        if any(type(value) is not int or not 0 <= value <= 10000 for value in metric.values()):
+            raise ValueError("成绩数字无效")
+        if metric["total"] == 0 or metric["correct"] > metric["total"] or metric.get("expected", 0) > metric["total"]:
+            raise ValueError("成绩总题数或正确数无效")
+    evidence_ref = payload.get("evidence_ref")
+    if evidence_ref is not None and (not isinstance(evidence_ref, str) or len(evidence_ref) > 1000):
+        raise ValueError("结果依据位置过长")
+    note = payload.get("note")
+    if not isinstance(note, str) or len(note) > 1000:
+        raise ValueError("本人结果说明需要文字且不超过 1000 字")
+    return minutes, metric, evidence_ref, note
 
 
 class GoalApp:
@@ -60,7 +91,7 @@ class GoalApp:
                 raise ValueError("目标不存在")
             now = self.clock()
             result = {"as_of": now.isoformat(), "goals": goal_list, "selected_goal_id": goal_id,
-                      "selected": None, "storage": "local", "result_bridge": "pending"}
+                      "selected": None, "storage": "local", "result_bridge": "available"}
             if goal_id is None:
                 result["scene"] = scene_state(None, now)
                 return result
@@ -104,7 +135,8 @@ class GoalApp:
                                   "active_plan": {**active, "items": plan_items} if active else None,
                                   "pending_proposals": pending, "sync": sync,
                                   "today_tasks": today_tasks, "feedback": feedback,
-                                  "results": snapshot["results"], "reviews": snapshot["reviews"]}
+                                  "results": snapshot["results"], "reviews": snapshot["reviews"],
+                                  "result_status": GoalResultBridge(goals, daily).status(goal_id)}
             actions = SceneActionStore(self.workspace, self.clock)
             try:
                 action = actions.snapshot(goal_id)
@@ -203,9 +235,10 @@ class GoalApp:
             proposal = all_state["proposals"].get(proposal_id)
             if proposal is None:
                 raise ValueError("提案不存在")
+            subject = "首版计划" if proposal["base_version"] == 0 else "复盘提案"
             goals.command("decide_plan", "E-D-" + operation,
                           {"proposal_id": proposal_id, "decision": decision, "actor": "user",
-                           "reason": "本人在本地工作台" + ("接受" if decision == "accept" else "拒绝") + "首版计划",
+                           "reason": "本人在本地工作台" + ("接受" if decision == "accept" else "拒绝") + subject,
                            "edited_items": None, "policy_ref": None})
             goal_id = proposal["goal_id"]
         return self.state(goal_id)
@@ -238,4 +271,88 @@ class GoalApp:
             if task is None or task["kind"] not in {"practice", "custom"}:
                 raise ValueError("此任务需要对应的求职原流程，不支持在此直接完成")
             daily.command("complete", "E-C-" + operation, task_id, {"evidence": evidence})
+        return self.state(goal_id)
+
+    def confirm_result(self, payload):
+        """Only an explicit same-origin UI command can project a completed task."""
+        _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        task_id = _required_text(payload.get("task_id"), "任务 ID", 80)
+        minutes, metric, evidence_ref, note = _result_fields(payload)
+        correct = payload.get("correct", False)
+        if type(correct) is not bool:
+            raise ValueError("更正标记无效")
+        with self._stores() as (goals, daily, _bridge):
+            results = GoalResultBridge(goals, daily)
+            complete_event_id = results.completion_event_id(goal_id, task_id)
+            correction_id = (_stable_id("CR-", goal_id, task_id, complete_event_id,
+                                        minutes, metric, evidence_ref, note) if correct else None)
+            results.record_completed(goal_id, task_id, complete_event_id,
+                                     actual_minutes=minutes, metric=metric,
+                                     evidence_ref=evidence_ref, note=note,
+                                     actor="user", correction_id=correction_id)
+        return self.state(goal_id)
+
+    def report_unfinished(self, payload):
+        """A user's report changes GoalStore history, never DailyStore completion."""
+        _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        task_id = _required_text(payload.get("task_id"), "任务 ID", 80)
+        outcome = payload.get("outcome")
+        if outcome not in {"missed", "partial", "blocked"}:
+            raise ValueError("仅支持未做、部分完成或受阻的本人记录")
+        minutes, metric, evidence_ref, note = _result_fields(payload)
+        if not note.strip():
+            raise ValueError("请写下实际情况，才能形成温和复盘")
+        with self._stores() as (goals, daily, _bridge):
+            goal = goals.snapshot(goal_id)["goal"]
+            task = daily._tasks().get(task_id)
+            if task is None or task["state"] in {"completed", "cancelled"}:
+                raise ValueError("只能报告尚未完成的每日任务")
+            local_now = self.clock().astimezone(ZoneInfo(goal["timezone"]))
+            scheduled = datetime.fromisoformat(task["scheduled_at"].replace("Z", "+00:00"))
+            if scheduled.astimezone(ZoneInfo(goal["timezone"])).date() > local_now.date():
+                raise ValueError("未来任务还不能报告未完成")
+            # One identical report per local day is a retry; an identical
+            # report tomorrow is a separate observation of ongoing work.
+            report_id = _stable_id("RU-", goal_id, task_id, local_now.date().isoformat(), outcome,
+                                   minutes, metric, evidence_ref, note)
+            GoalResultBridge(goals, daily).record_unfinished(
+                goal_id, task_id, report_id, outcome, actual_minutes=minutes,
+                metric=metric, evidence_ref=evidence_ref, note=note, actor="user")
+        return self.state(goal_id)
+
+    def review_result(self, payload):
+        """Propose keeping the current plan after a gentle, user-triggered review."""
+        _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        result_id = _required_text(payload.get("result_id"), "结果 ID", 80)
+        with self._stores() as (goals, daily, _bridge):
+            snapshot = goals.snapshot(goal_id)
+            active = snapshot["plans"][-1] if snapshot["plans"] else None
+            if active is None:
+                raise ValueError("没有可审阅的生效计划")
+            result = next((r for r in snapshot["results"] if r["id"] == result_id), None)
+            if result is None or result["outcome"] not in {"missed", "partial", "blocked"}:
+                raise ValueError("此结果不能形成未完成复盘")
+            reviewed_ids = {review["id"] for review in snapshot["reviews"]
+                            if result_id in review["result_ids"]}
+            if any(proposal["review_id"] in reviewed_ids for proposal in snapshot["proposals"]):
+                # A retry after accept/decline must not propose the same result
+                # against a newer plan version. An interrupted review without a
+                # proposal is still retried by the deterministic IDs below.
+                return self.state(goal_id)
+            finding = {
+                "missed": "这次没有完成；先回顾可用时间，再决定是否调整。不会扣分。",
+                "partial": "这次只完成一部分；下次可从剩余内容继续。不会扣分。",
+                "blocked": "这次遇到阻碍；先确认阻碍是否仍在，再决定下一步。不会扣分。",
+            }[result["outcome"]]
+            reason = "建议暂保留现有七日任务与时段；若要改期，请另行审阅具体安排。"
+            source_ref = "self:" + result_id
+            review_id = _stable_id("RV-", goal_id, active["version"], result_id)
+            proposal_id = _stable_id("PR-", goal_id, active["version"], result_id)
+            GoalResultBridge(goals, daily).review_with_proposal(
+                goal_id, result_id, review_id, proposal_id,
+                proposed_items=active["items"], finding=finding,
+                proposal_reason=reason, source_ref=source_ref, actor="user")
         return self.state(goal_id)
