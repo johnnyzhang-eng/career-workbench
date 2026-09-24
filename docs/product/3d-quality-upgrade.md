@@ -19,6 +19,17 @@
 4. **环境素材优先检查 CC0 单件。** [Poly Haven](https://polyhaven.com/license) 的 HDRI、材质和模型标为 CC0，适合试一块木桌材质、墙面和柔和环境光；[Kenney](https://kenney.nl/support) 与 [Quaternius](https://quaternius.com/faq.html) 的资产也可作 CC0 候选，但它们的造型是否与 A 的真实感统一必须看实际截图。每件素材在取得时保存原页面、许可、作者/包名、版本与源文件哈希；不把整包堆入公开仓后再挑。
 5. **有价格或限制的素材只作为备选来源。** [Fab 标准许可](https://www.fab.com/eula)允许在项目中使用、修改和与项目协作者分享，但限制把素材单独再次分发；公开 GitHub 仓库是否适合放原始资产须逐件核对。任何购买或按次生成调用先报具体费用并取得明确同意，当前试验只用原创或已核许可的免费素材。Mixamo 的[官方 FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)还注明中国地区代码的 Adobe ID 无法使用，所以不把它设为唯一动作来源。
 
+### 已核来源、待实机判断的具体候选
+
+| 候选 | 为什么看它 | 导入前的限制 |
+| --- | --- | --- |
+| [Poly Haven Fine Grained Wood](https://polyhaven.com/a/fine_grained_wood) | CC0 木纹与粗糙度可用于单件桌面材质对照 | 先选低分辨率贴图，在原大小窗看木纹是否真有增益；保留作者与资产页记录 |
+| [Poly Haven Wood Floor](https://polyhaven.com/a/wood_floor) | CC0 室内地板材质，适合与 A 的光影做单因素对照 | 不能把整套高分辨率贴图直接塞进常驻 Web 场景；先测 1K 及图案重复 |
+| [Poly Haven Desk Lamp Arm 01](https://polyhaven.com/a/desk_lamp_arm_01) | CC0 可动台灯，能检验真实感物件是否与原 A 房间协调 | 页面标 26K 三角面和多张材质图；先做简化/尺寸对照，不能当作当前默认素材 |
+| [Poly Haven Decorative Book Set 01](https://polyhaven.com/a/decorative_book_set_01) | CC0 书本可为阅读场景提供视觉参考 | 页面说明整套为 113K 三角面且暂不提供 glTF；先做一册适配角色手部的原创书，不直接导入整套环境摆件 |
+
+以上只验证来源与许可页，**尚未证明**在 Godot 小窗里好看或省资源。[Godot 4.7 的贴图限制说明](https://docs.godotengine.org/en/4.7/tutorials/3d/3d_rendering_limitations.html)支持在导入时设尺寸上限；M1/M2 需分别记源贴图、导入后尺寸、Godot Web 包增量和常驻内存，而不是把素材站的最高分辨率视作质量目标。
+
 ## 两个小而可比的下一轮样本
 
 | 样本 | 只改变什么 | 必须同屏看见 | 停止条件 |
