@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原 3D：小窗房间高度对照</title>
+<style>
+  :root{font-family:system-ui,-apple-system,sans-serif;color:#30443f;background:#f6f1e6}
+  body{margin:0 auto;max-width:870px;padding:28px}
+  h1{font-size:27px}p{line-height:1.65;max-width:850px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  figure{margin:0;padding:14px;background:#fff;border:1px solid #d8ddd4;border-radius:16px}
+  figcaption{font-weight:700;margin:0 0 9px}
+  img{display:block;width:360px;height:320px;max-width:100%;object-fit:contain;image-rendering:auto}
+  .note{font-size:14px;color:#5d6c66}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}body{padding:16px}}
+</style>
+<h1>原 3D 小窗：房间画幅 141 → 222 逻辑像素</h1>
+<p>两列均是真实 Godot 4.7 Compatibility 运行截图，按 360×320 逻辑尺寸显示。L0 完全复用原版 A；L1 仅改变紧凑窗口的信息分配，把“房间＋人”作为小窗主角。角色、家具、相机、光照和任务样本相同；全窗画面逐字节相同。</p>
+<p class="note">「已开始」截图通过测试脚本设置同一虚构任务状态，用于比较画面可读性；L1 的开始／结果／延期操作需展开工作台，尚未验证正式小窗任务交互。点击图可查看 2× 原生 PNG。</p>
+<div class="grid">
+  <figure><figcaption>L0 原版 · 白天 · 已开始</figcaption><a href="L0/baseline-360x320-day-started.png"><img src="L0/baseline-360x320-day-started.png" alt="原版小窗白天已开始"></a></figure>
+  <figure><figcaption>L1 房间优先 · 白天 · 已开始</figcaption><a href="L1/baseline-360x320-day-started.png"><img src="L1/baseline-360x320-day-started.png" alt="房间优先小窗白天已开始"></a></figure>
+  <figure><figcaption>L0 原版 · 夜晚 · 已开始</figcaption><a href="L0/baseline-360x320-evening-started.png"><img src="L0/baseline-360x320-evening-started.png" alt="原版小窗夜晚已开始"></a></figure>
+  <figure><figcaption>L1 房间优先 · 夜晚 · 已开始</figcaption><a href="L1/baseline-360x320-evening-started.png"><img src="L1/baseline-360x320-evening-started.png" alt="房间优先小窗夜晚已开始"></a></figure>
+</div>
+<h2>同一 R2 骨骼角色：固定打字关键帧</h2>
+<p>下方改用 <a href="../rigged_character_experiment/index.html">PR #35 的 R2 可编辑骨骼角色</a>；L0/L1 仍只改变小窗给房间的高度。两列都固定在 TypingLoop 的同一关键帧 0.45 秒。这能比较动作姿态的显示面积，但不能从静帧判断动作连续性或键盘接触质量。</p>
+<div class="grid">
+  <figure><figcaption>R2＋L0 · 白天 · 打字帧</figcaption><a href="rigged/L0/baseline-360x320-day-started.png"><img src="rigged/L0/baseline-360x320-day-started.png" alt="R2 原布局白天打字帧"></a></figure>
+  <figure><figcaption>R2＋L1 · 白天 · 打字帧</figcaption><a href="rigged/L1/baseline-360x320-day-started.png"><img src="rigged/L1/baseline-360x320-day-started.png" alt="R2 房间优先布局白天打字帧"></a></figure>
+  <figure><figcaption>R2＋L0 · 夜晚 · 打字帧</figcaption><a href="rigged/L0/baseline-360x320-evening-started.png"><img src="rigged/L0/baseline-360x320-evening-started.png" alt="R2 原布局夜晚打字帧"></a></figure>
+  <figure><figcaption>R2＋L1 · 夜晚 · 打字帧</figcaption><a href="rigged/L1/baseline-360x320-evening-started.png"><img src="rigged/L1/baseline-360x320-evening-started.png" alt="R2 房间优先布局夜晚打字帧"></a></figure>
+</div>
+<h2>R2＋L1 连续动作</h2>
+<p>以下 2.5 秒为真实 Godot 小窗连续采帧，先 SitToType，后 TypingLoop。原大观看时手部位移仍很弱，无法清楚读出敲键节奏；它是下一轮角色动作设计的待解决问题。</p>
+<video controls width="360" height="320" style="max-width:100%" poster="rigged/L1/baseline-360x320-day-started.png"><source src="rigged/L1/sit-and-type-focus-360x320-day.mp4" type="video/mp4">浏览器不支持视频预览。</video>
+</html>
