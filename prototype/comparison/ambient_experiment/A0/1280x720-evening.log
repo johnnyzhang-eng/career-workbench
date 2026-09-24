@@ -1,0 +1,8 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(1280, 720) pixels=(2560, 1440) scale=2.0
+AMBIENT_ACTUAL phase=day multiplier=1.0 energy=0.36000001430511
+AMBIENT_ACTUAL phase=evening multiplier=1.0 energy=0.47999998927116
+AMBIENT_ACTUAL phase=evening multiplier=1.0 energy=0.47999998927116
+CAPTURE <repo>/prototype/comparison/ambient_experiment/A0/baseline-1280x720-evening-idle.png
