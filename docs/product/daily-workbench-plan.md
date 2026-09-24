@@ -1,6 +1,6 @@
 # 秋招每日工作台：产品与开发计划
 
-状态：2026-09-24 提案；[GitHub 产品方向 Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。基于用户对“现实时间同步、每日 checklist、桌面常驻”的澄清，形成任务逻辑与游戏场景并行的[首个纵向切片契约](./vertical-slice-contract.md)。[参考视频观看记录](./reference-video-analysis.md)用于建模、场景、反馈与试玩迭代。
+状态：2026-09-24 提案；[GitHub 产品方向 Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。先按[定位与体验门槛](./product-direction-gate.md)校正产品目的、玩家循环与美术目标；本计划的每日 checklist、桌面常驻和 3D 场景均为待评审的实现方向。任务逻辑与游戏场景并行使用[首个纵向切片契约](./vertical-slice-contract.md)作探索边界。[参考视频观看记录](./reference-video-analysis.md)用于建模、场景、反馈与试玩迭代。
 
 ## 目标与仓库决策
 

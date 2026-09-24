@@ -1,6 +1,6 @@
 # 学习与求职工作台：产品发现（草案）
 
-**方向更新（2026-09-24）：**用户明确了现实时间同步、每日 checklist 与桌面常驻体验。新的[秋招每日工作台计划](daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)是正在讨论的产品主线；本目录其余材料保留为此前的岗位、学习与证据设计，具体排期以新计划讨论结果为准。
+**方向更新（2026-09-24）：**用户明确了现实时间同步、真实秋招行动、游戏式反馈与桌面常驻体验。先看[定位与体验门槛](product-direction-gate.md)，再看[秋招每日工作台计划](daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。这些仍是待评审提案；本目录其余材料保留为此前的岗位、学习与证据设计，具体排期以定位讨论结果为准。
 
 本目录描述下一阶段产品方向，**不是已上线功能清单**。当前仓库实现的是本地命令行投递状态机；网页入口、零基础教学、每日训练与复测闭环仍待开发和用户验收。
 
