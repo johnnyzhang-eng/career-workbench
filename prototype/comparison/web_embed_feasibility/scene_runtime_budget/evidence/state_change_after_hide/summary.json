@@ -1,0 +1,81 @@
+{
+  "baseline_webkit_count": 10,
+  "caveat": "Launch cohort means new WebKit PIDs first seen within five seconds of host launch. This is temporal association, not proven ownership: macOS reparents WebKit XPC services to launchd and may reuse services. Later WebKit launches are excluded. Summed RSS double-counts shared pages. CPU interval rates use accumulated ps time; ps %CPU is a decaying average and only retained in raw records. No energy or GPU-power claim.",
+  "event_kinds": [
+    "launched",
+    "navigation_finished",
+    "ready",
+    "snapshot",
+    "hidden",
+    "fixture_switch",
+    "restored",
+    "restored_state",
+    "snapshot",
+    "completed"
+  ],
+  "exit_code": 0,
+  "fictional_fixture_switched_on_hide": true,
+  "host_pid": 46856,
+  "instrument_control": {
+    "cpu_seconds_delta": 1.51,
+    "kind": "known_cpu_burner",
+    "observed_rss_kib": 1152,
+    "parser_detected": true
+  },
+  "launch_cohort_candidate_pids": [
+    46863,
+    46864,
+    46865
+  ],
+  "launch_cohort_still_alive_two_seconds_after_host_exit": [],
+  "new_webkit_candidate_pids": [
+    46863,
+    46864,
+    46865
+  ],
+  "new_webkit_first_seen_seconds_after_launch": {
+    "46863": 0.5,
+    "46864": 0.5,
+    "46865": 0.5
+  },
+  "phase_summary": {
+    "hidden": {
+      "count": 20,
+      "host_cpu_core_percent_from_cputime": 0.0,
+      "host_rss_kib_median": 70912.0,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 9.86,
+      "launch_cohort_webkit_rss_kib_sum_median": 153392.0
+    },
+    "restored": {
+      "count": 15,
+      "host_cpu_core_percent_from_cputime": 1.78,
+      "host_rss_kib_median": 75872,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 16.6,
+      "launch_cohort_webkit_rss_kib_sum_median": 201488
+    },
+    "visible_idle": {
+      "count": 21,
+      "host_cpu_core_percent_from_cputime": 1.2,
+      "host_rss_kib_median": 66016,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 102.35,
+      "launch_cohort_webkit_rss_kib_sum_median": 400480
+    }
+  },
+  "scene_kind": "godot",
+  "screenshots": {
+    "restored.png": {
+      "exists": true,
+      "sha256": "7622c40b9fedcf7a204d2e1a8b7bc599e447bf24048ab35916defad0cc87d1e2"
+    },
+    "visible-initial.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    }
+  },
+  "system": {
+    "logical_cpus": "10",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "url_kind": "loopback fictional fixture"
+}

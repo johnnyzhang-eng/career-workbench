@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fictional pixel renderer resource control</title>
+<style>
+html,body{width:100%;height:100%;padding:0;margin:0;overflow:hidden;background:#1c2f43}
+goal-room-scene{display:block;width:360px!important;height:320px!important;aspect-ratio:auto!important;border-radius:0!important;box-shadow:none!important}
+</style>
+<goal-room-scene mode="idle" phase="evening" avatar="student" renderer="pixel"
+  room-day-src="/scene-assets/room-day.png" room-evening-src="/scene-assets/room-evening.png"
+  avatar-idle-src="/scene-assets/avatar-idle.png" avatar-desk-src="/scene-assets/avatar-desk.png"
+  avatar-study-src="/scene-assets/avatar-study.png" avatar-interview-src="/scene-assets/avatar-interview.png"
+  avatar-rest-src="/scene-assets/avatar-rest.png"></goal-room-scene>
+<script src="/goal-scene.js"></script>
+<script>
+  // Readiness requires actual loaded pixel assets, not the illustrated fallback.
+  const scene = document.querySelector('goal-room-scene');
+  const ready = setInterval(() => {
+    const root = scene.shadowRoot;
+    const bg = root?.querySelector('.pixel-bg');
+    const avatar = root?.querySelector('.pixel-avatar');
+    if (bg?.naturalWidth > 0 && avatar?.naturalWidth > 0 && !scene.hasAttribute('data-scene-fallback')) {
+      window.__sceneReady = true;
+      clearInterval(ready);
+    }
+  }, 100);
+</script>
+</html>

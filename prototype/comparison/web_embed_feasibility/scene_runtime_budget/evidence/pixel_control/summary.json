@@ -1,0 +1,79 @@
+{
+  "baseline_webkit_count": 10,
+  "caveat": "Launch cohort means new WebKit PIDs first seen within five seconds of host launch. This is temporal association, not proven ownership: macOS reparents WebKit XPC services to launchd and may reuse services. Later WebKit launches are excluded. Summed RSS double-counts shared pages. CPU interval rates use accumulated ps time; ps %CPU is a decaying average and only retained in raw records. No energy or GPU-power claim.",
+  "event_kinds": [
+    "launched",
+    "navigation_finished",
+    "ready",
+    "snapshot",
+    "hidden",
+    "restored",
+    "restored_state",
+    "snapshot",
+    "completed"
+  ],
+  "exit_code": 0,
+  "host_pid": 45937,
+  "instrument_control": {
+    "cpu_seconds_delta": 1.5,
+    "kind": "known_cpu_burner",
+    "observed_rss_kib": 1152,
+    "parser_detected": true
+  },
+  "launch_cohort_candidate_pids": [
+    45939,
+    45940,
+    45941
+  ],
+  "launch_cohort_still_alive_two_seconds_after_host_exit": [],
+  "new_webkit_candidate_pids": [
+    45939,
+    45940,
+    45941
+  ],
+  "new_webkit_first_seen_seconds_after_launch": {
+    "45939": 0.11,
+    "45940": 0.11,
+    "45941": 0.11
+  },
+  "phase_summary": {
+    "hidden": {
+      "count": 20,
+      "host_cpu_core_percent_from_cputime": 0.0,
+      "host_rss_kib_median": 74224.0,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 0.0,
+      "launch_cohort_webkit_rss_kib_sum_median": 65968.0
+    },
+    "restored": {
+      "count": 15,
+      "host_cpu_core_percent_from_cputime": 0.0,
+      "host_rss_kib_median": 72336,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 0.0,
+      "launch_cohort_webkit_rss_kib_sum_median": 61760
+    },
+    "visible_idle": {
+      "count": 21,
+      "host_cpu_core_percent_from_cputime": 0.05,
+      "host_rss_kib_median": 74640,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 0.0,
+      "launch_cohort_webkit_rss_kib_sum_median": 67216
+    }
+  },
+  "scene_kind": "pixel",
+  "screenshots": {
+    "restored.png": {
+      "exists": true,
+      "sha256": "5d598bb202830cdb4cbcc4de4d5f257672f448e6cd33557bbd3431051d44e752"
+    },
+    "visible-initial.png": {
+      "exists": true,
+      "sha256": "5d598bb202830cdb4cbcc4de4d5f257672f448e6cd33557bbd3431051d44e752"
+    }
+  },
+  "system": {
+    "logical_cpus": "10",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "url_kind": "loopback fictional fixture"
+}
