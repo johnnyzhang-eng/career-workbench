@@ -9,7 +9,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
-EVENT_KINDS = frozenset({"work_session_started", "work_session_ended", "artifact_updated"})
+EVENT_KINDS = frozenset({"work_session_started", "work_session_ended", "artifact_updated",
+                         "turn_prompted", "turn_stop_observed", "turn_interrupted", "tool_used"})
 IDENTIFIER = re.compile(r"[A-Za-z0-9_.:-]{1,160}\Z")
 STATES = frozenset({"enabled", "paused", "disconnected"})
 
@@ -62,7 +63,12 @@ class ActivityInbox:
             connection_id TEXT NOT NULL REFERENCES activity_connections(id) ON DELETE CASCADE,
             event_id TEXT NOT NULL, source TEXT NOT NULL, kind TEXT NOT NULL,
             occurred_at TEXT NOT NULL, observed_at TEXT NOT NULL,
-            task_hint TEXT, PRIMARY KEY(connection_id,event_id))""")
+            task_hint TEXT, session_ref TEXT, turn_ref TEXT, tool_name TEXT,
+            PRIMARY KEY(connection_id,event_id))""")
+        columns = {row["name"] for row in self.db.execute("PRAGMA table_info(activity_observations)")}
+        for name in ("session_ref", "turn_ref", "tool_name"):
+            if name not in columns:
+                self.db.execute(f"ALTER TABLE activity_observations ADD COLUMN {name} TEXT")
         self.db.execute("""CREATE TABLE IF NOT EXISTS activity_deleted_ids (
             connection_id TEXT NOT NULL REFERENCES activity_connections(id) ON DELETE CASCADE,
             event_hash TEXT NOT NULL, deleted_at TEXT NOT NULL,
@@ -101,7 +107,8 @@ class ActivityInbox:
     @staticmethod
     def _observation_dict(row):
         return {key: row[key] for key in ("connection_id", "event_id", "source", "kind",
-                                          "occurred_at", "observed_at", "task_hint")}
+                                          "occurred_at", "observed_at", "task_hint",
+                                          "session_ref", "turn_ref", "tool_name")}
 
     def connect(self, connection_id, source, allowed_types):
         """Trusted host action after explicit user opt-in; no adapter calls this."""
@@ -167,8 +174,8 @@ class ActivityInbox:
         """Accept only a minimal allowlisted observation; never writes DailyStore."""
         _require(isinstance(event, dict), "事件必须是对象")
         required = {"event_id", "source", "kind", "occurred_at"}
-        _require(required <= set(event) <= required | {"task_hint"},
-                 "事件字段无效；只允许 ID、来源、类型、时间和可选任务提示")
+        _require(required <= set(event) <= required | {"task_hint", "session_ref", "turn_ref", "tool_name"},
+                 "事件字段无效；只允许 ID、来源、类型、时间和限定元数据")
         event_id = _identifier(event["event_id"], "事件 ID")
         source = _identifier(event["source"], "来源")
         kind = event["kind"]
@@ -178,6 +185,12 @@ class ActivityInbox:
         task_hint = event.get("task_hint")
         if task_hint is not None:
             _identifier(task_hint, "任务提示")
+        metadata = {name: event.get(name) for name in ("session_ref", "turn_ref", "tool_name")}
+        for name, value in metadata.items():
+            if value is not None:
+                _identifier(value, name)
+        if kind == "tool_used":
+            _require(metadata["tool_name"] is not None, "工具事件需要工具名")
         with self.db:
             connection = self._connection(connection_id)
             _require(source == connection["source"], "来源与获授权连接不匹配")
@@ -187,7 +200,8 @@ class ActivityInbox:
             if prior is not None:
                 _require(prior["source"] == source and prior["kind"] == kind
                          and prior["occurred_at"] == occurred.isoformat()
-                         and prior["task_hint"] == task_hint,
+                         and prior["task_hint"] == task_hint
+                         and all(prior[name] == value for name, value in metadata.items()),
                          "事件 ID 已用于不同内容")
                 return self._observation_dict(prior)
             _require(connection["state"] == "enabled", "连接已暂停或断开，不能接收新事件")
@@ -200,13 +214,23 @@ class ActivityInbox:
                 (connection_id, self._event_hash(connection_id, event_id))).fetchone()
             _require(deleted is None, "该观察记录已删除，不能由重放重新加入")
             self.db.execute("""INSERT INTO activity_observations
-                (connection_id,event_id,source,kind,occurred_at,observed_at,task_hint)
-                VALUES(?,?,?,?,?,?,?)""",
+                (connection_id,event_id,source,kind,occurred_at,observed_at,task_hint,
+                 session_ref,turn_ref,tool_name)
+                VALUES(?,?,?,?,?,?,?,?,?,?)""",
                 (connection_id, event_id, source, kind, occurred.isoformat(),
-                 now.isoformat(), task_hint))
+                 now.isoformat(), task_hint, metadata["session_ref"],
+                 metadata["turn_ref"], metadata["tool_name"]))
             row = self.db.execute("""SELECT * FROM activity_observations
                 WHERE connection_id=? AND event_id=?""", (connection_id, event_id)).fetchone()
             return self._observation_dict(row)
+
+    def get_observation(self, connection_id, event_id):
+        """Return one existing event for a hook retry, or None; never changes task state."""
+        self._connection(connection_id)
+        _identifier(event_id, "事件 ID")
+        row = self.db.execute("""SELECT * FROM activity_observations
+            WHERE connection_id=? AND event_id=?""", (connection_id, event_id)).fetchone()
+        return self._observation_dict(row) if row is not None else None
 
     def list_observations(self, connection_id=None):
         if connection_id is None:
