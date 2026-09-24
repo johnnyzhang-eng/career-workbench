@@ -24,7 +24,13 @@
 
 命令为 `schedule/start/complete/defer/block/cancel`。调用 `DailyStore.command(command, event_id, task_id, payload, at)`；稳定事件 ID 重试幂等，复用 ID 但改内容会报错。所有时间是带时区的 ISO 8601，缺省 `at` 取注入时钟；任务事件不允许倒填到前一事件之前或提前超过五分钟。`defer/block/cancel` 必须有原因；延期需要新的未来 `scheduled_at`。终态只读。`claim_reminders()` 针对当前安排时间给出一次提醒，领取记录在 SQLite 中，重启或换时区不会重复领取；它不会用未知截止时间创建倒计时。
 
-`complete` 根据任务类型检查依据。`verify_job/prepare_materials/approve_materials/apply_job/practice` 接收 `{"evidence":{"job_event_seq":整数}}`，核对同一个私有工作区内旧状态机的相应事件和岗位 ID。`apply_job` 必须指向 `submitted` 事件；仅有已确认材料、打开原站或任务打勾均不满足。旧状态机仍负责材料版本、本人确认与回执门槛。`practice` 只证明记录了本人独立练习的自述与作品位置，**不证明掌握**。`attend_event/prepare_interview/follow_up/custom` 分别要求参加记录及时间、笔记位置、跟进依据或产物位置。这些是本地记录完整性检查，不会替用户验证外部事实真实性。
+`complete` 根据任务类型检查依据。`verify_job/prepare_materials/approve_materials/apply_job` 以及**岗位来源**的 `practice` 接收 `{"evidence":{"job_event_seq":整数}}`，核对同一个私有工作区内旧状态机的相应事件和岗位 ID。`apply_job` 必须指向 `submitted` 事件；仅有已确认材料、打开原站或任务打勾均不满足。旧状态机仍负责材料版本、本人确认与回执门槛。`attend_event/prepare_interview/follow_up/custom` 分别要求参加记录及时间、笔记位置、跟进依据或产物位置。这些是本地记录完整性检查，不会替用户验证外部事实真实性。
+
+## 通用目标适配草案（#17）
+
+非岗位练习可用 `kind=practice`、`source_kind=goal`、`source_id=目标 ID`；这条路径不需要岗位记录。练习完成须提供 `material_ref`、`first_attempt_ref`、`reflection_ref` 三个非空引用，保留材料、首次作答及复盘位置。它们仅说明本地记录已齐，不证明已掌握、通过考试或材料可靠。岗位来源的 `practice` 仍走原来的岗位事件检查，不能拿这三个引用越过旧状态机。
+
+从计划版本安排任务时可另外带 `goal_id` 和正整数 `plan_version`，两者必须一起提供；`source_kind=goal` 时 `source_id` 要等于 `goal_id`。快照原样返回这两个关联字段，供角落小窗和完整工作台显示同一目标/计划。此分支只提供 DailyStore 的非岗位任务承载与引用，**尚不把 GoalStore 的计划决策原子地写入 DailyStore**。#17 集成还需解决跨库事务或 durable outbox、自动弹性时段调整的同步及失败恢复；不可因两份本地记录都存在就声称 UI 已实时同源。
 
 ## CLI 示例
 
