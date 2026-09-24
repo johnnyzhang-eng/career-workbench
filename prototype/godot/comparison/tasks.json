@@ -1,0 +1,5 @@
+{"schema_version":0,"fictional":true,"tasks":[
+{"id":"DEMO-TASK-001","title":"核验虚构岗位届别","kind":"verify_job","state":"scheduled","source_id":"DEMO-JOB-001","due_at":null,"due_verified":false,"completion_rule":"写下虚构核验结论与来源"},
+{"id":"DEMO-STUDY-001","title":"完成一段听力练习","kind":"practice","state":"scheduled","source_id":"DEMO-CET6","due_at":null,"due_verified":false,"completion_rule":"写下虚构练习结果与待改进点"},
+{"id":"DEMO-REVIEW-001","title":"回顾今天的投入","kind":"review","state":"completed","source_id":"DEMO-GOAL","due_at":null,"due_verified":false,"completion_rule":"写下实际投入与下一步"}
+]}

@@ -1,0 +1,24 @@
+{
+  "display_scale": 2.0,
+  "elapsed_ms": 1914.323,
+  "engine": "4.7-stable (official)",
+  "events": [
+    {
+      "always_on_top": true,
+      "check": "collapse_restore",
+      "window_transparency_supported": true
+    }
+  ],
+  "fictional": true,
+  "frame_count": 26,
+  "phase": "day",
+  "route": "2d",
+  "viewport": [
+    360.0,
+    320.0
+  ],
+  "window_pixels": [
+    720,
+    640
+  ]
+}

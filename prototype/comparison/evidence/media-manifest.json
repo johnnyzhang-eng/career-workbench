@@ -1,0 +1,533 @@
+{
+  "note": "Application viewport captures only; filenames use logical size, Retina PNGs have 2x pixels. Mixed video lengths are stated in interaction-recordings.json.",
+  "files": {
+    "2d-1280x720-day-completed.png": {
+      "sha256": "c53c4bb200b1b44e6c105e738b11805d542c3f5e63ac60860b64c893f3c4d95d",
+      "bytes": 396264,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "2d-1280x720-day-deferred.png": {
+      "sha256": "c1117bb55d992c44583ac981eeddd402de54c71bf5ca1ee85971e703344d056b",
+      "bytes": 396553,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "2d-1280x720-day-idle.png": {
+      "sha256": "0bde13c440d5874eba9ee5e9a8e34135cf57a1ed08687276a34c8fc772fca1dc",
+      "bytes": 396811,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "2d-1280x720-day-interaction.mp4": {
+      "sha256": "fd1140e3ee9c56dc7fd56ab36e1dab03fa3e7e43d51674a0875a0f143f124463",
+      "bytes": 300214
+    },
+    "2d-1280x720-day-started.png": {
+      "sha256": "5a4216cf5abffc541d17845dbba26526157e887132efeb4e064f25a91e6425b6",
+      "bytes": 388598,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "2d-1280x720-evening-idle.png": {
+      "sha256": "5fe3f8bfcb77ee1302ddda2de0f6c40ec12169dfc4be6b64b59b1b4ae5599372",
+      "bytes": 399788,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "2d-360x320-day-completed.png": {
+      "sha256": "2281d1506544b63aedddd60e2057b14b9def280033aeba95406067f9b8a1a63f",
+      "bytes": 94843,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-360x320-day-deferred.png": {
+      "sha256": "6e06a5b6b9756b7e8f0a6442ff7f05dfe1b3b1eebfc1ce1c02d81402619cff13",
+      "bytes": 92907,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-360x320-day-idle.png": {
+      "sha256": "3bf1ee87b5d0aa92c80da40e4f04e54f5df702fbc7f70af636100fb14b94da68",
+      "bytes": 94273,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-360x320-day-interaction.mp4": {
+      "sha256": "9d106b8a75e1490eba2bcd4a9a526e0c7a2709028c68b60b188848ac4ed84ea1",
+      "bytes": 148158
+    },
+    "2d-360x320-day-restored.png": {
+      "sha256": "0638de6848c8d8430f9b2124851b9a8082eb1885925c051ee1393fa3c1be4448",
+      "bytes": 94272,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-360x320-day-started.png": {
+      "sha256": "448dab2c72094f06a09801c6552e461d4fa45b63cda8e0496afe3c5577ff24ba",
+      "bytes": 90027,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-360x320-evening-idle.png": {
+      "sha256": "d10fd83bc155277e80c02ce87e3b25c089a62748b37404df990176eceff2b5a3",
+      "bytes": 95256,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "2d-800x600-day-completed.png": {
+      "sha256": "c92a7a8c21934a44ea7af86ede3f7838168f8526b7b156b413721ace9cf1dd46",
+      "bytes": 235854,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "2d-800x600-day-deferred.png": {
+      "sha256": "e5cff2993be7bbb9b41024f1bd477342a8c13c7fa176d4745d91162a75f46c24",
+      "bytes": 235020,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "2d-800x600-day-idle.png": {
+      "sha256": "71687bda79473d5a9f7e3c25e50ccd1bc41233c1ce648b1860d19a54c3400071",
+      "bytes": 235121,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "2d-800x600-day-started.png": {
+      "sha256": "542ee1ea39edb6fa7e7cfc93bf1c4c39f30deddea79d17c34bc0ad70bb26be57",
+      "bytes": 228081,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "2d-800x600-evening-idle.png": {
+      "sha256": "b81f8c883a2aafc2ab1252c7b9d16daba99089f8cfb6341e507d0b4aef108476",
+      "bytes": 235792,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "2d-80x80-day-collapsed.png": {
+      "sha256": "cd1d94a6a0ec0c8a7bab45528e37c7dc75462d4f5fa7c573f75e69b2a58bce8d",
+      "bytes": 2915,
+      "pixels": [
+        160,
+        160
+      ]
+    },
+    "3d-1280x720-day-completed.png": {
+      "sha256": "9389c0035760c183afce27c75a9c510cba14837599d1359c0cefd754dc08b23a",
+      "bytes": 237727,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "3d-1280x720-day-deferred.png": {
+      "sha256": "ec6a06cd019227704686cd366b8f3e6689b3372b5076750d840db29c2a2a1fb1",
+      "bytes": 235114,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "3d-1280x720-day-idle.png": {
+      "sha256": "cd83a4cec48d4f24ba67ea7ff03bcd4ee4b38edf2d95f72e2cd6436024a298a8",
+      "bytes": 235063,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "3d-1280x720-day-interaction.mp4": {
+      "sha256": "6827f3d6121258a238f18a9a1a3b12ceceeb76dc9c1578232d2f7bf0185235ba",
+      "bytes": 282726
+    },
+    "3d-1280x720-day-started.png": {
+      "sha256": "3ce3306272d2b3b7ed53541b38325486848e6dfa2d0c942a4c51aee58e287c49",
+      "bytes": 226005,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "3d-1280x720-evening-idle.png": {
+      "sha256": "4885f6d2010a492dbee138590367ffbfdf76d08eba8783526c3259792df19b73",
+      "bytes": 316456,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "3d-360x320-day-completed.png": {
+      "sha256": "31ef00e325fc6693e5905fecefea85647463ab5e758f353c56d32746fd0ce379",
+      "bytes": 83245,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "3d-360x320-day-deferred.png": {
+      "sha256": "492dbf739679c8bfac116c83ecc76e6b208187ff23c2370671e5255454e04cc9",
+      "bytes": 80993,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "3d-360x320-day-idle.png": {
+      "sha256": "5f7c1884a9d237965e979697792a063820a8a0b9933f68a4ce1b7cea4641e325",
+      "bytes": 82356,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "3d-360x320-day-interaction.mp4": {
+      "sha256": "c3b2a54062589e11a99ce762574f4d86c442db67fe5ba9fb7a0e482ed98ccf66",
+      "bytes": 145593
+    },
+    "3d-360x320-day-started.png": {
+      "sha256": "56193033abd578bf2868f98f33f449862f8819c783202f9d47d43a2aeeda2a42",
+      "bytes": 77752,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "3d-360x320-evening-idle.png": {
+      "sha256": "e24d1d153fe230c53816af09758085decac8ee68fe1516af41b80f436b10d5b5",
+      "bytes": 102384,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "3d-800x600-day-completed.png": {
+      "sha256": "ec495c4c44e56909107df453c754cc039aaa7aab66ce76620714b950b3ea34fb",
+      "bytes": 179129,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "3d-800x600-day-deferred.png": {
+      "sha256": "a975eb12718784e08dca4dc261f586df6b26c5a3aa342d17af18826c88720196",
+      "bytes": 177854,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "3d-800x600-day-idle.png": {
+      "sha256": "54dab13b0875272e1e62067172a32ca2c51a6fab8c5f8bc38eb92fb1b9285f4c",
+      "bytes": 177969,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "3d-800x600-day-started.png": {
+      "sha256": "8f0ca8612d0070c89b81e6bc324284e47b6281bd364e493d9c2d5c6d00787ef1",
+      "bytes": 170813,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "3d-800x600-evening-idle.png": {
+      "sha256": "44e0fb53c42e2971e6d56a0d86547bcd11f819934d9d9b85185e2cb62e066088",
+      "bytes": 219447,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "baseline-1280x720-day-completed.png": {
+      "sha256": "e1aa4cbc6f36fd0cc5b16263b9d9ddb3dfc4f8af11e3eee00a39fefc859f0cdd",
+      "bytes": 244206,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "baseline-1280x720-day-deferred.png": {
+      "sha256": "ab66f129fa440da71a8056a4ca6b5634cf2706b7d5ee24688580d09d6c2e085d",
+      "bytes": 244959,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "baseline-1280x720-day-idle.png": {
+      "sha256": "18fded8884daf84f5dc67bb113198158852b342688b827906f403fa0054ff4ad",
+      "bytes": 244461,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "baseline-1280x720-day-interaction.mp4": {
+      "sha256": "a02e8883753a488a7ffa285c62e7845532b977e7baa9bed30b7aea35f90eced4",
+      "bytes": 226369
+    },
+    "baseline-1280x720-day-started.png": {
+      "sha256": "91516a7f0549a61bcadc5e695c7b00f499087b981fc0e66e167a49794dad68b1",
+      "bytes": 239720,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "baseline-1280x720-evening-idle.png": {
+      "sha256": "35a6244809398db9fb20e422bff452c124087e65194520b82972d8d334da6768",
+      "bytes": 242804,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "baseline-360x320-day-completed.png": {
+      "sha256": "41ceb1c4bd96a3011120c68d5eb47baff152e2d5632050c1811de5360e13b26e",
+      "bytes": 73781,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "baseline-360x320-day-deferred.png": {
+      "sha256": "78982be7209cc8332e32413b5b39bfbeba5b1a1c12e227e4d4107df5e6284307",
+      "bytes": 71870,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "baseline-360x320-day-idle.png": {
+      "sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+      "bytes": 73247,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "baseline-360x320-day-interaction.mp4": {
+      "sha256": "e694418d8c942e6838b21871bfac42bb01c83d0177ed3341d6a7a39d46511442",
+      "bytes": 118328
+    },
+    "baseline-360x320-day-started.png": {
+      "sha256": "5f1683264a4b88794a8bdf15aa7b1075366ff33368f6f3d114ba863654e94459",
+      "bytes": 69343,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "baseline-360x320-evening-idle.png": {
+      "sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+      "bytes": 74826,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "baseline-800x600-day-completed.png": {
+      "sha256": "9b9352e8107e96e363f441217b4567b657f2ba0d2c1e916e20fd16b0a7bb0dbf",
+      "bytes": 194805,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "baseline-800x600-day-deferred.png": {
+      "sha256": "f34d92b438b4395f0c9ea3bb3dd8e15db63983590ee8b2c86c4dcf684b980721",
+      "bytes": 194576,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "baseline-800x600-day-idle.png": {
+      "sha256": "37abaafc72a0e441fa6dd2be29342eeca8b324e8d796b0ffa87538e4f8463d95",
+      "bytes": 194502,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "baseline-800x600-day-started.png": {
+      "sha256": "a78684c1d379899a6a959124313c562c201eb69b3cb3b0f646ba3ddcf114b8cd",
+      "bytes": 189029,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "baseline-800x600-evening-idle.png": {
+      "sha256": "ecf97725b912e5b031041a6351977b6c9ac8a2dd1d3af67cefce097c74373f9a",
+      "bytes": 195199,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "pixel-1280x720-day-completed.png": {
+      "sha256": "e73b2b6b2ae6f5bb0df7cb930b57240bdfaf68c8c12734b6d795905b071688d9",
+      "bytes": 165751,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "pixel-1280x720-day-deferred.png": {
+      "sha256": "8ab647a3e25b2fa74b850e60e0e46ac2164c2edef21e1b14fe41719f0d5d4e15",
+      "bytes": 164958,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "pixel-1280x720-day-idle.png": {
+      "sha256": "2d60678c84499d990290601cd4a686e9dfd264c86435178fbedf3e8aa0643a9d",
+      "bytes": 164821,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "pixel-1280x720-day-interaction.mp4": {
+      "sha256": "15fc52cd0426a005c6758bc970e994a2404c5e1996a6ff65e6322dcdc5f1f470",
+      "bytes": 324067
+    },
+    "pixel-1280x720-day-started.png": {
+      "sha256": "c6c6ff317e98196cf14c6310dac665d81bc06cc480ee5061586d97007bdf7ea8",
+      "bytes": 159453,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "pixel-1280x720-evening-idle.png": {
+      "sha256": "35c217422994c64cea0a06fe8dea3c061685cf5658d348ec1c69f2ae2d0bce3a",
+      "bytes": 165696,
+      "pixels": [
+        2560,
+        1440
+      ]
+    },
+    "pixel-360x320-day-completed.png": {
+      "sha256": "243a138ee941684abdfc84b6a9d468a6f98006cd5f48b5781b2620238c6a6054",
+      "bytes": 59525,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "pixel-360x320-day-deferred.png": {
+      "sha256": "97aa7bccfc5e5335d932654f662adf3c8eadc385965d3f4c737a1d5bc1f99158",
+      "bytes": 57615,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "pixel-360x320-day-idle.png": {
+      "sha256": "820e835ee703d1b38f6b4dd0dc9efdea5668cd796e68e5203987d3271bd9f28b",
+      "bytes": 58971,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "pixel-360x320-day-interaction.mp4": {
+      "sha256": "aad8cc89e31361404776d7e5ea5a005b1d56f9617dadaf12bf37664988eaf5b1",
+      "bytes": 118115
+    },
+    "pixel-360x320-day-started.png": {
+      "sha256": "d667f3cfed21a89b4bf8a2459169b751ef3bb149b05c67c564b5b55f95b3f817",
+      "bytes": 55111,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "pixel-360x320-evening-idle.png": {
+      "sha256": "ef025daf573b7134f03c54337241965115ec09dd7a3f6ec585bd2db7a9a9c9dc",
+      "bytes": 60358,
+      "pixels": [
+        720,
+        640
+      ]
+    },
+    "pixel-800x600-day-completed.png": {
+      "sha256": "0f7d05fcdef51ba58b75ace485d5f68ec220040130981a2888970afcf9a8380d",
+      "bytes": 133455,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "pixel-800x600-day-deferred.png": {
+      "sha256": "21e907a87bbe84368ea2a9f368950164aba856f0dd73f4c946c7208bef79f8ae",
+      "bytes": 133065,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "pixel-800x600-day-idle.png": {
+      "sha256": "7444c2cdc061a8e142ba9584114b9ea25fcf3251ccc8cc4f9ff2f72448866795",
+      "bytes": 132582,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "pixel-800x600-day-started.png": {
+      "sha256": "122faa274b621b301535f0eb8c9789cbf2c0c86a687031ebe019a3fb5207b5d5",
+      "bytes": 127487,
+      "pixels": [
+        1600,
+        1200
+      ]
+    },
+    "pixel-800x600-evening-idle.png": {
+      "sha256": "f61d29a66797e1de954539d64597a65ae5dda610eabe04503666cb49a7af9eba",
+      "bytes": 133953,
+      "pixels": [
+        1600,
+        1200
+      ]
+    }
+  }
+}
