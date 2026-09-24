@@ -1,0 +1,25 @@
+{
+  "schema_version": 0,
+  "as_of": "2026-09-24T09:00:00+08:00",
+  "timezone": "Asia/Shanghai",
+  "today": "2026-09-24",
+  "tasks": [
+    {
+      "id": "DEMO-TASK-001",
+      "title": "核验虚构岗位的届别要求",
+      "kind": "verify_job",
+      "state": "scheduled",
+      "source_kind": "job",
+      "source_id": "DEMO-JOB-001",
+      "reason": "资格仍未知，准备材料前需要核对原岗位页",
+      "scheduled_at": "2026-09-24T14:00:00+08:00",
+      "due_at": null,
+      "due_verified": false,
+      "completion_rule": "在求职记录中保存原岗位来源、核验结论和核验时间",
+      "evidence_state": "missing",
+      "origin_scheduled_at": "2026-09-24T14:00:00+08:00",
+      "carryover_reason": null,
+      "due_verified_at": null
+    }
+  ]
+}

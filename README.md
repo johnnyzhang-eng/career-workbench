@@ -60,3 +60,5 @@ python3 career.py practice 1 --evidence '自己写的代码与测试位置' --in
 没有“拿 offer 保证”。用实际回执、面试反馈和独立练习结果验收，而不是用收藏数量验收。
 
 [产品定义](docs/product/README.md) · [隐私与分享](docs/privacy.md) · [迭代清单](docs/backlog.md) · [开发约定](CONTRIBUTING.md) · [MIT 许可证](LICENSE)
+
+每日任务内核的独立开发切片见 [任务与七天虚构用例](docs/daily-tasks.md)。它通过 `daily.py` 提供快照和显式任务命令；完整应用、桌面小窗和 3D 场景仍需后续集成及真人验收。
