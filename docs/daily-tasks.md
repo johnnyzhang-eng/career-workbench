@@ -22,7 +22,9 @@
 
 为显示跨日与延期历史，快照增加三个**待 #17 对齐的可选字段**：`origin_scheduled_at`（最初安排时间）、`carryover_reason`（跨日时原任务未完或最近延期/阻塞原因）、`due_verified_at`（截止核验时间）。`scheduled_at` 始终是当前安排时间。`due_at` 可以是来源未核实的线索，此时 `due_verified=false` 且 `due_verified_at=null`，UI 不应计算精确倒计时。固定虚构快照在 `templates/daily_snapshot.json`；该文件不是个人记录。
 
-命令为 `schedule/start/complete/defer/block/cancel`。调用 `DailyStore.command(command, event_id, task_id, payload, at)`；稳定事件 ID 重试幂等，复用 ID 但改内容会报错。所有时间是带时区的 ISO 8601，缺省 `at` 取注入时钟；任务事件不允许倒填到前一事件之前或提前超过五分钟。`defer/block/cancel` 必须有原因；延期需要新的未来 `scheduled_at`。终态只读。`claim_reminders()` 针对当前安排时间给出一次提醒，领取记录在 SQLite 中，重启或换时区不会重复领取；它不会用未知截止时间创建倒计时。
+命令为 `schedule/start/complete/defer/block/cancel/reschedule`。调用 `DailyStore.command(command, event_id, task_id, payload, at)`；稳定事件 ID 重试幂等，复用 ID 但改内容会报错。所有时间是带时区的 ISO 8601，缺省 `at` 取注入时钟；任务事件不允许倒填到前一事件之前或提前超过五分钟。`defer/block/cancel` 必须有原因；延期需要新的未来 `scheduled_at`。终态只读。`claim_reminders()` 针对当前安排时间给出一次提醒，领取记录在 SQLite 中，重启或换时区不会重复领取；它不会用未知截止时间创建倒计时。
+
+`reschedule` 只供 [Goal → Daily 桥接](goal-daily-bridge.md) 重放已生效计划中的安全自动微调。它要求任务仍为 `scheduled`、初始记录明确 `flexible=true`、没有 `due_at`、旧时间/显示顺序/当前计划版本完全匹配，且新旧时间在目标时区为同一本地日期。调整以新事件保存，不改初次安排和完成依据；快照中的 `display_order` 是同一目标在当日的呈现顺序。计划政策由 `GoalStore` 审核；直接操作每日数据库不能代替计划的接受记录。
 
 `complete` 根据任务类型检查依据。`verify_job/prepare_materials/approve_materials/apply_job` 以及**岗位来源**的 `practice` 接收 `{"evidence":{"job_event_seq":整数}}`，核对同一个私有工作区内旧状态机的相应事件和岗位 ID。`apply_job` 必须指向 `submitted` 事件；仅有已确认材料、打开原站或任务打勾均不满足。旧状态机仍负责材料版本、本人确认与回执门槛。`attend_event/prepare_interview/follow_up/custom` 分别要求参加记录及时间、笔记位置、跟进依据或产物位置。这些是本地记录完整性检查，不会替用户验证外部事实真实性。
 
