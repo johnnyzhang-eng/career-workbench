@@ -1,0 +1,70 @@
+{
+  "baseline_webkit_count": 10,
+  "caveat": "New WebKit PIDs are temporal candidates, not proven descendants. macOS reparents WebKit XPC services to launchd and may reuse services. Summed RSS double-counts shared pages. CPU interval rates use accumulated ps time; ps %CPU is a decaying average and only retained in raw records. No energy or GPU-power claim.",
+  "event_kinds": [
+    "launched",
+    "navigation_finished",
+    "ready",
+    "snapshot",
+    "hidden",
+    "restored",
+    "restored_state",
+    "snapshot",
+    "completed"
+  ],
+  "exit_code": 0,
+  "host_pid": 44989,
+  "instrument_control": {
+    "cpu_seconds_delta": 1.41,
+    "kind": "known_cpu_burner",
+    "observed_rss_kib": 1152,
+    "parser_detected": true
+  },
+  "new_webkit_candidate_pids": [
+    44991,
+    44992,
+    44993,
+    45093,
+    45094,
+    45095
+  ],
+  "phase_summary": {
+    "hidden": {
+      "count": 20,
+      "host_cpu_core_percent_from_cputime": 0.05,
+      "host_rss_kib_median": 67440.0,
+      "new_webkit_cpu_core_percent_from_cputime": 10.42,
+      "new_webkit_rss_kib_sum_median": 172432.0
+    },
+    "restored": {
+      "count": 16,
+      "host_cpu_core_percent_from_cputime": 1.86,
+      "host_rss_kib_median": 66928.0,
+      "new_webkit_cpu_core_percent_from_cputime": 48.05,
+      "new_webkit_rss_kib_sum_median": 185888.0
+    },
+    "visible_idle": {
+      "count": 20,
+      "host_cpu_core_percent_from_cputime": 1.15,
+      "host_rss_kib_median": 65920.0,
+      "new_webkit_cpu_core_percent_from_cputime": 103.87,
+      "new_webkit_rss_kib_sum_median": 129696.0
+    }
+  },
+  "screenshots": {
+    "restored.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    },
+    "visible-initial.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    }
+  },
+  "system": {
+    "logical_cpus": "10",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "url_kind": "loopback fictional fixture"
+}

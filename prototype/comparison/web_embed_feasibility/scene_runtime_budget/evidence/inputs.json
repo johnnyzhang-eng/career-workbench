@@ -1,0 +1,21 @@
+{
+  "fixture": "fictional evening/idle/planned; state-change run switches to fictional day/study/declared_active",
+  "godot_engine": "4.7.stable.official.5b4e0cb0f",
+  "godot_export_sha256": {
+    "index.pck": "513051098fa05f325894facf0a0b8d85fba99bfc14150a405aa25d146dad6fa9",
+    "index.wasm": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656"
+  },
+  "godot_source_commit": "f00d983",
+  "pixel_files_sha256": {
+    "avatar-desk.png": "884cd3a08386033c75525cd72cd15bd8e3038607c1f417d489a9f8fbabf18268",
+    "avatar-idle.png": "5b2eb2b487c974302cf359b50ef0ef5e91c45f3302934c52b1402cfbbf058fbc",
+    "avatar-interview.png": "55f0e9769f240294eb550db79164abc04ef0330b47bb1dedc2be2aa2c0371344",
+    "avatar-rest.png": "9c16dec15fb48a77a638c171d93296748e66f9ae7f884e1e1e6ef7d4dbe1afea",
+    "avatar-study.png": "cf79c2e093cb539596f8bf2b15ba58fbbc53c2b511f928b64c3f7113845bd7fb",
+    "desk-front.png": "fe7ed1a17637e706e2db88f4131ff1764f49bdec21793e3ead67ab4afd1bfe81",
+    "goal-scene.js": "1e98aae0f444eb6d4b6867274bf2ff3b6c9bad37f5046e91a0a5480ccf64d475",
+    "room-day.png": "9dc95972172d2d452c1e81164b9ccc11ce7c45a21421e45492ba36fdeef577fc",
+    "room-evening.png": "cdc91d451d05fe0825398dc1b367c4392b8c2cb33aedf4aec98e19191356c85e"
+  },
+  "pixel_source_commit": "605145033db100ff752e19a74e743e28fe26ee04"
+}

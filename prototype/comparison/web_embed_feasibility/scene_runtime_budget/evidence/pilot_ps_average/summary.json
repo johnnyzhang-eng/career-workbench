@@ -1,0 +1,67 @@
+{
+  "baseline_webkit_count": 10,
+  "caveat": "New WebKit PIDs are temporal candidates, not proven descendants. macOS reparents WebKit XPC services to launchd and may reuse services. Summed RSS double-counts shared pages. ps CPU is sampled and may be smoothed; no energy or GPU-power claim.",
+  "event_kinds": [
+    "launched",
+    "navigation_finished",
+    "ready",
+    "snapshot",
+    "hidden",
+    "restored",
+    "restored_state",
+    "snapshot",
+    "completed"
+  ],
+  "exit_code": 0,
+  "host_pid": 44440,
+  "instrument_control": {
+    "kind": "known_cpu_burner",
+    "observed_cpu_percent": 86.4,
+    "observed_rss_kib": 1152,
+    "parser_detected": true
+  },
+  "new_webkit_candidate_pids": [
+    44442,
+    44443,
+    44444
+  ],
+  "phase_summary": {
+    "hidden": {
+      "count": 20,
+      "host_cpu_percent_median": 0.0,
+      "host_rss_kib_median": 70648.0,
+      "new_webkit_cpu_percent_sum_median": 9.4,
+      "new_webkit_rss_kib_sum_median": 132024.0
+    },
+    "restored": {
+      "count": 15,
+      "host_cpu_percent_median": 1.5,
+      "host_rss_kib_median": 71072,
+      "new_webkit_cpu_percent_sum_median": 15.1,
+      "new_webkit_rss_kib_sum_median": 186592
+    },
+    "visible_idle": {
+      "count": 20,
+      "host_cpu_percent_median": 0.9,
+      "host_rss_kib_median": 64912.0,
+      "new_webkit_cpu_percent_sum_median": 100.0,
+      "new_webkit_rss_kib_sum_median": 200872.0
+    }
+  },
+  "screenshots": {
+    "restored.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    },
+    "visible-initial.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    }
+  },
+  "system": {
+    "logical_cpus": "10",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "url_kind": "loopback fictional fixture"
+}

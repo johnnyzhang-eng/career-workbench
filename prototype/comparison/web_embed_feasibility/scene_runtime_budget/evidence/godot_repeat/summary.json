@@ -1,0 +1,79 @@
+{
+  "baseline_webkit_count": 10,
+  "caveat": "Launch cohort means new WebKit PIDs first seen within five seconds of host launch. This is temporal association, not proven ownership: macOS reparents WebKit XPC services to launchd and may reuse services. Later WebKit launches are excluded. Summed RSS double-counts shared pages. CPU interval rates use accumulated ps time; ps %CPU is a decaying average and only retained in raw records. No energy or GPU-power claim.",
+  "event_kinds": [
+    "launched",
+    "navigation_finished",
+    "ready",
+    "snapshot",
+    "hidden",
+    "restored",
+    "restored_state",
+    "snapshot",
+    "completed"
+  ],
+  "exit_code": 0,
+  "host_pid": 46163,
+  "instrument_control": {
+    "cpu_seconds_delta": 1.49,
+    "kind": "known_cpu_burner",
+    "observed_rss_kib": 1152,
+    "parser_detected": true
+  },
+  "launch_cohort_candidate_pids": [
+    46165,
+    46166,
+    46167
+  ],
+  "launch_cohort_still_alive_two_seconds_after_host_exit": [],
+  "new_webkit_candidate_pids": [
+    46165,
+    46166,
+    46167
+  ],
+  "new_webkit_first_seen_seconds_after_launch": {
+    "46165": 0.54,
+    "46166": 0.54,
+    "46167": 0.54
+  },
+  "phase_summary": {
+    "hidden": {
+      "count": 20,
+      "host_cpu_core_percent_from_cputime": 0.0,
+      "host_rss_kib_median": 66000.0,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 9.46,
+      "launch_cohort_webkit_rss_kib_sum_median": 163456.0
+    },
+    "restored": {
+      "count": 15,
+      "host_cpu_core_percent_from_cputime": 1.77,
+      "host_rss_kib_median": 68848,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 0.0,
+      "launch_cohort_webkit_rss_kib_sum_median": 210208
+    },
+    "visible_idle": {
+      "count": 21,
+      "host_cpu_core_percent_from_cputime": 1.09,
+      "host_rss_kib_median": 59904,
+      "launch_cohort_webkit_cpu_core_percent_from_cputime": 100.97,
+      "launch_cohort_webkit_rss_kib_sum_median": 387856
+    }
+  },
+  "scene_kind": "godot",
+  "screenshots": {
+    "restored.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    },
+    "visible-initial.png": {
+      "exists": true,
+      "sha256": "e655cb22f81793132822773f8f18dc339a447907d64bec7e0d6430b09d07c1a1"
+    }
+  },
+  "system": {
+    "logical_cpus": "10",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "url_kind": "loopback fictional fixture"
+}

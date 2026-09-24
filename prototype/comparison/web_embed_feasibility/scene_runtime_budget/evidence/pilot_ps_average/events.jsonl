@@ -1,0 +1,9 @@
+{"kind": "launched", "line": "event time=1790276577.131 kind=launched pid=44440 visible=true url=http://127.0.0.1:8833/?demo=planned_evening window=360x320", "time": 1790276577.131}
+{"kind": "navigation_finished", "line": "event time=1790276577.563 kind=navigation_finished pid=44440 visible=true ", "time": 1790276577.563}
+{"kind": "ready", "line": "event time=1790276580.231 kind=ready pid=44440 visible=true canvas=720 status=applied", "time": 1790276580.231}
+{"kind": "snapshot", "line": "event time=1790276580.243 kind=snapshot pid=44440 visible=true label=visible-initial bytes=59264 pixels=720x640", "time": 1790276580.243}
+{"kind": "hidden", "line": "event time=1790276611.231 kind=hidden pid=44440 visible=false since_ready_s=31.0", "time": 1790276611.231}
+{"kind": "restored", "line": "event time=1790276636.206 kind=restored pid=44440 visible=true since_ready_s=56.0", "time": 1790276636.206}
+{"kind": "restored_state", "line": "event time=1790276641.199 kind=restored_state pid=44440 visible=true js={\"state\":{\"ready\":true,\"appliedCount\":1,\"lastApplied\":{\"phase\":\"evening\",\"mode\":\"idle\",\"activity_state\":\"planned\"},\"error\":null},\"hidden\":false,\"canvas\":720} error=none", "time": 1790276641.199}
+{"kind": "snapshot", "line": "event time=1790276641.207 kind=snapshot pid=44440 visible=true label=restored bytes=59264 pixels=720x640", "time": 1790276641.207}
+{"kind": "completed", "line": "event time=1790276656.199 kind=completed pid=44440 visible=true ", "time": 1790276656.199}

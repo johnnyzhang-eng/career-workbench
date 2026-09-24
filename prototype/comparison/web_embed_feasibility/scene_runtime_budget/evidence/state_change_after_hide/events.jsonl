@@ -1,0 +1,10 @@
+{"kind": "launched", "line": "event time=1790277595.878 kind=launched pid=46856 visible=true url=http://127.0.0.1:8835/ window=360x320", "time": 1790277595.878}
+{"kind": "navigation_finished", "line": "event time=1790277597.088 kind=navigation_finished pid=46856 visible=true ", "time": 1790277597.088}
+{"kind": "ready", "line": "event time=1790277599.961 kind=ready pid=46856 visible=true kind=godot status=applied", "time": 1790277599.961}
+{"kind": "snapshot", "line": "event time=1790277599.969 kind=snapshot pid=46856 visible=true label=visible-initial bytes=59264 pixels=720x640", "time": 1790277599.969}
+{"kind": "hidden", "line": "event time=1790277630.946 kind=hidden pid=46856 visible=false since_ready_s=31.0", "time": 1790277630.946}
+{"kind": "fixture_switch", "line": "fictional fixture evening/idle/planned -> day/study/declared_active", "time": 1790277631.473351}
+{"kind": "restored", "line": "event time=1790277655.929 kind=restored pid=46856 visible=true since_ready_s=56.0", "time": 1790277655.929}
+{"kind": "restored_state", "line": "event time=1790277660.928 kind=restored_state pid=46856 visible=true js={\"state\":{\"ready\":true,\"appliedCount\":2,\"lastApplied\":{\"phase\":\"day\",\"mode\":\"study\",\"activity_state\":\"declared_active\"},\"error\":null},\"hidden\":false,\"canvas\":720} error=none", "time": 1790277660.928}
+{"kind": "snapshot", "line": "event time=1790277660.935 kind=snapshot pid=46856 visible=true label=restored bytes=61214 pixels=720x640", "time": 1790277660.935}
+{"kind": "completed", "line": "event time=1790277675.928 kind=completed pid=46856 visible=true ", "time": 1790277675.928}
