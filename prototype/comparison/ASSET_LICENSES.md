@@ -29,6 +29,20 @@
 
 官方许可页已于登记日期查阅；Blender 主站直连读取受限，许可说明以官方搜索结果及官方手册交叉核对。没有单独取得任何系统字体的再分发授权，故不分发字体文件。
 
+## R4 MPFB 外部素材实验（2026-09-25）
+
+R4 仅用于 [同场景实机对照](mpfb_character_experiment/README.md)，不替换正式 A。所提交的三个 `fictional_student_mpfb*.glb` 内含下列素材的衍生网格与贴图；建模脚本沿用仓库 MIT，第三方素材仍按其各自许可。ZIP 原包与本地 `.blend` 不进入仓库。
+
+| 文件或具体单项 | 来源 | 核验许可与边界 |
+| --- | --- | --- |
+| MPFB 2.0.17 扩展 | [Blender Extensions](https://extensions.blender.org/add-ons/mpfb/)；[项目许可](https://github.com/makehumancommunity/mpfb2/blob/master/LICENSE.md) | 工具 GPL-3.0-or-later；其生成输出不因使用工具而被工具项目主张版权。脚本需先在本地安装扩展，扩展代码不打包进此仓库。 |
+| 人体、皮肤、眼、眉、`short02` 头发、`male_casualsuit01` 套装、`shoes02` 鞋 | [MakeHuman system assets](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html) | system assets 包标记 CC0；仅使用上述列出的具体文件。 |
+| `sweetan008_sitting-pose` | [poses01](https://static.makehumancommunity.org/assets/assetpacks/poses01.html) | 选定 BVH 的同名 `.meta` 明写 `license CC0`；包内其他姿态不在本轮许可结论内。 |
+| `toigo_fisherman_sweater` | [shirts01](https://static.makehumancommunity.org/assets/assetpacks/shirts01.html) | 包内 `shirts01.json` 与该 `.mhclo` 均标记 CC0。 |
+| `cortu_cargo_pants` | [pants01](https://static.makehumancommunity.org/assets/assetpacks/pants01.html) | 包内 `pants01.json` 与该 `.mhclo` 均标记 CC0。 |
+
+源码、三份 GLB 的 SHA、所用参数、昼夜图像与非动画限制见实验 README/manifest。它们是实验产物，尚未通过发布包的第三方声明复核。
+
 ## 参考范围
 
 《模拟人生》的剖面房间、角色定制与生活互动，Spirit City: Lofi Sessions 的房间/专注工具构图，Virtual Cottage 的真实时钟氛围，仅是产品思想参考；不提取角色、家具、贴图、音频、UI 或游戏截图进入仓库。Windup 仅参考原创角色制作与质量检查流程；未授权移植任何角色或成品画风。参考视频只记录链接与时间码，不上传他人帧图。

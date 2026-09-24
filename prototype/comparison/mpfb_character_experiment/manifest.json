@@ -1,0 +1,522 @@
+{
+  "purpose": "Static MPFB student candidate versus prior R2, original room and task facts",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "engine": "Godot 4.7 Compatibility",
+  "asset_sources": {
+    "mpfb": "https://extensions.blender.org/add-ons/mpfb/",
+    "system_pack": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+    "pose": "https://static.makehumancommunity.org/assets/assetpacks/poses01.html#sweetan008_sitting-pose",
+    "pose_license_in_embedded_meta": "CC0"
+  },
+  "source_sha256": {
+    "build_character.py": "6750ae0bcd77cefa315e3f1ab5eff8ed0e06b5085347c81ebd044cf3bed3a36d",
+    "mpfb_character_room.gd": "2f21429f8796f21f63306461c6a799bbb7ef9dbc68da31801ff2f3ef379792dc",
+    "mpfb_character_experiment.gd": "9723bdcd68dec2b0d91ab917ca1a194418d340845b20eb3ecbe1c10e11cfae01"
+  },
+  "glb_sha256": {
+    "seated": "a0b8a7a8fe4375a3064f09a13624ac7fc1204c9269268c08f13db1c742723627",
+    "keyboard_ik": "bb46ee4f7de1324e4ad55208f2099911947522d312ae183014002bb05c19e30a",
+    "casual_keyboard_ik": "0b6e9116ac425556f7c97449b03c8eab3b162d0876b120a761e9df92369d9642"
+  },
+  "notes": [
+    "The projected AABB is not an occlusion-tested visible-pixel count.",
+    "R4 is a static baked pose; it does not claim animation or personal-photo generation.",
+    "r4-contact changes chair depth/back height, keyboard depth and camera only in the compact capture; full capture keeps original camera.",
+    "roomfirst/hero-scaled use the #43 art-only larger scene viewport and hide task action controls; they are not product UI candidates.",
+    "hero-scaled also enlarges and lowers the character to reveal A room's furniture scale mismatch; this is a controlled correction, not a finished asset.",
+    "product-casual uses the original compact UI with task status and controls visible, testing the art/UI trade-off."
+  ],
+  "records": [
+    {
+      "case": "r2-original",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--rigged-student"
+      ],
+      "capture": "captures/r2-original-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "669a0fbf051a6f0c0e0464e8a6d7a754ebb20426f5cc821de05c2260f2e7e75b",
+      "projected_mesh_bounds_logical_xywh": [
+        152.25,
+        48.36,
+        28.99,
+        38.33
+      ]
+    },
+    {
+      "case": "r4-original",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student"
+      ],
+      "capture": "captures/r4-original-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "27be214f6a5437378a81f0e465d2563389e6c65a5b6a1479ab709d1e80b600df",
+      "projected_mesh_bounds_logical_xywh": [
+        158.71,
+        61.94,
+        10.09,
+        18.61
+      ]
+    },
+    {
+      "case": "r2-focus",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--rigged-student",
+        "--chair-low",
+        "--task-focus"
+      ],
+      "capture": "captures/r2-focus-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "99befbe2e231ab283cf72ea1938840b156d3beeb920f1e4b027b833ba12d5768",
+      "projected_mesh_bounds_logical_xywh": [
+        131.76,
+        27.83,
+        74.06,
+        88.85
+      ]
+    },
+    {
+      "case": "r4-focus",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--chair-low",
+        "--task-focus"
+      ],
+      "capture": "captures/r4-focus-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "abca69e4da097eaf5ce2aeb74131ef8e2b49d8071ed839adad1b7572f7300d52",
+      "projected_mesh_bounds_logical_xywh": [
+        148.01,
+        55.2,
+        24.03,
+        44.81
+      ]
+    },
+    {
+      "case": "r4-contact",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--task-focus",
+        "--contact-layout"
+      ],
+      "capture": "captures/r4-contact-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "b4f7d52cc41f1f933ed0437edd22cf074d8428d11b4e04fe189f2cd05cc02e02",
+      "projected_mesh_bounds_logical_xywh": [
+        162.23,
+        50.88,
+        28.27,
+        44.03
+      ]
+    },
+    {
+      "case": "r4-contact",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--task-focus",
+        "--contact-layout"
+      ],
+      "capture": "captures/r4-contact-360x320-evening.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "bdb7c57695a79de8e1cecb646ae2d2213eb2bb10d0e50613c5698376818d1e04",
+      "projected_mesh_bounds_logical_xywh": [
+        162.23,
+        50.88,
+        28.27,
+        44.03
+      ]
+    },
+    {
+      "case": "r4-contact",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--contact-layout"
+      ],
+      "capture": "captures/r4-contact-1280x720-day.png",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "8f159cae53010fbabb1bdd11389ce5632c03a1fe9cf57c70d53ddbecc5f83cbc",
+      "projected_mesh_bounds_logical_xywh": [
+        428.45,
+        230.07,
+        45.72,
+        75.18
+      ]
+    },
+    {
+      "case": "r4-contact",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--contact-layout"
+      ],
+      "capture": "captures/r4-contact-1280x720-evening.png",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "1f2c12186c55ffde7cc6e34f95b67972c0b2e602aaf481befbf97112d97114b2",
+      "projected_mesh_bounds_logical_xywh": [
+        428.45,
+        230.07,
+        45.72,
+        75.18
+      ]
+    },
+    {
+      "case": "r2-roomfirst",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--rigged-student",
+        "--chair-low",
+        "--task-focus",
+        "--activity-focus-layout",
+        "--contact-layout"
+      ],
+      "capture": "captures/r2-roomfirst-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "6d2eb012fce4faf27a783e6d216dff1a90cbf55a21b1ed24f6f4a33033965e38",
+      "projected_mesh_bounds_logical_xywh": [
+        132.97,
+        42.42,
+        108.46,
+        130.88
+      ]
+    },
+    {
+      "case": "r4-roomfirst",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--task-focus",
+        "--activity-focus-layout",
+        "--contact-layout"
+      ],
+      "capture": "captures/r4-roomfirst-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "2b221b7555d74a0e43d4070b3a240046845cf4ac0f01a93976302505836c5f55",
+      "projected_mesh_bounds_logical_xywh": [
+        156.61,
+        80.11,
+        44.51,
+        69.32
+      ]
+    },
+    {
+      "case": "r4-hero-scaled",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--hero-focus",
+        "--activity-focus-layout",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-hero-scaled-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "bc820e0c0d2b2fb617cb532f145188a4f4534abf5899612a9291c28bcdae3f3d",
+      "projected_mesh_bounds_logical_xywh": [
+        141.64,
+        60.02,
+        79.76,
+        121.24
+      ]
+    },
+    {
+      "case": "r4-hero-scaled",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--chair-low",
+        "--hero-focus",
+        "--activity-focus-layout",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-hero-scaled-360x320-evening.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "5ab9f73e36467ac9cd919b8c9fc8ac1825ad3d16dd632be139e88a452a8a1b63",
+      "projected_mesh_bounds_logical_xywh": [
+        141.64,
+        60.02,
+        79.76,
+        121.24
+      ]
+    },
+    {
+      "case": "r4-casual-scaled",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--activity-focus-layout",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-casual-scaled-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "4d9ea6dc99eca9d5d65b8443f58e757dd326b8cdf6c685d0d2ea5186db45da9d",
+      "projected_mesh_bounds_logical_xywh": [
+        139.17,
+        60.02,
+        82.24,
+        121.24
+      ]
+    },
+    {
+      "case": "r4-casual-scaled",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--activity-focus-layout",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-casual-scaled-360x320-evening.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "f344d0a9b036a84a61ad8a9d74223fc49d5ccd07b07e3647b0b0bdee9f99638d",
+      "projected_mesh_bounds_logical_xywh": [
+        139.17,
+        60.02,
+        82.24,
+        121.24
+      ]
+    },
+    {
+      "case": "r4-product-casual",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-product-casual-360x320-day.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "92a8ff1034cbc7b27502107f640356fca2d15ae42c9cdabc8fc93b3eae9ff67f",
+      "projected_mesh_bounds_logical_xywh": [
+        151.15,
+        38.12,
+        52.23,
+        77.0
+      ]
+    },
+    {
+      "case": "r4-product-casual",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-product-casual-360x320-evening.png",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "e5b93ffea3bfea2742ab17723a1cad37e0e5780342e8a17190ef9ecd54cc70f3",
+      "projected_mesh_bounds_logical_xywh": [
+        151.15,
+        38.12,
+        52.23,
+        77.0
+      ]
+    },
+    {
+      "case": "r4-full-casual",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-full-casual-1280x720-day.png",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "8ce2a68f8e80ec65653e4490a8b5a5f18436f6048f16bb3fffe7878fe2148428",
+      "projected_mesh_bounds_logical_xywh": [
+        379.66,
+        148.71,
+        203.74,
+        300.37
+      ]
+    },
+    {
+      "case": "r4-full-casual",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/r4-full-casual-1280x720-evening.png",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "b29230f9a7961fcd6ad1037ea19651fe9cdb6f58fc62e5efdea2724529fa4aa6",
+      "projected_mesh_bounds_logical_xywh": [
+        379.66,
+        148.71,
+        203.74,
+        300.37
+      ]
+    }
+  ]
+}

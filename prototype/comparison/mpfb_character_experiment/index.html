@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R4 · 真实小窗人物与接触对照</title>
+<style>
+  :root { color-scheme: light; font-family: system-ui, "PingFang SC", sans-serif; background: #edece5; color: #252d2a; }
+  body { max-width: 1420px; margin: 0 auto; padding: 24px; }
+  h1 { font-size: 27px; margin: 0 0 8px; }
+  p { line-height: 1.55; max-width: 900px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 18px; }
+  figure { margin: 0; padding: 12px; background: white; border: 1px solid #ccd2c9; border-radius: 13px; }
+  img { display: block; width: 360px; max-width: 100%; height: auto; image-rendering: auto; }
+  figcaption { padding-top: 9px; line-height: 1.45; font-size: 14px; }
+  strong { color: #315b4b; }
+  small { color: #586a62; }
+</style>
+<body>
+  <h1>R4 · 人物、接触与镜头实机对照</h1>
+  <p>每张图片由 Godot 4.7 真实窗口以 360×320 逻辑尺寸、2× Retina 像素截图；同一虚构任务。R4 使用官方 MPFB 系统模型与单项 CC0 服装／坐姿；GLB 是静态姿态。<a href="README.md">方法、许可、参数与限制</a> · <a href="manifest.json">完整原始记录</a></p>
+  <div class="grid">
+    <figure><img src="captures/r2-original-360x320-day.png" alt="R2 原程序骨骼人物，原始镜头和房间"><figcaption><strong>R2 原始镜头</strong><br>原程序角色，人物 AABB 28.99×38.33 逻辑像素。作为原场景参照。</figcaption></figure>
+    <figure><img src="captures/r4-original-360x320-day.png" alt="R4 官方人体网格，保留原始镜头和房间"><figcaption><strong>R4 只换模型</strong><br>人物 AABB 10.09×18.61；细节反而看不清。更精细的模型不能独自解决构图。</figcaption></figure>
+    <figure><img src="captures/r4-contact-360x320-day.png" alt="R4 镜头和人物桌椅接触实验"><figcaption><strong>R4 接触位置实验</strong><br>镜头靠近、椅背降低、椅子前移、手腕 IK 接近键盘；原小窗任务控件仍在。AABB 28.27×44.03。</figcaption></figure>
+    <figure><img src="captures/r2-roomfirst-360x320-day.png" alt="R2 扩大房间区域的美术实验"><figcaption><strong>R2 房间优先画布</strong><br>仅供美术比较，扩大场景后动作易辨；这里的 UI 会隐藏任务动作控件，不能直接作为产品界面。</figcaption></figure>
+    <figure><img src="captures/r4-hero-scaled-360x320-day.png" alt="R4 场景比例和近镜头诊断"><figcaption><strong>R4 校正比例</strong><br>原套装；镜头、角色高度和尺寸同步校正，AABB 79.76×121.24。仍需统一房间米制尺度。</figcaption></figure>
+    <figure><img src="captures/r4-casual-scaled-360x320-day.png" alt="R4 毛衣和工装裤日常服装，白天"><figcaption><strong>R4 日常服装 · 白天</strong><br>同一镜头和姿态，换成 CC0 毛衣、工装裤，观察学生感与小窗色块可辨性。</figcaption></figure>
+    <figure><img src="captures/r4-casual-scaled-360x320-evening.png" alt="R4 毛衣和工装裤日常服装，晚上"><figcaption><strong>R4 日常服装 · 晚上</strong><br>用原房间夜灯复验。静态画面可读性不等于连续动画或常驻功耗已经过关。</figcaption></figure>
+    <figure><img src="captures/r4-product-casual-360x320-day.png" alt="R4 日常服装在保留任务状态与操作按钮的小窗中"><figcaption><strong>R4 原产品小窗</strong><br>保留任务状态和「开始／记录结果／延期」，房间高度随之缩小；这是更接近真实产品的视觉约束。</figcaption></figure>
+  </div>
+  <p><small>注意：投影 AABB 包含被遮挡网格。此页图像仅供比较，不涉及个人照片、真实求职信息或第三方游戏画面。</small></p>
+  <p><a href="captures/r4-full-casual-1280x720-day.png">查看 1280×720 展开态原大白天截图</a> · <a href="captures/r4-full-casual-1280x720-evening.png">查看夜晚截图</a></p>
+</body>
+</html>
