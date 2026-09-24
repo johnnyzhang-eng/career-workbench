@@ -1,0 +1,7 @@
+# 结果复盘网页接入说明（本机草案）
+
+本分支 `feat/result-review-ui` 从已推送的 `feat/local-goal-ui` 提交 `8e8038c` 建立。后者是 draft PR #38，依赖目标／每日清单桥与首版模板。为让本地纵向切片可运行，本分支用 `cherry-pick -x` 引入 draft PR #36 的 `491a4af`，生成本地提交 `962a655`；`workbench/goal_result_bridge.py`、其测试和原契约文档因此会在相对 #38 的 diff 中与 #36 **重复出现**。这是堆叠依赖，不是另一套桥实现。未来整理 PR 时应以 #36 已合入的基座重放网页增量，核对导入文件与上游逐字节一致，并保留本分支随后对状态读取的必要小改动。
+
+当前网页接入点：`GoalApp.state.selected.result_status` 用目标 ID 隔离已完成但尚待本人确认的任务；服务端而非浏览器从持久 Daily 事件中取完成事件 ID。三个新增本机 POST 命令分别确认完成结果、记录未完成／部分／受阻、从本人结果形成温和复盘及待决定提案。原有 `/api/plans/decide` 负责接受或拒绝；UI 只按 `GoalDailyBridge.status` 的真实 `applied/sync_pending/conflict` 显示清单状态。
+
+当前复盘提案有意保留原七日任务与时段，因此接受后可由既有桥重新核对为已同步。若用户需要移动已安排的时段，本切片**不声称已支持**：同级 draft PR #37 只处理 `auto_apply/undo_auto` 的安全同日微调，人工修订计划的 Daily 投影仍需独立集成与测试。此处不自动改期，也不把低于预期的首次分数判成未掌握。

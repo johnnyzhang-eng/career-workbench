@@ -19,6 +19,9 @@ SCENE_ASSET_NAMES = frozenset({"room-day.png", "room-evening.png", "avatar-idle.
 ROUTES = {"/api/goals": "create_goal", "/api/plans/propose": "propose_plan",
           "/api/plans/decide": "decide_plan", "/api/plans/sync": "sync_plan",
           "/api/tasks/complete": "complete_task",
+          "/api/results/confirm": "confirm_result",
+          "/api/results/report": "report_unfinished",
+          "/api/reviews/propose": "review_result",
           "/api/actions/start": "start_action", "/api/actions/pause": "pause_action",
           "/api/actions/resume": "resume_action", "/api/actions/stop": "stop_action"}
 

@@ -98,14 +98,29 @@ class GoalResultBridge:
             task_id = task["id"]
             try:
                 _, version = self._linked_task(goal_id, task_id)
+                event = self.daily.db.execute(
+                    "SELECT event_id,at FROM daily_events WHERE task_id=? AND command='complete' "
+                    "ORDER BY seq DESC LIMIT 1", (task_id,)).fetchone()
+                _need(event is not None, "已完成任务缺少完成事件")
                 state = "recorded" if any(r["task_id"] == task_id
                                           and r["plan_version"] == version
                                           and r["basis"] == "self_report" for r in results) else "awaiting_user_confirmation"
-                tasks.append({"task_id": task_id, "plan_version": version, "state": state})
+                tasks.append({"task_id": task_id, "task_title": task["title"],
+                              "completed_at": event["at"], "plan_version": version, "state": state})
             except ValueError as exc:
                 tasks.append({"task_id": task_id, "plan_version": task.get("plan_version"),
                               "state": "conflict", "reason": str(exc)})
         return {"goal_id": goal_id, "tasks": tasks}
+
+    def completion_event_id(self, goal_id, task_id):
+        """Resolve the durable completion server-side after a browser restart."""
+        task, _version = self._linked_task(goal_id, task_id)
+        row = self.daily.db.execute(
+            "SELECT event_id FROM daily_events WHERE task_id=? AND command='complete' "
+            "ORDER BY seq DESC LIMIT 1", (task_id,)).fetchone()
+        _need(row is not None, "任务尚未保存完成事件")
+        self._completion(task, row["event_id"])
+        return row["event_id"]
 
     def record_completed(self, goal_id, task_id, complete_event_id, *, actual_minutes,
                          metric, evidence_ref, note, actor, correction_id=None):

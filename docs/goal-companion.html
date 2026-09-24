@@ -52,6 +52,9 @@
     const alertBox = document.getElementById('alert');
     let state = null;
     let selectedTask = null;
+    let selectedReportTask = null;
+    let selectedResultTask = null;
+    let selectedCorrectionResult = null;
     let showNewGoal = false;
     let photoStatus = {present:false,generated_avatar:false};
     let photoPreview = null;
@@ -59,6 +62,7 @@
     const id = () => crypto.randomUUID().replaceAll('-', '');
     const dateLabel = stamp => stamp ? stamp.slice(5,10).replace('-', '月') + '日' : '日期待定';
     const stateLabel = key => ({scheduled:'未开始',in_progress:'进行中',deferred:'已顺延',blocked:'受阻',completed:'已记录完成',cancelled:'已取消',not_scheduled:'待同步'})[key] || key;
+    const outcomeLabel = key => ({completed:'已完成',missed:'未做',partial:'部分完成',blocked:'受阻'})[key] || key;
     const badge = (value, label) => '<span class="status ' + esc(value) + '">' + esc(label) + '</span>';
     const op = data => ({...data,operation_id:id()});
     const routeLink = route => route + (state?.selected_goal_id ? '?goal_id=' + encodeURIComponent(state.selected_goal_id) : '');
@@ -79,7 +83,7 @@
       const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(op(payload))});
       const data=await response.json();
       if(!response.ok) throw Error(data.error || '操作没有保存');
-      state=data;selectedTask=null;render();
+      state=data;selectedTask=null;selectedReportTask=null;selectedResultTask=null;selectedCorrectionResult=null;render();
     }
     async function fetchPhotoPreview(){
       const response=await fetch('/api/avatar/photo/image',{headers:{'X-CSRF-Token':state.csrf_token},cache:'no-store'});
@@ -125,19 +129,35 @@
       return `<section class="panel" id="new-goal-panel"><h2>设定一个目标</h2><p class="muted small">先说明真实起点和可用时间；计划会单独提出，由你确认后才执行。</p><form data-form="goal"><div class="form-grid"><div class="field"><label for="path">路径</label><select id="path" name="path"><option value="cet6">CET6 学习</option><option value="recruiting">秋招求职</option></select></div><div class="field"><label for="weekly_minutes">每周可用分钟</label><input id="weekly_minutes" name="weekly_minutes" type="number" min="105" max="10080" value="300" required></div><div class="field wide"><label for="goal_title">目标名称</label><input id="goal_title" name="title" maxlength="100" placeholder="例如：八周内完成 CET6 练习与复盘" required></div><div class="field wide"><label for="baseline">目前起点</label><textarea id="baseline" name="baseline" maxlength="1000" placeholder="填你已知的实际起点；还未测过也可以说明"></textarea></div><div class="field wide"><label for="success">你怎样判断有进展</label><textarea id="success" name="success_criterion" maxlength="500" placeholder="例如：每周保存首次作答和错因，下一周独立复测" required></textarea></div><div class="field wide"><label for="target">本人设定的目标日期（可选）</label><input id="target" name="target" type="date"><span class="hint">这是你自己设的日期，不是官方考试或岗位截止。</span></div></div><button class="primary" type="submit">创建目标</button></form></section>`;
     }
     function proposalPanel(selected) {
-      const pending=selected.pending_proposals[0];
-      if(!selected.active_plan && !pending) return `<section class="panel" id="proposal-panel"><h2>先看七日建议</h2><p class="muted">模板会根据你填写的时间生成可审阅的任务。每天 20:00 只是建议时段；不会直接安排进清单。</p><form data-form="proposal" class="actions"><div class="field"><label for="start_on">从哪天开始</label><input id="start_on" name="start_on" type="date" required></div><button class="primary" type="submit">生成首版计划</button></form></section>`;
-      if(!pending) return '';
-      const items=pending.items.map((item,index)=>`<div class="proposal-item"><h3>${index+1}. ${esc(item.title)} <span class="muted small">${dateLabel(item.scheduled_at)} · ${item.estimated_minutes} 分钟</span></h3><p>${esc(item.reason)}</p><p class="source">依据：${esc(item.source_ref)}</p><p class="small">完成时记录：${esc(item.completion_rule)}</p></div>`).join('');
-      return `<section class="panel" id="proposal-panel"><div class="section-head"><h2>待你决定的七日计划</h2>${badge('pending','尚未生效')}</div><p class="proposal-intro small">${esc(pending.reason)}</p><div class="proposal-list">${items}</div><div class="actions"><button class="primary" data-action="accept" data-id="${esc(pending.id)}">接受计划</button><button class="danger" data-action="decline" data-id="${esc(pending.id)}">拒绝此版</button></div><p class="form-note">接受后仍需写入每日清单；同步状态会单独显示。</p></section>`;
+      const pending=selected.pending_proposals;
+      if(!selected.active_plan && !pending.length) return `<section class="panel" id="proposal-panel"><h2>先看七日建议</h2><p class="muted">模板会根据你填写的时间生成可审阅的任务。每天 20:00 只是建议时段；不会直接安排进清单。</p><form data-form="proposal" class="actions"><div class="field"><label for="start_on">从哪天开始</label><input id="start_on" name="start_on" type="date" required></div><button class="primary" type="submit">生成首版计划</button></form></section>`;
+      return pending.map(proposal=>{
+        const review=selected.reviews.find(item=>item.id===proposal.review_id);
+        const revised=proposal.base_version>0;
+        const stale=proposal.base_version!==selected.goal.active_version || proposal.goal_revision!==selected.goal.revision;
+        const items=proposal.items.map((item,index)=>`<div class="proposal-item"><h3>${index+1}. ${esc(item.title)} <span class="muted small">${dateLabel(item.scheduled_at)} · ${item.estimated_minutes} 分钟</span></h3><p>${esc(item.reason)}</p><p class="source">依据：${esc(item.source_ref)}</p><p class="small">完成时记录：${esc(item.completion_rule)}</p></div>`).join('');
+        return `<section class="panel" id="proposal-panel"><div class="section-head"><h2>${revised?'温和复盘提案':'待你决定的七日计划'}</h2>${badge(stale?'conflict':'pending',stale?'基于旧版':'尚未生效')}</div>${review?`<p class="note small">${esc(review.finding)}</p>`:''}<p class="proposal-intro small">${esc(proposal.reason)}</p>${revised?'<p class="form-note">这一版保留当前任务与时段；不会自动改期。接受后的清单状态仍以实际同步结果为准。</p>':''}<div class="proposal-list">${items}</div>${stale?'<p class="form-note">目标或计划已变化，这份提案不能直接接受；请基于当前版本重新审阅。</p>':`<div class="actions"><button class="primary" data-action="accept" data-id="${esc(proposal.id)}">接受提案</button><button class="danger" data-action="decline" data-id="${esc(proposal.id)}">拒绝此版</button></div>`}<p class="form-note">接受后以清单同步状态为准；冲突不会显示为已安排。</p></section>`;
+      }).join('');
     }
     function evidenceForm(item) {
       if(!selectedTask || selectedTask!==item.task_id) return '';
       if(item.task_kind==='practice') return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>练习材料位置</label><input name="material_ref" maxlength="1000" placeholder="本机路径或你保存的来源" required></div><div class="field"><label>首次作答位置</label><input name="first_attempt_ref" maxlength="1000" placeholder="首次答案或测量记录" required></div><div class="field"><label>错因／复盘位置</label><input name="reflection_ref" maxlength="1000" placeholder="记录尚不会的部分" required></div><p class="form-note">这里只记录依据，不判断你已掌握，也不等于考试通过。</p><button class="primary" type="submit">保存完成依据</button></form>`;
       return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>行动产物位置</label><input name="result_ref" maxlength="1000" placeholder="你实际写下或保存的结果" required></div><button class="primary" type="submit">保存完成依据</button></form>`;
     }
+    function scoreFields(metric) {
+      if(state.selected.goal.domain!=='learning') return '';
+      return `<div class="form-grid"><div class="field"><label>首次作答正确数（可选）</label><input name="correct" type="number" min="0" max="10000" value="${esc(metric?.correct??'')}"></div><div class="field"><label>总题数（填写成绩时必填）</label><input name="total" type="number" min="1" max="10000" value="${esc(metric?.total??'')}"></div><div class="field"><label>本人原先预期正确数（可选）</label><input name="expected" type="number" min="0" max="10000" value="${esc(metric?.expected??'')}"></div></div>`;
+    }
+    function resultForm(taskId, previous) {
+      return `<form data-form="confirm-result" data-id="${esc(taskId)}" data-correct="${previous?'true':'false'}"><p class="form-note">Daily 完成依据已保存；请单独确认实际耗时与本人观察。成绩不等于掌握或考试结果。</p><div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" value="${esc(previous?.actual_minutes??'')}" required></div>${scoreFields(previous?.metric)}<div class="field"><label>结果依据位置（可选）</label><input name="evidence_ref" maxlength="1000" value="${esc(previous?.evidence_ref??'')}"></div><div class="field"><label>本人备注（可选）</label><textarea name="note" maxlength="1000">${esc(previous?.note??'')}</textarea></div><button class="primary" type="submit">${previous?'追加更正记录':'本人确认实际结果'}</button></form>`;
+    }
+    function reportForm(taskId) {
+      if(selectedReportTask!==taskId) return '';
+      return `<form data-form="report-result" data-id="${esc(taskId)}"><p class="form-note">这是本人实际情况记录，不会把每日任务标为完成，也不会扣分。</p><div class="field"><label>实际情况</label><select name="outcome"><option value="missed">这次未做</option><option value="partial">只完成一部分</option><option value="blocked">遇到阻碍</option></select></div><div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" required></div>${scoreFields(null)}<div class="field"><label>依据位置（可选）</label><input name="evidence_ref" maxlength="1000"></div><div class="field"><label>实际情况与原因</label><textarea name="note" maxlength="1000" required></textarea></div><button class="primary" type="submit">保存本人实际情况</button></form>`;
+    }
     function taskCard(item) {
       const completable=item.sync_state==='applied' && ['practice','custom'].includes(item.task_kind) && !['completed','cancelled'].includes(item.daily_state);
+      const reportable=item.sync_state==='applied' && !['completed','cancelled','not_scheduled'].includes(item.daily_state);
       const status=item.daily_state==='completed'?'done':item.sync_state==='conflict'?'conflict':item.sync_state==='sync_pending'?'pending':'';
       const action=state.scene?.action||{state:'none',task_id:null};
       const ownsAction=action.task_id===item.task_id;
@@ -145,7 +165,7 @@
       const control=startable?`<button class="quiet" data-action="start" data-id="${esc(item.task_id)}">开始行动</button>`:
         ownsAction&&action.state==='active'?`<button class="quiet" data-action="pause" data-id="${esc(item.task_id)}">暂停</button><button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:
         ownsAction&&['paused','stale'].includes(action.state)?`${action.can_resume?`<button class="quiet" data-action="resume" data-id="${esc(item.task_id)}">继续行动</button>`:''}<button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:'';
-      return `<article class="task"><div class="task-title"><div><h3>${esc(item.title)}</h3><div class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</div></div>${badge(status,stateLabel(item.daily_state))}</div><p>${esc(item.reason)}</p><p class="rule">完成条件：${esc(item.completion_rule)}</p><p class="source">依据：${esc(item.source_ref)}</p>${item.daily_state==='deferred'?'<p class="small">延期原因：'+esc(item.carryover_reason)+'</p>':''}<div class="task-actions">${control}${completable?`<button class="quiet" data-action="evidence" data-id="${esc(item.task_id)}">${selectedTask===item.task_id?'收起依据':'记录完成依据'}</button>`:''}</div>${completable?evidenceForm(item):''}${item.sync_state==='conflict'?'<p class="small">同步存在冲突，请在完整工作台查看并处理。</p>':''}</article>`;
+      return `<article class="task"><div class="task-title"><div><h3>${esc(item.title)}</h3><div class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</div></div>${badge(status,stateLabel(item.daily_state))}</div><p>${esc(item.reason)}</p><p class="rule">完成条件：${esc(item.completion_rule)}</p><p class="source">依据：${esc(item.source_ref)}</p>${item.daily_state==='deferred'?'<p class="small">延期原因：'+esc(item.carryover_reason)+'</p>':''}<div class="task-actions">${control}${completable?`<button class="quiet" data-action="evidence" data-id="${esc(item.task_id)}">${selectedTask===item.task_id?'收起依据':'记录完成依据'}</button>`:''}${reportable?`<button class="quiet" data-action="report" data-id="${esc(item.task_id)}">${selectedReportTask===item.task_id?'收起实际情况':'记录未完成／受阻'}</button>`:''}</div>${completable?evidenceForm(item):''}${reportable?reportForm(item.task_id):''}${item.sync_state==='conflict'?'<p class="small">同步存在冲突，请在完整工作台查看并处理。</p>':''}</article>`;
     }
     function todayPanel(selected) {
       const plan=selected.active_plan;
@@ -163,9 +183,21 @@
       return `<section class="panel" id="plan-panel"><div class="section-head"><h2>七日计划</h2>${badge('done','第 '+plan.version+' 版')}</div><div class="timeline">${rows}</div></section>`;
     }
     function recordsPanel(selected) {
-      const results=selected.results.map(r=>`<div class="result"><strong>${esc(r.task_id)}</strong>：${esc(r.outcome)} · ${esc(r.note||'本人记录')}</div>`).join('');
-      const reviews=selected.reviews.map(r=>`<div class="result"><strong>复盘：</strong>${esc(r.finding)}</div>`).join('');
-      return `<section class="panel" id="records-panel"><h2>结果与复盘</h2>${results||reviews?results+reviews:'<p class="muted small">当前没有目标结果或复盘记录。每日任务的完成依据会保存在本机；结果与复盘自动衔接仍待接入。</p>'}<p class="form-note">任务打勾不代表考试通过、能力掌握或岗位已投递。</p></section>`;
+      const pending=selected.result_status.tasks.filter(item=>item.state==='awaiting_user_confirmation');
+      const conflicts=selected.result_status.tasks.filter(item=>item.state==='conflict');
+      const reviewed=new Set(selected.reviews.flatMap(review=>review.result_ids));
+      const pendingRows=pending.map(item=>`<div class="result"><strong>${esc(item.task_title||item.task_id)}</strong> · Daily 完成依据已存，目标结果待本人确认。<span class="small muted">${dateLabel(item.completed_at)}</span><div class="actions"><button class="quiet" data-action="confirm-result" data-id="${esc(item.task_id)}">${selectedResultTask===item.task_id?'收起表单':'确认实际结果'}</button></div>${selectedResultTask===item.task_id?resultForm(item.task_id,null):''}</div>`).join('');
+      const conflictRows=conflicts.map(item=>`<p class="note caution small">${esc(item.task_id)} 的完成记录与目标计划不一致：${esc(item.reason)}。需要先核对，不会自动写入结果。</p>`).join('');
+      const results=selected.results.map(r=>{
+        const taskTitle=selected.active_plan?.items.find(item=>item.task_id===r.task_id)?.title||selected.result_status.tasks.find(item=>item.task_id===r.task_id)?.task_title||r.task_id;
+        const score=r.metric&&typeof r.metric.correct==='number'?` · 首次记录 ${r.metric.correct}/${r.metric.total}`:'';
+        const below=r.metric&&typeof r.metric.expected==='number'&&r.metric.correct<r.metric.expected?'<p class="form-note">本次低于本人预期，可按实际情况复测；不会扣分，也不据此判定掌握程度。</p>':'';
+        const reviewButton=['missed','partial','blocked'].includes(r.outcome)&&!reviewed.has(r.id)?`<button class="quiet" data-action="review-result" data-id="${esc(r.id)}">形成温和复盘提案</button>`:'';
+        const correctionButton=r.outcome==='completed'?`<button class="quiet" data-action="correct-result" data-id="${esc(r.id)}">${selectedCorrectionResult===r.id?'收起更正':'追加更正'}</button>`:'';
+        return `<div class="result"><strong>${esc(taskTitle)}</strong> · 本人${outcomeLabel(r.outcome)} · 实际 ${esc(r.actual_minutes)} 分钟${score}<p class="small">${esc(r.note||'未填写备注')}</p>${r.evidence_ref?`<p class="source">结果依据：${esc(r.evidence_ref)}</p>`:''}${below}<div class="actions">${reviewButton}${correctionButton}</div>${selectedCorrectionResult===r.id?resultForm(r.task_id,r):''}</div>`;
+      }).join('');
+      const reviews=selected.reviews.map(r=>`<div class="result"><strong>温和复盘：</strong>${esc(r.finding)}<p class="source">依据：${esc(r.source_ref)}</p></div>`).join('');
+      return `<section class="panel" id="records-panel"><h2>实际结果与复盘</h2>${pendingRows?`<div class="note caution"><strong>${pending.length} 项结果待本人确认</strong><p>任务完成事件与实际结果是两条记录；请填本人实际耗时。</p></div>${pendingRows}`:''}${conflictRows}${results||reviews?results+reviews:'<p class="muted small">当前还没有本人确认的结果或复盘。</p>'}<p class="form-note">活动线索和任务打勾不代表考试通过、能力掌握或岗位已投递。</p></section>`;
     }
     function render() {
       const selected=state.selected,goal=selected?.goal;
@@ -174,10 +206,12 @@
       const picker=goal?`<div class="goal-picker"><label for="goal_switch">当前目标</label><select id="goal_switch">${goalOptions}</select></div>`:'';
       const title=goal?esc(goal.title):'把大目标落到今天';
       const lede=goal?`每周 ${goal.weekly_minutes} 分钟 · ${goal.active_version?'计划第 '+goal.active_version+' 版':'尚无生效计划'} · ${esc(goal.timezone)}`:'先创建一个目标，再审阅每天具体做什么。';
-      const compactBody=goal ? (selected.active_plan ? todayPanel(selected) :
+      const pendingCount=selected?.result_status?.tasks?.filter(item=>item.state==='awaiting_user_confirmation').length||0;
+      const compactResultPrompt=pendingCount?`<section class="panel"><h2>${pendingCount} 项实际结果待确认</h2><p class="compact-prompt">每日完成依据已存，仍需要本人填写实际耗时与观察。</p><a class="mini-link" href="${routeLink('/')}#records-panel">展开确认结果</a></section>`:'';
+      const compactBody=goal ? (selected.active_plan ? todayPanel(selected)+compactResultPrompt :
         `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
         `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
-      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+planPanel(selected)+recordsPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
+      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
       app.innerHTML=mast(goal)+`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section><div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
       const start=document.getElementById('start_on');
       if(start&&!start.value){
@@ -189,12 +223,23 @@
       tick();
     }
     function tick(){const zone=state?.selected?.goal?.timezone||'Asia/Shanghai';const el=document.getElementById('clock');if(el) el.textContent=new Intl.DateTimeFormat('zh-CN',{timeZone:zone,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
+    function formMetric(fields){
+      if(!fields.correct&&!fields.total&&!fields.expected) return null;
+      if(fields.correct===''||fields.total==='') throw Error('填写成绩时，请同时填写正确数与总题数');
+      const metric={correct:Number(fields.correct),total:Number(fields.total)};
+      if(fields.expected!=='') metric.expected=Number(fields.expected);
+      return metric;
+    }
     app.addEventListener('click',async event=>{
       const button=event.target.closest('[data-action]');if(!button)return;
       const action=button.dataset.action;button.disabled=true;
       try{
         if(action==='new-goal'){showNewGoal=!showNewGoal;render()}
         if(action==='evidence'){selectedTask=selectedTask===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='report'){selectedReportTask=selectedReportTask===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='confirm-result'){selectedResultTask=selectedResultTask===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='correct-result'){selectedCorrectionResult=selectedCorrectionResult===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='review-result'){await write('/api/reviews/propose',{goal_id:state.selected_goal_id,result_id:button.dataset.id});notify('温和复盘与待决定提案已保存')}
         if(action==='accept'||action==='decline'){await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
         if(action==='sync'){await write('/api/plans/sync',{goal_id:state.selected_goal_id})}
         if(['start','pause','resume','stop'].includes(action)){await write('/api/actions/'+action,{goal_id:state.selected_goal_id,task_id:button.dataset.id})}
@@ -213,7 +258,9 @@
           showNewGoal=false;render();notify('目标已保存在本机');
         }
         if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
-        if(form.dataset.form==='complete'){await write('/api/tasks/complete',{goal_id:state.selected_goal_id,task_id:form.dataset.id,evidence:fields});notify('完成依据已保存；尚未判定掌握程度')}
+        if(form.dataset.form==='complete'){await write('/api/tasks/complete',{goal_id:state.selected_goal_id,task_id:form.dataset.id,evidence:fields});notify('Daily 完成依据已保存；实际结果仍待本人确认')}
+        if(form.dataset.form==='confirm-result'){await write('/api/results/confirm',{goal_id:state.selected_goal_id,task_id:form.dataset.id,actual_minutes:Number(fields.actual_minutes),metric:formMetric(fields),evidence_ref:fields.evidence_ref||null,note:fields.note||'',correct:form.dataset.correct==='true'});notify('本人实际结果已保存；不据此判定掌握或考试结果')}
+        if(form.dataset.form==='report-result'){await write('/api/results/report',{goal_id:state.selected_goal_id,task_id:form.dataset.id,outcome:fields.outcome,actual_minutes:Number(fields.actual_minutes),metric:formMetric(fields),evidence_ref:fields.evidence_ref||null,note:fields.note});notify('实际情况已记录；每日任务未被自动标为完成')}
         if(form.dataset.form==='photo'){
           const file=fields.photo;
           if(!(file instanceof File)||!['image/png','image/jpeg'].includes(file.type)||!file.size||file.size>2000000) throw Error('请选择 2 MB 以内的 PNG 或 JPEG');

@@ -66,6 +66,18 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(status, 200, body)
         return body
 
+    def active_goal(self, token, prefix="A", path="cet6"):
+        goal_id = self.goal(token, prefix * 24, path)["selected_goal_id"]
+        proposal = self.post("/api/plans/propose", {
+            "operation_id": prefix + "P" * 20, "goal_id": goal_id,
+            "start_on": "2026-10-05"}, token)[1]["selected"]["pending_proposals"][0]
+        self.post("/api/plans/decide", {"operation_id": prefix + "D" * 20,
+                  "proposal_id": proposal["id"], "decision": "accept"}, token)
+        state = self.post("/api/plans/sync", {"operation_id": prefix + "S" * 20,
+                                             "goal_id": goal_id}, token)[1]
+        self.assertEqual(state["selected"]["sync"]["state"], "applied")
+        return goal_id, state["selected"]["today_tasks"][0]["task_id"]
+
     def test_cet6_proposal_is_inactive_until_accept_and_sync_then_survives_restart(self):
         status, initial, headers = self.request("GET", "/api/state")
         self.assertEqual(status, 200)
@@ -237,6 +249,95 @@ class GoalWebTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "最多 2 MB"):
             AvatarPhotoStore(self.temp.name).save(base64.b64encode(b"x" * 2_000_001).decode("ascii"), "image/png")
         self.assertFalse((Path(self.temp.name) / "private_avatar").exists())
+
+    def test_completed_result_waits_across_restart_then_is_confirmed_once(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id, task_id = self.active_goal(token, "C")
+        evidence = {"material_ref": "虚构练习材料", "first_attempt_ref": "虚构首次作答",
+                    "reflection_ref": "虚构错因复盘"}
+        self.assertEqual(self.post("/api/tasks/complete", {
+            "operation_id": "C" * 22, "goal_id": goal_id, "task_id": task_id,
+            "evidence": {"material_ref": evidence["material_ref"],
+                         "reflection_ref": evidence["reflection_ref"]}}, token)[0], 400)
+        status, done, _ = self.post("/api/tasks/complete", {
+            "operation_id": "D" * 22, "goal_id": goal_id, "task_id": task_id,
+            "evidence": evidence}, token)
+        self.assertEqual(status, 200, done)
+        self.assertEqual(done["selected"]["result_status"]["tasks"][0]["state"],
+                         "awaiting_user_confirmation")
+        self.stop_server()
+        self.start_server()
+        self.now = datetime(2026, 10, 7, 2, 0, tzinfo=timezone.utc)
+        state = self.request("GET", "/api/state?goal_id=" + goal_id)[1]
+        self.assertNotIn(task_id, {item["task_id"] for item in state["selected"]["today_tasks"]})
+        self.assertEqual(state["selected"]["result_status"]["tasks"][0]["state"],
+                         "awaiting_user_confirmation")
+        token = state["csrf_token"]
+        payload = {"operation_id": "R" * 22, "goal_id": goal_id, "task_id": task_id,
+                   "actual_minutes": 27, "metric": {"correct": 11, "total": 20, "expected": 14},
+                   "evidence_ref": "虚构首次作答位置", "note": "本人只记录首次得分"}
+        self.assertEqual(self.request("POST", "/api/results/confirm", payload,
+                                      origin="http://evil.example", csrf=token,
+                                      content_type="application/json")[0], 403)
+        self.assertEqual(self.post("/api/results/confirm", payload, token)[0], 200)
+        again = self.post("/api/results/confirm", {**payload, "operation_id": "Q" * 22}, token)[1]
+        self.assertEqual(len(again["selected"]["results"]), 1)
+        self.assertEqual(again["selected"]["result_status"]["tasks"][0]["state"], "recorded")
+        self.assertEqual(again["selected"]["results"][0]["metric"]["correct"], 11)
+        corrected = self.post("/api/results/confirm", {
+            **payload, "operation_id": "Z" * 22, "correct": True,
+            "metric": {"correct": 12, "total": 20, "expected": 14},
+            "note": "本人更正首次得分"}, token)[1]
+        self.assertEqual([item["metric"]["correct"] for item in corrected["selected"]["results"]], [11, 12])
+
+    def test_unfinished_report_review_accept_decline_and_goal_isolation(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        first_goal, first_task = self.active_goal(token, "M")
+        second_goal, second_task = self.active_goal(token, "N")
+        report = {"operation_id": "U" * 22, "goal_id": first_goal, "task_id": first_task,
+                  "outcome": "missed", "actual_minutes": 0, "metric": None,
+                  "evidence_ref": None, "note": "虚构课程冲突"}
+        first = self.post("/api/results/report", report, token)[1]
+        self.assertEqual(first["selected"]["active_plan"]["items"][0]["daily_state"], "scheduled")
+        self.assertEqual(first["selected"]["results"][0]["outcome"], "missed")
+        repeat = self.post("/api/results/report", {**report, "operation_id": "V" * 22}, token)[1]
+        self.assertEqual(len(repeat["selected"]["results"]), 1)
+        self.assertEqual(self.request("GET", "/api/state?goal_id=" + second_goal)[1]
+                         ["selected"]["results"], [])
+        result_id = first["selected"]["results"][0]["id"]
+        reviewed = self.post("/api/reviews/propose", {"operation_id": "W" * 22,
+            "goal_id": first_goal, "result_id": result_id}, token)[1]
+        self.assertEqual(len(reviewed["selected"]["reviews"]), 1)
+        proposal = reviewed["selected"]["pending_proposals"][0]
+        self.assertEqual(proposal["method"], "manual")
+        self.assertEqual(proposal["base_version"], 1)
+        self.assertEqual(reviewed["selected"]["sync"]["state"], "applied")
+        accepted = self.post("/api/plans/decide", {"operation_id": "X" * 22,
+            "proposal_id": proposal["id"], "decision": "accept"}, token)[1]
+        self.assertEqual(accepted["selected"]["goal"]["active_version"], 2)
+        self.assertEqual(accepted["selected"]["sync"]["state"], "applied")
+        retried_review = self.post("/api/reviews/propose", {"operation_id": "K" * 22,
+            "goal_id": first_goal, "result_id": result_id}, token)[1]
+        self.assertEqual(retried_review["selected"]["goal"]["active_version"], 2)
+        self.assertEqual(len(retried_review["selected"]["reviews"]), 1)
+        self.assertEqual(retried_review["selected"]["pending_proposals"], [])
+        second_report = self.post("/api/results/report", {**report,
+            "operation_id": "Y" * 22, "goal_id": second_goal, "task_id": second_task,
+            "outcome": "partial", "actual_minutes": 12, "note": "虚构只练了一部分"}, token)[1]
+        second_result_id = second_report["selected"]["results"][0]["id"]
+        second_review = self.post("/api/reviews/propose", {"operation_id": "I" * 22,
+            "goal_id": second_goal, "result_id": second_result_id}, token)[1]
+        declined = self.post("/api/plans/decide", {"operation_id": "J" * 22,
+            "proposal_id": second_review["selected"]["pending_proposals"][0]["id"],
+            "decision": "decline"}, token)[1]
+        self.assertEqual(declined["selected"]["goal"]["active_version"], 1)
+        self.assertEqual(declined["selected"]["sync"]["state"], "applied")
+        retried_declined = self.post("/api/reviews/propose", {"operation_id": "L" * 22,
+            "goal_id": second_goal, "result_id": second_result_id}, token)[1]
+        self.assertEqual(len(retried_declined["selected"]["reviews"]), 1)
+        self.assertEqual(retried_declined["selected"]["pending_proposals"], [])
+        self.assertEqual(len(self.request("GET", "/api/state?goal_id=" + first_goal)[1]
+                             ["selected"]["results"]), 1)
 
 
 if __name__ == "__main__":
