@@ -102,8 +102,11 @@ class GoalResultBridge:
                     "SELECT event_id,at FROM daily_events WHERE task_id=? AND command='complete' "
                     "ORDER BY seq DESC LIMIT 1", (task_id,)).fetchone()
                 _need(event is not None, "已完成任务缺少完成事件")
+                # A later safe projection can move this task to a newer plan
+                # version. The original confirmed completion still belongs to
+                # this task and must not reappear as awaiting confirmation.
                 state = "recorded" if any(r["task_id"] == task_id
-                                          and r["plan_version"] == version
+                                          and r["outcome"] == "completed"
                                           and r["basis"] == "self_report" for r in results) else "awaiting_user_confirmation"
                 tasks.append({"task_id": task_id, "task_title": task["title"],
                               "completed_at": event["at"], "plan_version": version, "state": state})
@@ -130,11 +133,20 @@ class GoalResultBridge:
         self._completion(task, complete_event_id)
         if correction_id is not None:
             _id(correction_id, "correction_id")
+        snapshot = self.goals.snapshot(goal_id)
+        first_results = [result for result in snapshot["results"]
+                         if result["task_id"] == task_id and result["outcome"] == "completed"
+                         and result["basis"] == "self_report"
+                         and result["id"] == _stable("GR-", goal_id, result["plan_version"],
+                                                     task_id, complete_event_id, "first")]
+        _need(len(first_results) <= 1, "同一完成事件有多个首次结果，请先核对")
+        if first_results:
+            version = first_results[0]["plan_version"]
         first_id = _stable("GR-", goal_id, version, task_id, complete_event_id, "first")
         result_id = (first_id if correction_id is None else
                      _stable("GR-", goal_id, version, task_id, complete_event_id, correction_id))
         if correction_id is not None:
-            _need(first_id in self.goals.snapshot()["results"], "先记录首次结果，再追加更正")
+            _need(bool(first_results), "先记录首次结果，再追加更正")
         result = {"id": result_id, "goal_id": goal_id, "plan_version": version,
                   "task_id": task_id, "outcome": "completed", "basis": "self_report",
                   "actual_minutes": actual_minutes, "metric": metric,
@@ -151,7 +163,16 @@ class GoalResultBridge:
         task, version = self._linked_task(goal_id, task_id)
         _need(task["state"] != "cancelled", "已取消任务不可报未完成")
         _need(outcome != "missed" or task["state"] != "completed", "已完成任务不可报未做")
-        result_id = _stable("GR-", goal_id, version, task_id, report_id)
+        snapshot = self.goals.snapshot(goal_id)
+        # The caller's report ID distinguishes real observations. It must not
+        # be re-scoped by a later plan version during an HTTP retry. Recognize
+        # old version-scoped IDs written by the draft bridge as well.
+        result_id = _stable("GR-", goal_id, task_id, report_id)
+        previous = next((result for result in snapshot["results"]
+                         if result["id"] == result_id or result["id"] == _stable(
+                             "GR-", goal_id, result["plan_version"], task_id, report_id)), None)
+        if previous is not None:
+            result_id, version = previous["id"], previous["plan_version"]
         result = {"id": result_id, "goal_id": goal_id, "plan_version": version,
                   "task_id": task_id, "outcome": outcome, "basis": "self_report",
                   "actual_minutes": actual_minutes, "metric": metric,

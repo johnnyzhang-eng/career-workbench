@@ -7,8 +7,8 @@
 1. 用户完成每日任务时，`DailyStore.command("complete", ...)` 先按任务种类核验依据。CET6 类练习需材料、**首次作答**、复盘三个引用；`apply_job` 仍需原求职状态机中同岗位、晚于安排时间、带回执的 `submitted` 事件。
 2. 本机网页展示任务完成记录和本人填写的 `actual_minutes`、可选 `metric`、可选 `evidence_ref`、`note`。本人确认后，服务端从已保存的 Daily 完成事件查回 ID，再调用 `GoalResultBridge.record_completed(..., actor="user")`。这四项必须显式传入，即使可选项为 `None` 或空字符串。`actor` 是调用约定，**不是身份认证**；网页写入另有 Host、Origin 和 CSRF 边界，工具观察不得包装成此接口。
 3. 桥用初次安排事件证明任务来自目标计划；结果版本取**完成时 DailyStore 当前投影的 `plan_version`**，可适应后续安全改期。它再次检查已保存的完成事件及领域依据，然后把 `self_report` 结果写入 GoalStore。分数只是本人记录的练习指标，不推导掌握程度。
-4. `status(goal_id)` 将已完成但尚无本人结果的任务列为 `awaiting_user_confirmation`；有结果为 `recorded`，契约错位为 `conflict`。任务完成与目标结果分属两个 SQLite 文件，不能宣称原子提交。若完成写入后结果写入中断，重启后仍显示待确认；用相同输入重试会复用稳定结果与事件 ID。已写入的首次结果不会被覆盖；本人更正使用新的 `correction_id` 追加记录。
-5. 未完成、部分完成、受阻由本人显式调用 `record_unfinished`；它不擅自把 DailyStore 任务标为完成或取消。`review_with_proposal` 可对这些自述记录写一条温和复盘，再写一个完整的手动计划**待决定提案**。提案须由调用方提供全部任务和调整理由，不自动生成、更不自动生效；用户随后在 GoalStore 单独接受、编辑或拒绝。
+4. `status(goal_id)` 将已完成但尚无本人结果的任务列为 `awaiting_user_confirmation`；有该任务本人确认的完成结果为 `recorded`，即使之后安全投影更新了计划版本也不会重新要求确认。契约错位显示 `conflict`。任务完成与目标结果分属两个 SQLite 文件，不能宣称原子提交。若完成写入后结果写入中断，重启后仍显示待确认；相同输入重试复用稳定结果与事件 ID。首次结果保留原确认时的版本，本人更正使用新的 `correction_id` 追加记录。
+5. 未完成、部分完成、受阻由本人显式调用 `record_unfinished`；它不擅自把 DailyStore 任务标为完成或取消。本机网页把目标时区的报告日期纳入稳定报告 ID：同一天相同内容重试去重，次日再次报告同一任务会成为新的观察。`review_with_proposal` 可对这些自述记录写一条温和复盘，再写一个完整的手动计划**待决定提案**。提案须由调用方提供全部任务和调整理由，不自动生成、更不自动生效；用户随后在 GoalStore 单独接受、编辑或拒绝。
 
 ```mermaid
 flowchart LR

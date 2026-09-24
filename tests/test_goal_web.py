@@ -302,6 +302,13 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(first["selected"]["results"][0]["outcome"], "missed")
         repeat = self.post("/api/results/report", {**report, "operation_id": "V" * 22}, token)[1]
         self.assertEqual(len(repeat["selected"]["results"]), 1)
+        self.now = datetime(2026, 10, 6, 2, 0, tzinfo=timezone.utc)
+        next_day = self.post("/api/results/report", {**report, "operation_id": "B" * 22}, token)[1]
+        self.assertEqual(len(next_day["selected"]["results"]), 2)
+        self.assertNotEqual(next_day["selected"]["results"][0]["id"],
+                            next_day["selected"]["results"][1]["id"])
+        same_next_day = self.post("/api/results/report", {**report, "operation_id": "E" * 22}, token)[1]
+        self.assertEqual(len(same_next_day["selected"]["results"]), 2)
         self.assertEqual(self.request("GET", "/api/state?goal_id=" + second_goal)[1]
                          ["selected"]["results"], [])
         result_id = first["selected"]["results"][0]["id"]
@@ -337,7 +344,7 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(len(retried_declined["selected"]["reviews"]), 1)
         self.assertEqual(retried_declined["selected"]["pending_proposals"], [])
         self.assertEqual(len(self.request("GET", "/api/state?goal_id=" + first_goal)[1]
-                             ["selected"]["results"]), 1)
+                             ["selected"]["results"]), 2)
 
 
 if __name__ == "__main__":

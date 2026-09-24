@@ -313,7 +313,9 @@ class GoalApp:
             scheduled = datetime.fromisoformat(task["scheduled_at"].replace("Z", "+00:00"))
             if scheduled.astimezone(ZoneInfo(goal["timezone"])).date() > local_now.date():
                 raise ValueError("未来任务还不能报告未完成")
-            report_id = _stable_id("RU-", goal_id, task_id, outcome,
+            # One identical report per local day is a retry; an identical
+            # report tomorrow is a separate observation of ongoing work.
+            report_id = _stable_id("RU-", goal_id, task_id, local_now.date().isoformat(), outcome,
                                    minutes, metric, evidence_ref, note)
             GoalResultBridge(goals, daily).record_unfinished(
                 goal_id, task_id, report_id, outcome, actual_minutes=minutes,

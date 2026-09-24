@@ -233,6 +233,68 @@ class GoalResultBridgeTests(unittest.TestCase):
         self.assertEqual(result["plan_version"], 2)
         self.assertEqual(self.goals.snapshot("G-CET6")["plans"][0]["version"], 1)
 
+    def test_confirmed_result_stays_recorded_after_projection_version_changes(self):
+        item = self.accept("G-CET6", "T-CET6")
+        self.daily.command("complete", "DONE-CET6", "T-CET6", {"evidence": {
+            "material_ref": "fictional-material", "first_attempt_ref": "fictional-first-attempt",
+            "reflection_ref": "fictional-reflection"}})
+        first = self.confirm("G-CET6", "T-CET6", "DONE-CET6")
+        self.goals.command("record_review", "REVIEW-FOR-V2", {"review": {
+            "id": "R-FOR-V2", "goal_id": "G-CET6", "plan_version": 1,
+            "trigger": "external_event", "result_ids": [], "finding": "虚构版本更新",
+            "source_ref": "fictional-note"}})
+        self.goals.command("propose_plan", "PROPOSE-V2", {"proposal": {
+            "id": "P-V2", "goal_id": "G-CET6", "goal_revision": 1,
+            "base_version": 1, "review_id": "R-FOR-V2", "reason": "虚构版本更新",
+            "items": [item], "method": "manual", "source_ref": "fictional-note"}})
+        self.goals.command("decide_plan", "ACCEPT-V2", {
+            "proposal_id": "P-V2", "decision": "accept", "actor": "user",
+            "reason": "本人接受虚构新版本", "edited_items": None, "policy_ref": None})
+        original_tasks = self.daily._tasks
+
+        def current_projection():
+            tasks = original_tasks()
+            tasks["T-CET6"]["plan_version"] = 2
+            return tasks
+
+        self.daily._tasks = current_projection
+        self.assertEqual(self.bridge.status("G-CET6")["tasks"][0]["state"], "recorded")
+        self.assertEqual(self.confirm("G-CET6", "T-CET6", "DONE-CET6")["id"], first["id"])
+        corrected = self.confirm("G-CET6", "T-CET6", "DONE-CET6", correction_id="CORRECT-V2",
+                                 actual_minutes=27, note="虚构更正")
+        self.assertEqual(corrected["plan_version"], 1)
+        self.assertEqual(len(self.goals.snapshot("G-CET6")["results"]), 2)
+
+    def test_unfinished_report_id_retry_survives_projection_version_change(self):
+        item = self.accept("G-CET6", "T-CET6")
+        first = self.bridge.record_unfinished("G-CET6", "T-CET6", "REPORT-SAME-DAY", "partial",
+                                              actual_minutes=10, metric=None, evidence_ref=None,
+                                              note="虚构只做了一部分", actor="user")
+        self.goals.command("record_review", "REVIEW-FOR-V2", {"review": {
+            "id": "R-FOR-V2", "goal_id": "G-CET6", "plan_version": 1,
+            "trigger": "external_event", "result_ids": [], "finding": "虚构版本更新",
+            "source_ref": "fictional-note"}})
+        self.goals.command("propose_plan", "PROPOSE-V2", {"proposal": {
+            "id": "P-V2", "goal_id": "G-CET6", "goal_revision": 1,
+            "base_version": 1, "review_id": "R-FOR-V2", "reason": "虚构版本更新",
+            "items": [item], "method": "manual", "source_ref": "fictional-note"}})
+        self.goals.command("decide_plan", "ACCEPT-V2", {
+            "proposal_id": "P-V2", "decision": "accept", "actor": "user",
+            "reason": "本人接受虚构新版本", "edited_items": None, "policy_ref": None})
+        original_tasks = self.daily._tasks
+
+        def current_projection():
+            tasks = original_tasks()
+            tasks["T-CET6"]["plan_version"] = 2
+            return tasks
+
+        self.daily._tasks = current_projection
+        retried = self.bridge.record_unfinished("G-CET6", "T-CET6", "REPORT-SAME-DAY", "partial",
+                                                actual_minutes=10, metric=None, evidence_ref=None,
+                                                note="虚构只做了一部分", actor="user")
+        self.assertEqual(retried["id"], first["id"])
+        self.assertEqual(len(self.goals.snapshot("G-CET6")["results"]), 1)
+
     def test_review_write_then_proposal_interruption_retries_without_duplicate(self):
         item = self.accept("G-CET6", "T-CET6")
         missed = self.bridge.record_unfinished("G-CET6", "T-CET6", "REPORT-MISSED", "missed",
