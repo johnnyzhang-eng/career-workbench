@@ -1,0 +1,454 @@
+{
+  "purpose": "original A compact scene allocation, 141 vs 222 logical pixels high",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "renderer": "GL Compatibility",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/comparison/activity_focus_layout.gd": "6ff7b4f3703ddc5c38b0ea80f734c9510f34f43527c5de517e48b4c5fdbee622",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "records": [
+    {
+      "variant": "L0",
+      "focus_layout": false,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 7.502,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L0/baseline-360x320-day-idle.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec"
+        },
+        {
+          "state": "started",
+          "file": "L0/baseline-360x320-day-started.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "04b2a0eae865c5a6f6bb41f6dd03575f98b5fd2c8ed08cd618ef85509971dde8"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 6826.236,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 192,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "L0",
+      "focus_layout": false,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 2.62,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L0/baseline-360x320-evening-idle.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c"
+        },
+        {
+          "state": "started",
+          "file": "L0/baseline-360x320-evening-started.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "b8d9cc144a1f0f51cd5bc3209caac4f79d69e35657ca9e68af188c9dfe22411a"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2006.403,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "L0",
+      "focus_layout": false,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 2.586,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L0/baseline-1280x720-day-idle.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "c5dbda996d22a9ba210c2efdfee0d338aab25bbee938ac57dad921ad49daba46"
+        },
+        {
+          "state": "started",
+          "file": "L0/baseline-1280x720-day-started.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "882e39cd529ab37cac827f4e09cd9411b1ed50bd8dd8ad0f3c7e6f0c49db4d91"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2099.518,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "L0",
+      "focus_layout": false,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 2.594,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L0/baseline-1280x720-evening-idle.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "47c9b37551b2ffcb9c605f8906bb16585d41b37ac4e28bbf3053f8cef4ccf75b"
+        },
+        {
+          "state": "started",
+          "file": "L0/baseline-1280x720-evening-started.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "81d0cbbbd3b1b13e9c837b7aec2f4ea54bf4bc2453d892b4bb036856f8d49bc1"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2066.337,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "L1",
+      "focus_layout": true,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 2.536,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L1/baseline-360x320-day-idle.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "c59a8353d83d93c799ef303f55145678bd2f9d2d1f4e3af9c34480be88de234b"
+        },
+        {
+          "state": "started",
+          "file": "L1/baseline-360x320-day-started.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "d1daba9e676efb2b2dd6d9f2fb5832bb6383503307b0a4b95881d7b7b5d57658"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 1962.902,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "L1",
+      "focus_layout": true,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 2.541,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L1/baseline-360x320-evening-idle.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "d64b5cf39a4239017997d465c003d2d9d26bcb53087b508761a461da9f3ff134"
+        },
+        {
+          "state": "started",
+          "file": "L1/baseline-360x320-evening-started.png",
+          "size_pixels": [
+            720,
+            640
+          ],
+          "sha256": "10d9f9c6e95f93c4dad2e882d808067a3b2b0f6ddfa1f216c1174f9e4cad8897"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 1960.823,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "L1",
+      "focus_layout": true,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 2.535,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L1/baseline-1280x720-day-idle.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "c5dbda996d22a9ba210c2efdfee0d338aab25bbee938ac57dad921ad49daba46"
+        },
+        {
+          "state": "started",
+          "file": "L1/baseline-1280x720-day-started.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "ee17296b83834f5b5adfb800353eb5c56c0a44f1f139f6c3abde082dbe8d12d4"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2053.593,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "L1",
+      "focus_layout": true,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 2.611,
+      "captures": [
+        {
+          "state": "idle",
+          "file": "L1/baseline-1280x720-evening-idle.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "47c9b37551b2ffcb9c605f8906bb16585d41b37ac4e28bbf3053f8cef4ccf75b"
+        },
+        {
+          "state": "started",
+          "file": "L1/baseline-1280x720-evening-started.png",
+          "size_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "137033fc8af3fe66a5805f2eb90d0f6b02684a91754d54cbb82d23ce33fde8c7"
+        }
+      ],
+      "capture_meta": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2062.341,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "check": "render_state_only",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 50,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}
