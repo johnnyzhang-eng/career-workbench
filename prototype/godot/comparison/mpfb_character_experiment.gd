@@ -48,10 +48,14 @@ func _load_route() -> void:
 	var args := OS.get_cmdline_user_args()
 	var mpfb := "--mpfb-student" in args
 	var rigged := "--rigged-student" in args
+	var scale_contact_m3 := "--scale-contact-m3" in args
+	assert(not scale_contact_m3 or mpfb)
 	assert(not (mpfb and rigged))
 	character_variant = mpfb or rigged
 	var room_script := "res://comparison/room_3d.gd"
-	if mpfb:
+	if scale_contact_m3:
+		room_script = "res://comparison/scale_contact_room.gd"
+	elif mpfb:
 		room_script = "res://comparison/mpfb_character_room.gd"
 	elif rigged:
 		room_script = "res://comparison/rigged_character_room.gd"
@@ -97,3 +101,4 @@ func _load_route() -> void:
 	print("R4_CHAIR ", "low" if "--chair-low" in OS.get_cmdline_user_args() else "original")
 	print("R4_CONTACT ", "forward_055_keyboard_back_015" if "--contact-layout" in OS.get_cmdline_user_args() else "original")
 	print("R4_SCALE ", "1.35x_and_down_034" if "--scaled-character" in OS.get_cmdline_user_args() else "original")
+	print("R4_M3_SCALE_CONTACT ", scale_contact_m3)

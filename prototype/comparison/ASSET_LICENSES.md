@@ -43,6 +43,10 @@ R4 仅用于 [同场景实机对照](mpfb_character_experiment/README.md)，不�
 
 源码、三份 GLB 的 SHA、所用参数、昼夜图像与非动画限制见实验 README/manifest。它们是实验产物，尚未通过发布包的第三方声明复核。
 
+## M3 组合样机中的木桌（2026-09-25）
+
+`../godot/comparison/assets/polyhaven_wooden_table_02_1k.glb` 与 [M2 草稿 #56](https://github.com/johnnyzhang-eng/career-workbench/pull/56) 的产物逐字节相同，SHA-256 为 `3a1d63e2444b39a9aef82230d8775960e15a5a6223e507efbbfce5920ed68fe2`。原资产 [Poly Haven Wooden Table 02](https://polyhaven.com/a/wooden_table_02)，作者 Serhii Khromov；资产页和 [Poly Haven 许可页](https://polyhaven.com/license)标为 CC0，允许在公开项目中使用与再分发。官方 1K glTF/BIN/JPG 的 MD5/SHA 核验和 Blender 5.1.2 打包脚本由 #56 提供；M3 复用相同 GLB、不复制原始下载包。与 R4 人体组合后的高度、镜头、昼夜实机记录在 [M3 manifest](scale_contact_experiment/manifest.json)。木桌被非均匀拉宽以适配 A 的旧房间，不是最终家具比例。
+
 ## 参考范围
 
 《模拟人生》的剖面房间、角色定制与生活互动，Spirit City: Lofi Sessions 的房间/专注工具构图，Virtual Cottage 的真实时钟氛围，仅是产品思想参考；不提取角色、家具、贴图、音频、UI 或游戏截图进入仓库。Windup 仅参考原创角色制作与质量检查流程；未授权移植任何角色或成品画风。参考视频只记录链接与时间码，不上传他人帧图。

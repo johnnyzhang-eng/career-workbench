@@ -1,0 +1,78 @@
+{
+  "purpose": "Camera-only composition probe relative to M3 at the same explicit task state; not the default camera.",
+  "near_camera_position": [
+    1.65,
+    1.9,
+    0.9
+  ],
+  "near_camera_target": [
+    -0.78,
+    0.8,
+    -0.53
+  ],
+  "notes": "Character projects larger, but desk and room context are cropped; AABB includes occlusion and is not a quality score.",
+  "source_sha256": {
+    "make_angle_candidate.py": "e103077fbd0e47d7c9c80185f89f020c95a6fb6147bfb25df96dacb004b99871",
+    "scale_contact_room.gd": "aa506c12c5bd7d983f40efc01e9f282ffe681cbe0bfff216431476abe0267f97"
+  },
+  "records": [
+    {
+      "capture": "captures/G2a-side-360x320-day-started.png",
+      "sha256": "e2de2c4ef29c378bfaa8ac7b2df38aceb1a9a5ab0c9e71672d0eebc989f8438e",
+      "size": [
+        360,
+        320
+      ],
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3",
+        "--m3-side-angle"
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        152.32,
+        40.3,
+        54.28,
+        78.95
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "capture": "captures/G2a-side-1280x720-day-started.png",
+      "sha256": "62e869851e4b3253f217966bfaca8755d0d82dceb689db984529f2c232ccabf6",
+      "size": [
+        1280,
+        720
+      ],
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3",
+        "--m3-side-angle"
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        384.23,
+        157.2,
+        211.74,
+        307.97
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    }
+  ]
+}
