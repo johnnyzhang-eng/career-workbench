@@ -114,5 +114,6 @@ flowchart LR
 | 角色 R3 | [PR #48](https://github.com/johnnyzhang-eng/career-workbench/pull/48) 提交 12 骨原创角色、两段电脑前动作和 36 张 Godot 实际画面；髋部座椅接触更好。 | 原小窗的手部变化与 R2 同样很轻；起身动作未通过接触检查，阅读/休息尚未做。 |
 | 真实时间与首日结果 | [PR #46](https://github.com/johnnyzhang-eng/career-workbench/pull/46) 在虚构 CET6 首日路径中修正上海时区日期、完成后房间回待机和练习证据字段；计划、完成、确认结果、刷新均在浏览器核对。 | 目前是基于 #45 的草稿；秋招路径、原生小窗和合流后仍需复核。 |
 | 角落操作层 | [PR #50](https://github.com/johnnyzhang-eng/career-workbench/pull/50) 在 360×480 真 NSPanel 中把房间、当前任务、状态和主按钮放进首屏；[PR #49](https://github.com/johnnyzhang-eng/career-workbench/pull/49) 单独修复原生房子图标重新展开后丢失所选目标。 | 两条草稿分别基于 #45/#39，尚未在同一完整分支验证；房间渲染器可替换，但要保持首屏任务入口。 |
+| 秋招与小窗合流 | [PR #51](https://github.com/johnnyzhang-eng/career-workbench/pull/51) 用虚构秋招目标完整走提案、行动、结果、受阻复盘和同日确认改期；同时修复新建第二目标后网页刷新回到旧目标。[PR #52](https://github.com/johnnyzhang-eng/career-workbench/pull/52) 叠合 #46/#50/#51，以虚构 CET6 任务复核小窗→完整页→完成依据→小窗待确认提示，另用 #49 原生外壳实机显示组合画面。 | #52 是合流草稿，96 项本地测试和单任务原生小窗验收不等于多目标、多屏、3D 场景或发布版已完成；#49 的 Swift 修改尚在独立 PR。 |
 
 这些证据提示下一步的优先顺序：先把**一个角色在电脑前的连续动作与桌椅接触**做成可编辑、可运行的 3D 样本；在真实 360×320 小窗原大看行为是否能辨，再补阅读/休息与个人定制。之后把候选 3D 与真正像素 2D 放进同一目标状态和原生角落窗口比较，请用户决定首版画风。渲染器特效、模型档位或素材站的宣传都不能替代这个运行验收。
