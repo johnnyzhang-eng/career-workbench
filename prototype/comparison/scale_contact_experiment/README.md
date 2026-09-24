@@ -17,6 +17,8 @@ R4 固定近镜头在「待开始」时会把站立吉祥物严重裁切；M3 �
 | R4 固定近镜头 | 132.25×247.67，顶部 y=−1.17 | 52.23×77.00 | 待开始站立角色超出 141 高的场景画布；进行中人物更大 |
 | M3 状态镜头 | 18.70×39.29，顶部 y=58.82 | 38.60×58.21 | 待开始人物完整但很小；开始后切近桌面，仍有椅背遮挡 |
 
+另试了一次**只改进行中相机位置**的 G2a 侧视候选，桌椅、人物、任务和光照均沿用 M3。360×320 白天人物投影增至 54.28×78.95 逻辑像素，手臂轮廓更明显；但同张[小窗截图](captures/G2a-side-360x320-day-started.png)里桌面与房间明显被裁掉，[展开截图](captures/G2a-side-1280x720-day-started.png)也更暴露方块椅和无腿坐姿。这个结果**只说明相机有可调空间，不足以选它当默认**；要先让椅子、角色、桌面在同一米制尺寸下重建，再从产品小窗评估人物与场景的共同可读性。参数和图像 SHA 见 [G2a 记录](angle_candidate.json)。
+
 这个样本仍把真实约 1.13 m 宽的木桌**非均匀拉宽到原 A 的 3.55 m 占位**，所以只有高度关系更接近人体尺寸，家具的整体比例依然失真；脚底/椅面/指尖也没有严格接触测试。用于正式首版前，必须统一桌子宽度、房间平面、人物身高和完整角色动作，重新构图，然后实测常驻 Web/原生窗口的资源预算。
 
 ## 重跑与许可
@@ -26,7 +28,9 @@ R4 固定近镜头在「待开始」时会把站立吉祥物严重裁切；M3 �
 ```sh
 python3 prototype/comparison/scale_contact_experiment/run_capture.py
 python3 prototype/comparison/scale_contact_experiment/make_transition_film.py
+python3 prototype/comparison/scale_contact_experiment/make_angle_candidate.py
 ```
 
 脚本先让 Godot 4.7 导入 GLB，再以真实窗口采 R4/M3 × 360×320/1280×720 × 白天/夜晚的待开始与进行中共 16 张图，同时在虚构数据上跑 `--proof`。PNG 元数据清理后存档，manifest 给出 SHA、渲染物理像素、人物投影 AABB 和构建源码指纹。
 短片脚本再次跑 Godot 的 `--film --proof`，将待开始与开始后连续 26 帧编码成 14 fps 的 MP4，`camera_film.json` 记录成品与源码 SHA；需要本机有 ffmpeg/ffprobe。
+侧视候选脚本只变更显式任务进行中的相机位置，重采小窗和展开态白天截图；M3 默认镜头维持原位。

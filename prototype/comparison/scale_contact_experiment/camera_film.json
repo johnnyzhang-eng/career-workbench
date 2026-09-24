@@ -1,6 +1,6 @@
 {
   "capture": "captures/m3-camera-transition.mp4",
-  "sha256": "8155187bd6c37b8e62fb0c05419a2b31dade827b97786892e2d53017700127fa",
+  "sha256": "871c81c5ca6d1fb4c11d47658466e277f91035317e35054d2d6021bc5b835719",
   "physical_pixels": [
     720,
     640
@@ -11,7 +11,7 @@
   "camera_tween_seconds": 0.65,
   "source_sha256": {
     "make_transition_film.py": "7e292d017cdd095c29a127c7568cc2b6b5ebd988b133846673822fbc8d2405dd",
-    "scale_contact_room.gd": "4255c5bd458a5d3dc5cfaf9654bf8a832b5bec8bec2f60ac94e8ce8666121315"
+    "scale_contact_room.gd": "aa506c12c5bd7d983f40efc01e9f282ffe681cbe0bfff216431476abe0267f97"
   },
   "notes": "Contains immediate standing-placeholder to seated-static-model switch; camera motion alone does not create character animation."
 }

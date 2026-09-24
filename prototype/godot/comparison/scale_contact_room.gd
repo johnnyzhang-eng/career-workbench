@@ -46,7 +46,11 @@ func apply_state(value: String) -> void:
 	super.apply_state(value)
 	if not camera:
 		return
-	var goal_position := Vector3(2.1, 2.0, 2.3) if value == "in_progress" else Vector3(7.5, 6.2, 9.0)
+	# Opt-in camera-only probe. The default M3 shot remains unchanged.
+	var side_angle := "--m3-side-angle" in OS.get_cmdline_user_args()
+	var goal_position := Vector3(7.5, 6.2, 9.0)
+	if value == "in_progress":
+		goal_position = Vector3(1.65, 1.9, 0.9) if side_angle else Vector3(2.1, 2.0, 2.3)
 	var goal_target := Vector3(-0.78, 0.80, -0.53) if value == "in_progress" else Vector3(0, 1.25, 0)
 	if not is_node_ready():
 		camera.position = goal_position
