@@ -1,20 +1,22 @@
 {
   "fictional": true,
-  "as_of": "2026-09-24T09:00:00+08:00",
+  "scenario": "CET6 D4 result and review; D3 defer is recorded by DailyStore",
+  "as_of": "2026-10-08T21:00:00+08:00",
   "commands": [
     {
       "kind": "create_goal",
       "event_id": "FIXTURE-E-1",
+      "at": "2026-10-05T19:00:00+08:00",
       "payload": {
         "goal": {
           "id": "FIXTURE-CET6",
           "title": "虚构 CET6 练习目标",
           "domain": "learning",
           "timezone": "Asia/Shanghai",
-          "weekly_minutes": 420,
+          "weekly_minutes": 300,
           "success_criterion": "本人完成阶段练习与复盘；不代表通过考试",
-          "baseline": "虚构阅读练习 12/20",
-          "target_at": "2026-11-01T20:00:00+08:00",
+          "baseline": "虚构起点：听力 12/25、阅读 16/30",
+          "target_at": "2026-11-30T20:00:00+08:00",
           "target_confidence": "self_set",
           "target_source_ref": null,
           "target_checked_at": null
@@ -24,6 +26,7 @@
     {
       "kind": "propose_plan",
       "event_id": "FIXTURE-E-2",
+      "at": "2026-10-05T19:05:00+08:00",
       "payload": {
         "proposal": {
           "id": "FIXTURE-P-1",
@@ -31,18 +34,18 @@
           "goal_revision": 1,
           "base_version": 0,
           "review_id": null,
-          "reason": "虚构教学模板的第一天练习",
+          "reason": "虚构教学模板的 D3 阅读练习；D4 延续由 DailyStore 记录",
           "method": "rule_template",
           "source_ref": "fictional-template-v1",
           "items": [
             {
-              "task_id": "FIXTURE-READ-1",
-              "title": "做一组虚构阅读练习",
+              "task_id": "C-READ-1",
+              "title": "D3 虚构阅读练习",
               "task_kind": "practice",
               "source_kind": "goal",
               "source_id": "FIXTURE-CET6",
-              "scheduled_at": "2026-09-24T20:00:00+08:00",
-              "estimated_minutes": 35,
+              "scheduled_at": "2026-10-07T20:00:00+08:00",
+              "estimated_minutes": 40,
               "completion_rule": "本人记录正确数与错题位置",
               "flexible": true,
               "due_at": null,
@@ -57,6 +60,7 @@
     {
       "kind": "decide_plan",
       "event_id": "FIXTURE-E-3",
+      "at": "2026-10-05T19:10:00+08:00",
       "payload": {
         "proposal_id": "FIXTURE-P-1",
         "decision": "accept",
@@ -69,16 +73,17 @@
     {
       "kind": "record_result",
       "event_id": "FIXTURE-E-4",
+      "at": "2026-10-08T20:45:00+08:00",
       "payload": {
         "result": {
           "id": "FIXTURE-R-1",
           "goal_id": "FIXTURE-CET6",
           "plan_version": 1,
-          "task_id": "FIXTURE-READ-1",
+          "task_id": "C-READ-1",
           "outcome": "completed",
           "basis": "self_report",
           "actual_minutes": 30,
-          "metric": {"correct": 9, "total": 20},
+          "metric": {"correct": 11, "total": 20, "expected": 14},
           "evidence_ref": "private/fictional-practice-note",
           "note": "仅为虚构练习结果；不代表掌握"
         }
@@ -87,6 +92,7 @@
     {
       "kind": "record_review",
       "event_id": "FIXTURE-E-5",
+      "at": "2026-10-08T20:50:00+08:00",
       "payload": {
         "review": {
           "id": "FIXTURE-RV-1",
@@ -94,7 +100,7 @@
           "plan_version": 1,
           "trigger": "lower_result",
           "result_ids": ["FIXTURE-R-1"],
-          "finding": "虚构正确数低于本人预期，下周可提议增加阅读练习",
+          "finding": "虚构首次阅读 11/20，低于本人预期 14/20；只提出 v2，待本人决定",
           "source_ref": null
         }
       }

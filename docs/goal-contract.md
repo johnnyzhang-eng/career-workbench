@@ -9,7 +9,7 @@
 - “实时”按系统时间推进。目标自己的时区决定本地日；不让角色动画改变现实截止。未核实的岗位截止、考试时间或外部事件不显示为精确事实。
 - 工作台操作与用户明确连接的工具事件可作为活动线索。工具时长、窗口切换、Codex 任务或代码提交都不能独自证明任务完成、掌握知识、考试通过或投递成功。
 - 未完成和低于预期保留实际结果与原因，给出温和且可解释的调整建议；没有罚分或自动断签逻辑。
-- 自动权限仅含：**调整未开始的弹性任务在同一个本地日内的时段，或重排这类任务的显示顺序**。每次自动应用都记录提案、策略 ID、前后版本、时间和撤销事件。跨日顺延、周任务量、阶段计划、目标、硬截止、任务删除、完成证据规则均需用户决策。
+- 自动权限仅含：**调整未开始、没有外部截止的弹性任务在同一个本地日内的时段，或重排这类任务的显示顺序**。每次自动应用都记录提案、策略 ID、前后版本、时间和撤销事件。跨日顺延、周任务量、阶段计划、目标、硬截止、任务删除、完成证据规则均需用户决策。
 
 ```mermaid
 flowchart LR
@@ -54,27 +54,27 @@ erDiagram
 
 ## 两条七日虚构路径
 
-以下所有岗位、练习分数和时间都是**虚构设计数据**，不是实时招聘或考试信息。#13 负责将同一状态画成角落小窗、今日页、任务详情和复盘页，并由用户逐屏校正。
+以下所有岗位、练习分数和时间都是**虚构设计数据**，不是实时招聘或考试信息。此表与 [#13 的详细七日剧本](https://github.com/johnnyzhang-eng/career-workbench/pull/22) 使用同一事实；#13 负责将状态画成角落小窗、今日页、任务详情和复盘页，并由用户逐屏校正。
 
 | 日 | 秋招路径：事实 → 计划反应 | CET6 路径：事实 → 计划反应 |
 |---|---|---|
-| 1 | 本人建“准备并投递合适岗位”目标；模板提议核验虚构 A 岗、B 岗，B 截止未知；本人接受。 | 本人建“按自设标准练习七天”目标，填起点与每周 420 分钟；模板提出听力、阅读等任务，本人接受。 |
-| 2 | A 岗原页面及届别核验有记录；完成核验任务，岗位仍未投。 | 完成虚构听力练习，记录 14/20、错题位置与实际分钟；完成不等于掌握。 |
-| 3 | B 岗届别仍不明，保留 `unknown/hold`；没有精确截止倒计时。 | 阅读练习 9/20，低于虚构预期；留下测量结果，复盘提出增加阅读练习的下一版候选。 |
-| 4 | A 岗材料准备并由本人确认，旧状态机记录版本；目标计划并不伪造这一事件。 | 本人接受或编辑调整候选；旧计划、9/20 结果仍可查。 |
-| 5 | 打开 A 岗原站仅产生观察；真正提交后才由旧状态机保存虚构回执，申请任务才可完成。 | 一次练习漏做并写下原因；任务跨日仍保留原计划与实际，不罚分。系统提出重排；跨日顺延需本人确认。 |
-| 6 | 收到虚构面试邀请，作为有来源的外部事件，提出新增准备项；不自动改已确认申请事实。 | 有来源的虚构课程临时活动改变可用时段；提出下一版候选，用户可接受／编辑／拒绝。 |
-| 7 | 回顾核验、回执与面试准备结果；新计划仍需用户处理提案。 | 复盘本周实际、低分和漏做原因；小窗与完整工作台读同一生效版本与待决策候选。 |
+| D1 · 10-05 | 核验虚构 A 岗届别与城市，保存来源和核验时间；打开原页没有投递。 | 本人设每周 5 小时、8 周自定周期；基线听力 12/25、阅读 16/30，记录材料、原始作答和错因。 |
+| D2 · 10-06 | 虚构 B 岗页面暂不可读，核验卡住；“招满即止”仍是未知截止，没有倒计时。 | 听力首次 9/15，订正后 13/15；两个数都保留，不宣称已掌握。 |
+| D3 · 10-07 | 参加虚构宣讲并留 3 条信息；B 恢复可读但资格仍未知，岗位保持 `hold`。 | `C-READ-1` 因课程冲突延期，原日期与原因保留，D4 出现延续卡；完成数不增加。 |
+| D4 · 10-08 | A 材料只有初稿，项目指标待核实，任务卡住并保留 D4 原日期。 | 延续阅读首次 11/20，低于本人预期 14/20；系统只提出 v2（降难度、增加错因回看），不自动生效。 |
+| D5 · 10-09 | A 材料核实并经本人批准；15:20 打开原站仍未投；15:38 本人登记虚构回执后才可记提交。 | 听力复练 10/15；本人编辑并接受 v2，周末改为阅读错因 20 分钟＋听力复测 20 分钟，v1 和延期记录仍在。 |
+| D6 · 10-10 | 有来源的虚构面试邀请经本人确认后，系统提出 v2 调整优先级；不模拟招聘方评价。 | 回看 3 道阅读错题，其中 1 道借助讲解；记录部分借助，仍待独立复测。 |
+| D7 · 10-11 | 做 30 分钟模拟问答，B 仍未投；周回顾区分真实回执、准备练习和未知资格。 | 周回顾展示 D3 延期、D4 11/20、D6 借助情况；提出下周独立复测 v3，用户可接受、编辑或拒绝。 |
 
 ## 契约与命令样例
 
-下面是 #21 的本地 Python API；使用一次性虚构 workspace。可执行的命令序列见 [`goal_contract_fixture.json`](../templates/goal_contract_fixture.json)，测试会逐条重放它。同一 `event_id` 和相同内容重复提交会幂等；复用 ID 改命令会拒绝。
+下面是 #21 的本地 Python API；使用一次性虚构 workspace。可执行的 [`goal_contract_fixture.json`](../templates/goal_contract_fixture.json) 是 #13 CET6 路径的 **D4 结果与复盘切片**；D3 的实际延期由 DailyStore 记录，fixture 没有冒充完整一周。测试会逐条重放它。同一 `event_id` 和相同内容重复提交会幂等；复用 ID 改命令会拒绝。
 
 ```python
 from workbench.goals import GoalStore
 
 store = GoalStore("private/fictional-demo")
-store.command("create_goal", "E-1", {"goal": {"id": "DEMO-CET6", "title": "虚构 CET6 练习", "domain": "learning", "timezone": "Asia/Shanghai", "weekly_minutes": 420, "success_criterion": "记录阶段练习与本人复盘", "baseline": "虚构起点", "target_at": "2026-11-01T20:00:00+08:00", "target_confidence": "self_set", "target_source_ref": None, "target_checked_at": None}})
+store.command("create_goal", "E-1", {"goal": {"id": "DEMO-CET6", "title": "虚构 CET6 练习", "domain": "learning", "timezone": "Asia/Shanghai", "weekly_minutes": 300, "success_criterion": "记录阶段练习与本人复盘", "baseline": "虚构听力 12/25、阅读 16/30", "target_at": "2026-11-30T20:00:00+08:00", "target_confidence": "self_set", "target_source_ref": None, "target_checked_at": None}})
 # propose_plan -> decide_plan(accept/edit/decline) -> record_result -> record_review -> propose_plan
 snapshot = store.snapshot("DEMO-CET6")
 assert snapshot["goal"]["active_version"] == 0  # 仅创建目标，还没有生效计划
@@ -87,7 +87,7 @@ store.close()
 {
   "goal": {"id": "DEMO-CET6", "active_version": 1, "timezone": "Asia/Shanghai"},
   "goal_revisions": [{"revision": 1, "actor": "user", "reason": "创建目标"}],
-  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "DEMO-READ-1", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
+  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "C-READ-1", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
   "proposals": [{"id": "P-1", "method": "rule_template", "source_ref": "fictional-template-v1", "status": "accepted", "version": 1}],
   "results": [], "reviews": []
 }
@@ -98,9 +98,9 @@ store.close()
 ## 与 #18、求职状态机的连接
 
 1. GoalStore 保存目标、版本、结果、复盘和提案；`DailyStore` 保存任务 schedule/start/complete/defer/block/cancel、跨日和提醒。二者使用同一私有 workspace，但本 draft **尚未执行跨库命令**；#17 集成需要设计一致性与失败恢复，再将生效版本中的新增任务安排到 DailyStore。
-2. CET6 的计划项在此契约中是 `task_kind=practice`、`source_kind=goal`。#18 当前把 `practice` 限定为岗位任务，不能直接消费这条通用练习；#17 必须扩展 DailyStore 的来源与完成验证适配，支持目标练习的作品／结果引用，同时保留岗位练习的旧 `job_event_seq` 门槛。不得把 CET6 永久伪装成 `custom`。其他通用手动任务可用 `custom`；任务详情通过目标 ID 查回 PlanVersion。GoalStore 的 Result 保存练习指标和复盘解释；工具观察不可补造完成命令。
+2. CET6 的计划项在此契约中是 `task_kind=practice`、`source_kind=goal`。[PR #25](https://github.com/johnnyzhang-eng/career-workbench/pull/25) 已提出 #18 的目标练习适配草案，保留岗位练习的旧 `job_event_seq` 门槛；#17 仍需审查并连接两个存储，不能把两份草案视为已实时同步。其他通用手动任务可用 `custom`；任务详情通过目标 ID 查回 PlanVersion。GoalStore 的 Result 保存练习指标和复盘解释；工具观察不可补造完成命令。
 3. 岗位任务的 DailyStore `source_kind=job`、`source_id=job ID` 不变；GoalStore 的 plan item 通过稳定 task ID 关联它。`apply_job` 仍由原 `career.py` 的批准、材料和 `submitted` 回执事件验证；PlanVersion、打开链接或 GoalStore 的自述都不能代替旧门槛。
-4. 自动微调在契约层检查 task ID 集合不变、除安排时间外所有字段不变、顺序只涉及弹性且未开始的任务、移动后仍是同一目标时区的同一天；再由外部策略钩子核验策略 ID。**默认没有自动策略，因此不能自动生效。** #17 必须从 DailyStore 读取真实任务状态，并安全同步时段变化。目标、截止、任务增删和完成规则不在这条自动路径里。
+4. 自动微调在契约层检查 task ID 集合不变、除安排时间外所有字段不变、顺序只涉及弹性、无外部截止且未开始的任务、移动后仍是同一目标时区的同一天；再由外部策略钩子核验策略 ID。撤销时再次检查受影响任务仍未开始；否则拒绝并要求本人确认新提案。**默认没有自动策略，因此不能自动生效。** #17 必须从 DailyStore 读取真实任务状态，并安全同步时段变化。目标、截止、任务增删和完成规则不在这条自动路径里。
 5. 初版模板必须版本化、列明依据；AI 个性化内容带 `method=ai_suggestion` 进入提案区。外部来源仍需人工核验，尤其官方考试日与岗位截止。无来源的通用自定义目标从本人手动任务起步。
 
 ### #17 的最小一致性方案

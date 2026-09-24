@@ -130,7 +130,8 @@ def _safe_auto_change(goal, old_items, new_items, task_state):
             return False
         if changed["scheduled_at"] != prior["scheduled_at"]:
             any_change = True
-            if not prior["flexible"] or not callable(task_state) or task_state(prior["task_id"]) != "scheduled":
+            if (not prior["flexible"] or prior["due_at"] is not None
+                    or not callable(task_state) or task_state(prior["task_id"]) != "scheduled"):
                 return False
             before = _stamp(prior["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
             after = _stamp(changed["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
@@ -138,7 +139,8 @@ def _safe_auto_change(goal, old_items, new_items, task_state):
                 return False
         if position != old_position[changed["task_id"]]:
             any_change = True
-            if not prior["flexible"] or not callable(task_state) or task_state(prior["task_id"]) != "scheduled":
+            if (not prior["flexible"] or prior["due_at"] is not None
+                    or not callable(task_state) or task_state(prior["task_id"]) != "scheduled"):
                 return False
     return any_change
 
@@ -382,6 +384,10 @@ class GoalStore:
             later = plans[target + 1:]
             _need(all(plan["decision"] == "auto_apply" for plan in later),
                   "之后已有本人决策或撤销，需要新提案确认")
+            _need(_safe_auto_change(state["goals"][payload["goal_id"]],
+                                    plans[-1]["items"], plans[target - 1]["items"],
+                                    self.task_state),
+                  "受影响任务已开始或无法安全撤销，请由本人确认新提案")
         elif kind == "record_result":
             _need(set(payload) == {"result"}, "record_result 需要 result")
             result = payload["result"]

@@ -15,10 +15,10 @@ BASE = datetime(2026, 9, 24, 1, 0, tzinfo=timezone.utc)
 
 def goal(goal_id="DEMO-CET6"):
     return {"id": goal_id, "title": "虚构 CET6 七日练习", "domain": "learning",
-            "timezone": "Asia/Shanghai", "weekly_minutes": 420,
+            "timezone": "Asia/Shanghai", "weekly_minutes": 300,
             "success_criterion": "本人完成设定的练习与阶段测验；不代表通过考试",
-            "baseline": "虚构起点：阅读练习 12/20",
-            "target_at": "2026-11-01T20:00:00+08:00", "target_confidence": "self_set",
+            "baseline": "虚构起点：听力 12/25、阅读 16/30",
+            "target_at": "2026-11-30T20:00:00+08:00", "target_confidence": "self_set",
             "target_source_ref": None, "target_checked_at": None}
 
 
@@ -79,7 +79,7 @@ class GoalContractTests(unittest.TestCase):
         self.assertFalse((self.store.workspace / "state.sqlite3").exists())
         self.assertEqual(self.store.snapshot("DEMO-CET6")["goal"]["active_version"], 1)
         original = self.store.snapshot("DEMO-CET6")["plans"][0]["items"]
-        self.command("record_result", "E-RESULT-1", {"result": result("R-1", metric={"correct": 9, "total": 20})})
+        self.command("record_result", "E-RESULT-1", {"result": result("R-1", metric={"correct": 11, "total": 20, "expected": 14})})
         self.command("record_review", "E-REVIEW-1",
                      {"review": review("RV-1", "lower_result", ["R-1"])})
         revised = [item("DEMO-READ-2", "2026-09-25T20:00:00+08:00")]
@@ -159,6 +159,12 @@ class GoalContractTests(unittest.TestCase):
         self.assertEqual(snap["goal"]["active_version"], 2)
         self.assertEqual(snap["proposals"][-1]["policy_ref"], "POLICY-DEMO-1")
         self.assertEqual(snap["plans"][1]["decision"], "auto_apply")
+        self.store.task_state = lambda task_id: "in_progress"
+        with self.assertRaisesRegex(ValueError, "受影响任务已开始"):
+            self.command("undo_auto", "E-UNDO-TOO-LATE",
+                         {"goal_id": "DEMO-CET6", "version": 2,
+                          "actor": "user", "reason": "开始后尝试撤销"})
+        self.store.task_state = lambda task_id: "scheduled"
         self.command("undo_auto", "E-UNDO", {"goal_id": "DEMO-CET6", "version": 2,
                                                "actor": "user", "reason": "恢复原时段"})
         undone = self.store.snapshot("DEMO-CET6")
@@ -176,7 +182,7 @@ class GoalContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "过期计划"):
             self.command("propose_plan", "E-STALE", {"proposal": stale})
         bad_goal = goal("DEMO-BAD")
-        bad_goal.update(target_at="2026-11-01T20:00:00+08:00", target_confidence="unknown")
+        bad_goal.update(target_at="2026-11-30T20:00:00+08:00", target_confidence="unknown")
         with self.assertRaisesRegex(ValueError, "未知的 target"):
             self.command("create_goal", "E-BAD-GOAL", {"goal": bad_goal})
         daily = DailyStore(self.temp.name, self.clock)
@@ -196,8 +202,10 @@ class GoalContractTests(unittest.TestCase):
         fixture_path = Path(__file__).resolve().parents[1] / "templates/goal_contract_fixture.json"
         fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
         self.assertTrue(fixture["fictional"])
+        self.store.clock = lambda: datetime(2026, 10, 8, 13, 0, tzinfo=timezone.utc)
         for command in fixture["commands"]:
-            self.command(command["kind"], command["event_id"], command["payload"])
+            self.store.command(command["kind"], command["event_id"], command["payload"],
+                               at=command["at"])
         snap = self.store.snapshot("FIXTURE-CET6")
         self.assertEqual(snap["goal"]["active_version"], 1)
         self.assertEqual(snap["reviews"][0]["trigger"], "lower_result")
@@ -252,7 +260,7 @@ class GoalContractTests(unittest.TestCase):
         self.command("propose_plan", "E-OLD",
                      {"proposal": proposal("P-OLD", 0, None, [initial])})
         changed_goal = goal()
-        changed_goal["weekly_minutes"] = 300
+        changed_goal["weekly_minutes"] = 280
         with self.assertRaisesRegex(ValueError, "目标修改需要用户"):
             self.command("update_goal", "E-SYSTEM-UPDATE",
                          {"goal": changed_goal, "actor": "system", "reason": "未经本人确认"})
