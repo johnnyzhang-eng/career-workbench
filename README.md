@@ -1,6 +1,6 @@
 # Career Workbench
 
-**新产品方向提案（2026-09-24）：**在现有求职记录底座上，建设与现实时间同步的秋招每日任务工作台。每日 checklist、完成证据和桌面小窗是体验主线；详见[产品与开发计划](docs/product/daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。这份提案尚未实现，不改变下方现有命令的行为。
+**新产品方向提案（2026-09-24）：**在现有求职记录底座上，探索与现实时间同步的目标执行伴随系统：设置目标、拆分每日行动、记录结果并调整计划。秋招求职与技能学习是首批领域，CET6 用于检验通用目标流程；见[定位与体验门槛](docs/product/product-direction-gate.md)、[秋招用例计划](docs/product/daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。这些新功能尚未实现，不改变下方现有命令的行为。
 
 面向求职学生的开源工作台：从目标岗位出发，把能力缺口、学习练习、人工投递与复盘连成有证据的闭环。
 

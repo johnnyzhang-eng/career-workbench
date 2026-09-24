@@ -1,10 +1,10 @@
 # 秋招每日工作台：产品与开发计划
 
-状态：2026-09-24 提案；[GitHub 产品方向 Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。先按[定位与体验门槛](./product-direction-gate.md)校正产品目的、玩家循环与美术目标；本计划的每日 checklist、桌面常驻和 3D 场景均为待评审的实现方向。任务逻辑与游戏场景并行使用[首个纵向切片契约](./vertical-slice-contract.md)作探索边界。[参考视频观看记录](./reference-video-analysis.md)用于建模、场景、反馈与试玩迭代。
+状态：2026-09-24 提案；[GitHub 产品方向 Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。用户已确认目标执行系统的价值优先，并要求能支持秋招以外的目标；见[定位与体验门槛](./product-direction-gate.md)。本计划详述秋招这一首批领域样例，每日 checklist、桌面常驻和 3D 场景仍是待评审的呈现与实现方式。任务逻辑与游戏场景并行使用[首个纵向切片契约](./vertical-slice-contract.md)作探索边界。[参考视频观看记录](./reference-video-analysis.md)用于建模、场景、反馈与试玩迭代。
 
 ## 目标与仓库决策
 
-目标是一款服务真实秋招的**每日任务工作台**：根据真实岗位、面试、截止日期和个人目标，帮助学生安排今天、执行任务、留下结果，并在桌面小窗或完整应用中持续看到进展。角色、场景与动效让它更亲切；任务和真实求职记录是产品主体。
+产品的通用目标是帮助用户设置目标、拆成可执行的每日行动、记录实际情况并调整计划。秋招求职与技能学习是首批知识重点；本计划以秋招为第一条详细用例。角色、场景与动效呈现行动和进展，不能替代可解释的计划、结果记录与调整。第二条 CET6 对照用例见[定位门槛](./product-direction-gate.md)，用于检查底座是否真的脱离岗位运行。
 
 **建议继续使用 `johnnyzhang-eng/career-workbench`。**主线已有求职状态机和个人本地工作区；在飞分支另有岗位导入、来源与未知项展示。这些能力正好是每日任务的事实基础。新建仓库会把任务与岗位状态拆成两套。本仓已有产品方向 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)；每日任务内核和桌面界面再按验收边界拆分。未来若桌面客户端有独立发布周期，可先从同仓的独立目录发展，届时再凭实际维护负担决定是否拆仓。
 
