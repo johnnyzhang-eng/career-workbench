@@ -129,6 +129,8 @@ def main() -> None:
         "source_files_sha256": json.loads((ROOT / "private/polyhaven-desk/source_hashes.json").read_text()),
         "glb_bytes": GLB.stat().st_size, "glb_sha256": digest(GLB),
         "source_code_sha256": {name: digest(HERE / name) for name in ("fetch_source.py", "build_asset.py", "run_capture.py")},
+        "godot_source_sha256": {name: digest(PROJECT / "comparison" / name)
+                                for name in ("desk_asset_room.gd", "desk_asset_experiment.gd")},
         "notes": [
             "The asset was non-uniformly stretched to preserve A's oversized desk footprint; this is a visual trial, not a realistic-scale furniture placement.",
             "Pixel difference counts compare the idle scene region only, excluding changing clock text, but include shadow and aliasing changes from the desk geometry.",
