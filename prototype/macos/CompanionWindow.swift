@@ -142,9 +142,18 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
     @objc private func showCompanion() {
         panel.ignoresMouseEvents = false
         clickThroughItem.state = .off
-        let url = origin.appendingPathComponent("compact")
-        webView.load(URLRequest(url: url))
+        webView.load(URLRequest(url: compactURL()))
         panel.orderFrontRegardless()
+    }
+
+    private func compactURL() -> URL {
+        var target = URLComponents(url: origin.appendingPathComponent("compact"), resolvingAgainstBaseURL: false)!
+        let current = URLComponents(url: webView.url ?? initialURL, resolvingAgainstBaseURL: false)
+        if let goalID = current?.queryItems?.first(where: { $0.name == "goal_id" })?.value,
+           !goalID.isEmpty {
+            target.queryItems = [URLQueryItem(name: "goal_id", value: goalID)]
+        }
+        return target.url!
     }
 
     @objc private func toggleClickThrough() {
