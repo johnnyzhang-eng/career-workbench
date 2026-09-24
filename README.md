@@ -1,5 +1,7 @@
 # Career Workbench
 
+**新产品方向提案（2026-09-24）：**在现有求职记录底座上，探索与现实时间同步的目标执行伴随系统：设置目标、拆分每日行动、记录结果并调整计划。秋招求职与技能学习是首批领域，CET6 用于检验通用目标流程；见[定位与体验门槛](docs/product/product-direction-gate.md)、[秋招用例计划](docs/product/daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。这些新功能尚未实现，不改变下方现有命令的行为。
+
 面向求职学生的开源工作台：从目标岗位出发，把能力缺口、学习练习、人工投递与复盘连成有证据的闭环。
 
 **当前版本是本地命令行 MVP，不是网站，也不是自动海投机器人。** Python 3.10+、标准库、无模型调用、无需账号。真实个人记录保存在被 Git 忽略的 `private/`。仓库只放通用方法、代码、测试、空模板和虚构示例。规划中的岗位驱动学习、零基础课程与网页工作台见[产品定义](docs/product/README.md)，不能当作现有功能。
