@@ -54,11 +54,29 @@ def main() -> None:
     )
     stream = json.loads(probed.stdout)["streams"][0]
     assert (stream["width"], stream["height"], int(stream["nb_read_frames"])) == (720, 640, 26)
+    preview = HERE / "captures/m3-camera-transition.gif"
+    gif = subprocess.run(
+        ("ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(output),
+         "-filter_complex", "fps=14,scale=360:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
+         "-loop", "0", str(preview)),
+        capture_output=True, text=True, timeout=45,
+    )
+    assert gif.returncode == 0 and preview.is_file(), gif.stderr
+    gif_probe = subprocess.run(
+        ("ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames",
+         "-show_entries", "stream=width,height,nb_read_frames", "-of", "json", str(preview)),
+        capture_output=True, text=True, timeout=30, check=True,
+    )
+    gif_stream = json.loads(gif_probe.stdout)["streams"][0]
+    assert (gif_stream["width"], gif_stream["height"], int(gif_stream["nb_read_frames"])) == (360, 320, 26)
     record = {
         "capture": output.relative_to(HERE).as_posix(),
         "sha256": sha256(output),
         "physical_pixels": [720, 640],
         "frames": 26,
+        "browser_preview": preview.relative_to(HERE).as_posix(),
+        "browser_preview_sha256": sha256(preview),
+        "browser_preview_pixels": [360, 320],
         "capture_frame_interval_seconds": 0.07,
         "encoded_fps": 14,
         "camera_tween_seconds": 0.65,
@@ -69,7 +87,7 @@ def main() -> None:
         "notes": "Contains immediate standing-placeholder to seated-static-model switch; camera motion alone does not create character animation.",
     }
     (HERE / "camera_film.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
-    print("M3_CAMERA_FILM", output, stream)
+    print("M3_CAMERA_FILM", output, stream, "GIF_PREVIEW", gif_stream)
 
 
 if __name__ == "__main__":

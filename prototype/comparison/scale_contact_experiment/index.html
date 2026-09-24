@@ -11,7 +11,7 @@
   .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(360px,1fr)); gap: 16px; }
   figure { background: white; border: 1px solid #cbd4ca; border-radius: 13px; margin: 0; padding: 12px; }
   img { display: block; width: 360px; max-width: 100%; height: auto; }
-  video { display: block; width: 360px; max-width: 100%; height: auto; }
+  .motion { display: block; width: 360px; max-width: 100%; height: auto; }
   figcaption { font-size: 14px; line-height: 1.45; padding-top: 8px; }
   strong { color: #2e624c; }
 </style>
@@ -24,7 +24,7 @@
     <figure><img src="captures/R4-360x320-day-started.png" alt="R4 放大角色在桌面近景"><figcaption><strong>R4 已开始</strong><br>放大 1.35 倍人物，动作占屏更多，但桌椅高度未按人体统一。</figcaption></figure>
     <figure><img src="captures/M3-360x320-day-started.png" alt="M3 原比例人物在较低桌椅前"><figcaption><strong>M3 已开始</strong><br>镜头随明确开始而切近桌面；桌椅高度更合理，人物仍小、椅背有遮挡。</figcaption></figure>
   </div>
-  <figure><video controls preload="metadata" poster="captures/M3-360x320-day-idle.png" aria-label="点击开始任务后的镜头过渡和人物跳变"><source src="captures/m3-camera-transition.mp4" type="video/mp4"></video><figcaption><strong>M3 动态核验</strong><br>明确点击开始后相机用 0.65 秒缓动拉近；站立占位角色瞬时换为静态坐姿，仍需要动作和造型统一。<a href="camera_film.json">短片校验记录</a></figcaption></figure>
+  <figure><img class="motion" src="captures/m3-camera-transition.gif" alt="点击开始任务后，镜头缓动拉近，角色从站立占位形象瞬时换为静态坐姿"><figcaption><strong>M3 动态核验</strong><br>明确点击开始后相机用 0.65 秒缓动拉近；站立占位角色瞬时换为静态坐姿，仍需要动作和造型统一。<a href="captures/m3-camera-transition.mp4">原始 MP4</a> · <a href="camera_film.json">短片校验记录</a></figcaption></figure>
   <figure><img src="captures/G2a-side-360x320-day-started.png" alt="侧视候选：人物更大，但书桌和房间被裁掉"><figcaption><strong>G2a 侧视候选，仅作对照</strong><br>只改进行中的相机位置：人物投影由 M3 的 38.60×58.21 增至 54.28×78.95 逻辑像素；房间和书桌被明显裁切，尚不能当默认。<a href="angle_candidate.json">参数记录</a></figcaption></figure>
   <p>更多证据：<a href="captures/R4-1280x720-day-started.png">R4 展开白天</a> · <a href="captures/M3-1280x720-day-started.png">M3 展开白天</a> · <a href="captures/R4-360x320-evening-started.png">R4 小窗夜晚</a> · <a href="captures/M3-360x320-evening-started.png">M3 小窗夜晚</a>。</p>
   <p>图片仅含虚构任务与许可明确的实验素材。相机、坐姿、灯光变化不修改任务事实或完成状态。</p>
