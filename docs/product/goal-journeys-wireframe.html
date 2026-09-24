@@ -192,10 +192,15 @@
   }
   function renderProposal(current) {
     const p = current.proposal;
+    const reading = state.records["C-READ-1"];
+    const readingScore = reading?.result?.match(/(\d+)\s*\/\s*20/);
+    const lowReading = state.goal === "cet6" && reading?.status === "completed" && readingScore && Number(readingScore[1]) < 14;
+    const proposalReady = p && state.day >= p.day && (state.goal !== "cet6" || lowReading);
+    const proposalReason = state.goal === "cet6" && lowReading ? `${reading.reason ? `原计划 D3 曾延期（${reading.reason}）；` : ""}阅读首次 ${readingScore[1]}/20，低于期望 14/20。建议减新题、加错因回看。` : p?.reason;
     const auto = state.autoMoves[state.goal];
     const history = state.autoMoveHistory[state.goal];
     const autoHtml = `<div class="fact"><h3>弹性时段调整记录</h3><p>${auto ? `${esc(auto.task)}：原 D${auto.day} 20:00 → D${auto.day} 21:00。原因：避开用户已安排时段；只调整未开始的弹性任务。` : "当前没有生效的自动微调。仅未开始且无硬截止的弹性任务可调整。"}</p><div class="actions"><button type="button" id="autoMove" ${auto ? "disabled" : ""}>演示自动挪时段</button>${auto ? '<button type="button" id="undoMove">撤销本次调整</button>' : ""}</div><small>调整可撤销；真实截止、完成条件和已发生的结果不变。</small>${history.length ? `<p><small>审计：${history.map(entry => esc(entry)).join("；")}</small></p>` : ""}</div>`;
-    const proposalHtml = !p || state.day < p.day ? `<h3>计划与复盘</h3><p class="muted">本情境日无新提案。过去的结果与计划版本仍保留。</p>` : `<h3>待确认的计划建议 <span class="pill">${esc(state.proposalStates[state.goal])}</span></h3><p>${esc(p.reason)}</p><p><strong>${esc(p.change)}</strong></p><label class="field">修改建议（可选）<input id="proposalEdit" placeholder="例如保留 B 核验在周日"></label><div class="actions"><button type="button" data-proposal="accept">接受</button><button type="button" data-proposal="edit">修改并接受</button><button type="button" data-proposal="decline">拒绝</button></div><small>只有接受后新计划生效；拒绝保持当前版本。旧版和实际结果不可覆盖。</small>`;
+    const proposalHtml = !proposalReady ? `<h3>计划与复盘</h3><p class="muted">${state.goal === "cet6" && state.day >= 4 ? "先记录阅读首次成绩（例如 11/20），低于预期后才出现有依据的重排建议。" : "本情境日无新提案。过去的结果与计划版本仍保留。"}</p>` : `<h3>待确认的计划建议 <span class="pill">${esc(state.proposalStates[state.goal])}</span></h3><p>${esc(proposalReason)}</p><p><strong>${esc(p.change)}</strong></p><label class="field">修改建议（可选）<input id="proposalEdit" placeholder="例如保留 B 核验在周日"></label><div class="actions"><button type="button" data-proposal="accept">接受</button><button type="button" data-proposal="edit">修改并接受</button><button type="button" data-proposal="decline">拒绝</button></div><small>只有接受后新计划生效；拒绝保持当前版本。旧版和实际结果不可覆盖。</small>`;
     $("proposal").innerHTML = proposalHtml + autoHtml;
     $("proposal").querySelectorAll("[data-proposal]").forEach(el => el.addEventListener("click", () => {
       if (el.dataset.proposal === "edit" && !$("proposalEdit").value.trim()) { alert("请先填写修改内容。"); return; }
@@ -217,7 +222,10 @@
     const el = $("mini");
     el.classList.toggle("mini-collapsed", state.mini === "collapsed");
     if (state.mini === "collapsed") { el.innerHTML = `<button type="button" id="expandMini" aria-label="展开桌面小窗">⌂</button>`; $("expandMini").addEventListener("click", () => { state.mini = "expanded"; render(); }); return; }
-    el.innerHTML = `<div class="top"><strong><span class="avatar" aria-hidden="true">⌂</span>伴随小窗</strong><button type="button" id="collapseMini">收起</button></div><small>${esc(fixture[state.goal].title)} · 情境 D${state.day} · v${fixture[state.goal].version}</small><p>${task ? `下一件：<strong>${esc(task.title)}</strong>` : "当前没有预置任务"}</p><p><span class="pill">${tasks.filter(t => record(t).status === "completed").length}/${tasks.length} 已记录完成</span>${fixture[state.goal].proposal && state.day >= fixture[state.goal].proposal.day && state.proposalStates[state.goal] === "pending" ? '<span class="pill">计划待确认</span>' : ""}${state.autoMoves[state.goal] ? '<span class="pill">时段已调整，可撤销</span>' : ""}</p><button type="button" id="openFull">打开完整页 / 详情</button><p><small>角落入口与完整页读取同一任务事实。</small></p>`;
+    const reading = state.records["C-READ-1"];
+    const score = reading?.result?.match(/(\d+)\s*\/\s*20/);
+    const proposalReady = fixture[state.goal].proposal && state.day >= fixture[state.goal].proposal.day && (state.goal !== "cet6" || (reading?.status === "completed" && score && Number(score[1]) < 14));
+    el.innerHTML = `<div class="top"><strong><span class="avatar" aria-hidden="true">⌂</span>伴随小窗</strong><button type="button" id="collapseMini">收起</button></div><small>${esc(fixture[state.goal].title)} · 情境 D${state.day} · v${fixture[state.goal].version}</small><p>${task ? `下一件：<strong>${esc(task.title)}</strong>` : "当前没有预置任务"}</p><p><span class="pill">${tasks.filter(t => record(t).status === "completed").length}/${tasks.length} 已记录完成</span>${proposalReady && state.proposalStates[state.goal] === "pending" ? '<span class="pill">计划待确认</span>' : ""}${state.autoMoves[state.goal] ? '<span class="pill">时段已调整，可撤销</span>' : ""}</p><button type="button" id="openFull">打开完整页 / 详情</button><p><small>角落入口与完整页读取同一任务事实。</small></p>`;
     $("collapseMini").addEventListener("click", () => { state.mini = "collapsed"; render(); });
     $("openFull").addEventListener("click", () => { state.miniOnly = false; render(); window.scrollTo({ top: 0, behavior: "smooth" }); });
   }
