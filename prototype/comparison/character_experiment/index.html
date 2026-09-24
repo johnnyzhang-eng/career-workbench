@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原版 A 单角色实验 R0/R1</title>
+<style>
+body{margin:0;background:#f5f1e8;color:#293b38;font:16px/1.55 system-ui,sans-serif}
+header{padding:24px clamp(20px,4vw,56px);border-bottom:1px solid #ccc7bb}
+h1{margin:0 0 6px;font-size:26px}p{margin:0 0 14px}
+nav{display:flex;gap:16px;flex-wrap:wrap}label{font-weight:600}select{padding:8px;border:1px solid #a6aba2;border-radius:7px;background:white;font:inherit}
+main{padding:24px clamp(20px,4vw,56px)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+figure{margin:0}figcaption{font-size:19px;font-weight:700;margin-bottom:8px}img{max-width:100%;height:auto;display:block;background:#e8e8e2;border:1px solid #bfc4b9;box-sizing:border-box}
+.small img{width:360px}.large img{width:100%}.note{margin-top:20px;color:#52635d}a{color:#275e64}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+<header>
+<h1>原版 A · 单角色 R0/R1</h1>
+<p>R0 是原有程序角色；R1 是自制 Blender 成人学生角色。闲置状态只换同位置角色；“开始”时 R1 切成坐在电脑前的静态姿态，仍无骨骼动画。镜头、光照、房间和 UI 不变。</p>
+<nav>
+<label>尺寸 <select id="size"><option>360x320</option><option>1280x720</option></select></label>
+<label>时段 <select id="phase"><option value="day">白天</option><option value="evening">夜间</option></select></label>
+<label>状态 <select id="state"><option value="idle">闲置</option><option value="started">已开始</option></select></label>
+</nav>
+</header>
+<main>
+<div class="grid small" id="grid">
+<figure><figcaption>R0 · 原版角色</figcaption><a id="r0link"><img id="r0" alt="R0 原版 A 角色实机截图"></a></figure>
+<figure><figcaption>R1 · Blender 角色</figcaption><a id="r1link"><img id="r1" alt="R1 单角色实验实机截图"></a></figure>
+</div>
+<p class="note">小窗图片按 360 CSS 像素显示，即原逻辑尺寸；点图看原生 PNG。人物投影尺寸、参数、可编辑源和局限见 <a href="README.md">README</a> 与 <a href="manifest.json">manifest</a>。</p>
+</main>
+<script>
+const size=document.getElementById('size'),phase=document.getElementById('phase'),state=document.getElementById('state'),grid=document.getElementById('grid');
+function update(){grid.className=`grid ${size.value==='360x320'?'small':'large'}`;for(const variant of ['R0','R1']){const path=`${variant}/baseline-${size.value}-${phase.value}-${state.value}.png`;document.getElementById(variant.toLowerCase()).src=path;document.getElementById(variant.toLowerCase()+'link').href=path}}
+for(const control of [size,phase,state])control.addEventListener('change',update);update();
+</script>
+</html>

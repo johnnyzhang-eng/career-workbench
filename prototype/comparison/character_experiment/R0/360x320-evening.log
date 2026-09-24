@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CHARACTER_VARIANT R0
+CHARACTER_BOUNDS {"display_scale":2.0,"logical_xywh":[168.7,58.04,21.82,39.94],"state":"idle","variant":"R0","viewport_pixels":[688,282]}
+CAPTURE <repo>/prototype/comparison/character_experiment/R0/baseline-360x320-evening-idle.png
+CHARACTER_BOUNDS {"display_scale":2.0,"logical_xywh":[168.7,58.04,21.82,39.94],"state":"started","variant":"R0","viewport_pixels":[688,282]}
+CAPTURE <repo>/prototype/comparison/character_experiment/R0/baseline-360x320-evening-started.png
+CHARACTER_BOUNDS {"display_scale":2.0,"logical_xywh":[168.7,58.04,21.82,39.94],"state":"completed","variant":"R0","viewport_pixels":[688,282]}
+CAPTURE <repo>/prototype/comparison/character_experiment/R0/baseline-360x320-evening-completed.png
+CHARACTER_BOUNDS {"display_scale":2.0,"logical_xywh":[168.7,58.04,21.82,39.94],"state":"deferred","variant":"R0","viewport_pixels":[688,282]}
+CAPTURE <repo>/prototype/comparison/character_experiment/R0/baseline-360x320-evening-deferred.png
+COMPARISON_PROOF_PASS baseline
+2026-09-25 01:58:16.796 Godot[35350:4009328] error messaging the mach port for IMKCFRunLoopWakeUpReliable

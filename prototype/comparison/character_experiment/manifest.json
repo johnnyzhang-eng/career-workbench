@@ -1,0 +1,874 @@
+{
+  "purpose": "R0 original A versus R1 original editable character; idle geometry and one static typing pose",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "asset": {
+    "license": "repository MIT; self-authored with Blender 5.1.2; no external model/texture",
+    "editable_blend": "prototype/comparison/character_experiment/adult_student.blend",
+    "blend_bytes": 158872,
+    "blend_sha256": "c221615de1513a7db43dba6bc3a7038703f1102e976d667d3c4841cebd4f2e50",
+    "build_script_sha256": "c8dfa589a4043c48168d5760d8c70698f6b1fa6850973a32c155d3caa3bbd924",
+    "glbs": [
+      {
+        "path": "prototype/godot/comparison/assets/adult_student_idle.glb",
+        "bytes": 205532,
+        "sha256": "b4a8e728c815c0f2e925e874f22e0c5fb0628d5763a17a29442c93e7cf887cad",
+        "meshes": 38,
+        "materials": 8,
+        "animations": 0,
+        "skins": 0
+      },
+      {
+        "path": "prototype/godot/comparison/assets/adult_student_typing.glb",
+        "bytes": 216504,
+        "sha256": "56d3cfe4091d5bf78c75e6d2e96ef0a5651f9f2807635617dbac842df752813b",
+        "meshes": 40,
+        "materials": 8,
+        "animations": 0,
+        "skins": 0
+      }
+    ]
+  },
+  "fixed": {
+    "route": "baseline",
+    "camera_fov_degrees": 45,
+    "key_rotation_degrees": [
+      -55,
+      -32,
+      0
+    ],
+    "ambient_energy": {
+      "day": 0.36,
+      "evening": 0.48
+    },
+    "key_energy": {
+      "day": 0.65,
+      "evening": 0.35
+    },
+    "changed": "character only; R1 started additionally swaps static character pose/location"
+  },
+  "measurement_note": "projected_character_bounds.logical_xywh is Godot projected mesh AABB divided by Retina display_scale, within the 3D viewport, not an occlusion-tested visible-pixel mask",
+  "records": [
+    {
+      "variant": "R0",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 3.345,
+      "log": "R0/360x320-day.log",
+      "captures": {
+        "idle": {
+          "path": "R0/baseline-360x320-day-idle.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              168.7,
+              58.04,
+              21.82,
+              39.94
+            ],
+            "state": "idle",
+            "variant": "R0",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        },
+        "started": {
+          "path": "R0/baseline-360x320-day-started.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "70f2e845007dee0b320a2c12009d27a2a53cbea3c33ca7aa6346531d5c9979e4",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              168.7,
+              58.04,
+              21.82,
+              39.94
+            ],
+            "state": "started",
+            "variant": "R0",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2845.993,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "R0",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 3.299,
+      "log": "R0/360x320-evening.log",
+      "captures": {
+        "idle": {
+          "path": "R0/baseline-360x320-evening-idle.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              168.7,
+              58.04,
+              21.82,
+              39.94
+            ],
+            "state": "idle",
+            "variant": "R0",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        },
+        "started": {
+          "path": "R0/baseline-360x320-evening-started.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "1722e090f89130678fe7e5704033603641e6b1ead966f2493c4967ee3575d56d",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              168.7,
+              58.04,
+              21.82,
+              39.94
+            ],
+            "state": "started",
+            "variant": "R0",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2674.283,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "R0",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 3.316,
+      "log": "R0/1280x720-day.log",
+      "captures": {
+        "idle": {
+          "path": "R0/baseline-1280x720-day-idle.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "2e040732c268b8481e8b28adb2528d188c716d9cfa99d1e424c3a52e4c80703e",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              448.12,
+              226.4,
+              85.12,
+              155.79
+            ],
+            "state": "idle",
+            "variant": "R0",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        },
+        "started": {
+          "path": "R0/baseline-1280x720-day-started.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "7633e88014796cdb2086edfb0ced8117a6e37d74cf059d86a22793239cea39d1",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              448.12,
+              226.4,
+              85.12,
+              155.79
+            ],
+            "state": "started",
+            "variant": "R0",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2813.22,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "R0",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 3.199,
+      "log": "R0/1280x720-evening.log",
+      "captures": {
+        "idle": {
+          "path": "R0/baseline-1280x720-evening-idle.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "4a6a304220d9da3c9e8d0a948c08466eda5d80e6321586e75f9be2cf36de5de2",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              448.12,
+              226.4,
+              85.12,
+              155.79
+            ],
+            "state": "idle",
+            "variant": "R0",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        },
+        "started": {
+          "path": "R0/baseline-1280x720-evening-started.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "df56b62063f5751e040602a574f8d0598effa74d9727cee57f511b9f1096ccee",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              448.12,
+              226.4,
+              85.12,
+              155.79
+            ],
+            "state": "started",
+            "variant": "R0",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2753.438,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "R1",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 3.121,
+      "log": "R1/360x320-day.log",
+      "captures": {
+        "idle": {
+          "path": "R1/baseline-360x320-day-idle.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "e27f54ceee61eb76a839e6f28f87677e499bfa8fad5f08b70aee7addb3be663b",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              170.35,
+              58.82,
+              18.7,
+              39.29
+            ],
+            "state": "idle",
+            "variant": "R1",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        },
+        "started": {
+          "path": "R1/baseline-360x320-day-started.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "93e2038b7bf0948609450e7f1e7e63baef8954fbf6e3c95201374d1cc1944322",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              154.84,
+              52.34,
+              23.47,
+              29.08
+            ],
+            "state": "started",
+            "variant": "R1",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2604.682,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "R1",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 3.096,
+      "log": "R1/360x320-evening.log",
+      "captures": {
+        "idle": {
+          "path": "R1/baseline-360x320-evening-idle.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "c2a0a6d1c231ab31843388b76508bfb8af556ad9b8074fcad647f5fb38da3e76",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              170.35,
+              58.82,
+              18.7,
+              39.29
+            ],
+            "state": "idle",
+            "variant": "R1",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        },
+        "started": {
+          "path": "R1/baseline-360x320-evening-started.png",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "sha256": "5c1f982d22f9d45bf097e8d6e494a57cbf26b5834527c25df6ede25157a872bd",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              154.84,
+              52.34,
+              23.47,
+              29.08
+            ],
+            "state": "started",
+            "variant": "R1",
+            "viewport_pixels": [
+              688,
+              282
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2598.06,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(360.0, 320.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "R1",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 3.269,
+      "log": "R1/1280x720-day.log",
+      "captures": {
+        "idle": {
+          "path": "R1/baseline-1280x720-day-idle.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "0bd94484965daadc1a5a698bfe15ddbdbd72eee725ab351f2b8314e09dbb132d",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              454.57,
+              229.45,
+              72.95,
+              153.27
+            ],
+            "state": "idle",
+            "variant": "R1",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        },
+        "started": {
+          "path": "R1/baseline-1280x720-day-started.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "3ebbbeecb73128593ef7bf98d12ba672171157a29879ab35bf7ae49af24a88bb",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              394.06,
+              204.15,
+              91.55,
+              113.43
+            ],
+            "state": "started",
+            "variant": "R1",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2783.696,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "R1",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 3.267,
+      "log": "R1/1280x720-evening.log",
+      "captures": {
+        "idle": {
+          "path": "R1/baseline-1280x720-evening-idle.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "7139e17e588affbe8a12b484c5a1c4dc4263de6dc608d027453f9652d94c7fd2",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              454.57,
+              229.45,
+              72.95,
+              153.27
+            ],
+            "state": "idle",
+            "variant": "R1",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        },
+        "started": {
+          "path": "R1/baseline-1280x720-evening-started.png",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "sha256": "dd0445e669785c816162d642276c1bccbf7a309dd38df371cca5a9ff8f83a651",
+          "projected_character_bounds": {
+            "display_scale": 2.0,
+            "logical_xywh": [
+              394.06,
+              204.15,
+              91.55,
+              113.43
+            ],
+            "state": "started",
+            "variant": "R1",
+            "viewport_pixels": [
+              1844,
+              1100
+            ]
+          }
+        }
+      },
+      "runtime": {
+        "display_scale": 2.0,
+        "elapsed_ms": 2806.059,
+        "engine": "4.7-stable (official)",
+        "events": [
+          {
+            "action": "start",
+            "state": "in_progress",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "blocked_completion",
+            "state": "in_progress"
+          },
+          {
+            "action": "complete",
+            "state": "completed",
+            "task": "DEMO-TASK-001"
+          },
+          {
+            "action": "defer",
+            "state": "deferred",
+            "task": "DEMO-STUDY-001"
+          },
+          {
+            "check": "proof_pass",
+            "route": "baseline",
+            "size": "(1280.0, 720.0)"
+          }
+        ],
+        "fictional": true,
+        "frame_count": 70,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}
