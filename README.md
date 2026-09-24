@@ -1,5 +1,7 @@
 # Career Workbench
 
+**新产品方向提案（2026-09-24）：**在现有求职记录底座上，建设与现实时间同步的秋招每日任务工作台。每日 checklist、完成证据和桌面小窗是体验主线；详见[产品与开发计划](docs/product/daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。这份提案尚未实现，不改变下方现有命令的行为。
+
 面向求职学生的开源工作台：从目标岗位出发，把能力缺口、学习练习、人工投递与复盘连成有证据的闭环。
 
 **当前版本是本地命令行 MVP，不是网站，也不是自动海投机器人。** Python 3.10+、标准库、无模型调用、无需账号。真实个人记录保存在被 Git 忽略的 `private/`。仓库只放通用方法、代码、测试、空模板和虚构示例。规划中的岗位驱动学习、零基础课程与网页工作台见[产品定义](docs/product/README.md)，不能当作现有功能。
