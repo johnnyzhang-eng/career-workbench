@@ -1,0 +1,102 @@
+{
+  "fictional": true,
+  "as_of": "2026-09-24T09:00:00+08:00",
+  "commands": [
+    {
+      "kind": "create_goal",
+      "event_id": "FIXTURE-E-1",
+      "payload": {
+        "goal": {
+          "id": "FIXTURE-CET6",
+          "title": "虚构 CET6 练习目标",
+          "domain": "learning",
+          "timezone": "Asia/Shanghai",
+          "weekly_minutes": 420,
+          "success_criterion": "本人完成阶段练习与复盘；不代表通过考试",
+          "baseline": "虚构阅读练习 12/20",
+          "target_at": "2026-11-01T20:00:00+08:00",
+          "target_confidence": "self_set",
+          "target_source_ref": null,
+          "target_checked_at": null
+        }
+      }
+    },
+    {
+      "kind": "propose_plan",
+      "event_id": "FIXTURE-E-2",
+      "payload": {
+        "proposal": {
+          "id": "FIXTURE-P-1",
+          "goal_id": "FIXTURE-CET6",
+          "base_version": 0,
+          "review_id": null,
+          "reason": "虚构教学模板的第一天练习",
+          "method": "rule_template",
+          "source_ref": "fictional-template-v1",
+          "items": [
+            {
+              "task_id": "FIXTURE-READ-1",
+              "title": "做一组虚构阅读练习",
+              "task_kind": "custom",
+              "source_kind": "goal",
+              "source_id": "FIXTURE-CET6",
+              "scheduled_at": "2026-09-24T20:00:00+08:00",
+              "estimated_minutes": 35,
+              "completion_rule": "本人记录正确数与错题位置",
+              "flexible": true,
+              "due_at": null,
+              "due_confidence": "unknown",
+              "due_source_ref": null,
+              "due_checked_at": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "decide_plan",
+      "event_id": "FIXTURE-E-3",
+      "payload": {
+        "proposal_id": "FIXTURE-P-1",
+        "decision": "accept",
+        "actor": "user",
+        "reason": "虚构用户接受第一版",
+        "edited_items": null,
+        "policy_ref": null
+      }
+    },
+    {
+      "kind": "record_result",
+      "event_id": "FIXTURE-E-4",
+      "payload": {
+        "result": {
+          "id": "FIXTURE-R-1",
+          "goal_id": "FIXTURE-CET6",
+          "plan_version": 1,
+          "task_id": "FIXTURE-READ-1",
+          "outcome": "completed",
+          "basis": "self_report",
+          "actual_minutes": 30,
+          "metric": {"correct": 9, "total": 20},
+          "evidence_ref": "private/fictional-practice-note",
+          "note": "仅为虚构练习结果；不代表掌握"
+        }
+      }
+    },
+    {
+      "kind": "record_review",
+      "event_id": "FIXTURE-E-5",
+      "payload": {
+        "review": {
+          "id": "FIXTURE-RV-1",
+          "goal_id": "FIXTURE-CET6",
+          "plan_version": 1,
+          "trigger": "lower_result",
+          "result_ids": ["FIXTURE-R-1"],
+          "finding": "虚构正确数低于本人预期，下周可提议增加阅读练习",
+          "source_ref": null
+        }
+      }
+    }
+  ]
+}
