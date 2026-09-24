@@ -60,6 +60,6 @@ flowchart LR
 
 ## 并行归属与集成门槛
 
-[逻辑 Issue #15](https://github.com/johnnyzhang-eng/career-workbench/issues/15) 负责任务模型、事件、时间规则、快照与命令接口、虚构一周用例及测试，不改 3D 场景和美术文件。[视觉 Issue #16](https://github.com/johnnyzhang-eng/career-workbench/issues/16) 负责 Blender/Godot 场景、角色、任务卡和固定快照适配，不改求职状态机。两条线各自以 Issue、分支和 PR 交付；集成工作在双方快照字段和命令语义稳定后连接，验收上述一条端到端路径。
+[逻辑 Issue #15](https://github.com/johnnyzhang-eng/career-workbench/issues/15) 负责任务模型、事件、时间规则、快照与命令接口、虚构一周用例及测试，不改 3D 场景和美术文件。[视觉 Issue #16](https://github.com/johnnyzhang-eng/career-workbench/issues/16) 负责 Blender/Godot 场景、角色、任务卡和固定快照适配，不改求职状态机。两条线各自以 Issue、分支和 PR 交付；[集成 Issue #17](https://github.com/johnnyzhang-eng/career-workbench/issues/17) 在双方快照字段和命令语义稳定后连接，验收上述一条端到端路径。
 
 任何需要改共享契约的发现，先回到本文件和父 Issue 讨论，再同步两条线；不得在各自分支悄悄定义不兼容字段。
