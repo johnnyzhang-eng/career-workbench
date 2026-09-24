@@ -65,11 +65,13 @@ flowchart LR
 |---|---|---|---|
 | 产品与交互 | [#13](https://github.com/johnnyzhang-eng/career-workbench/issues/13)、[PR #14](https://github.com/johnnyzhang-eng/career-workbench/pull/14) | 秋招/CET6 各七天、首日逐屏操作、图与决策表 | 用户能用两个目标走通创建、执行、复盘，校正首屏和结果证据 |
 | 通用目标契约 | [#21](https://github.com/johnnyzhang-eng/career-workbench/issues/21) | 目标、计划版本、复盘候选与拒绝/编辑历史；不依赖岗位 ID | 与 #13 两条路径核对，再确定迁移和快照版本 |
+| 首版计划模板 | [#27](https://github.com/johnnyzhang-eng/career-workbench/issues/27) | 秋招/CET6 两条有来源、可解释的首版计划提案 | 先生成候选，再由用户决定；未知截止不编造 |
 | 每日任务事件 | [#15](https://github.com/johnnyzhang-eng/career-workbench/issues/15)、[PR #18](https://github.com/johnnyzhang-eng/career-workbench/pull/18) | 时间、幂等事件、跨日与真实结果边界 | 接入通用目标，不把工具线索误当完成 |
+| 显式活动输入 | [#23](https://github.com/johnnyzhang-eng/career-workbench/issues/23) | 本地、可暂停与删除的工具事件线索收件箱 | 只有明确连接的来源可写入；线索不能自动完成任务 |
 | 美术与桌面形态 | [#20](https://github.com/johnnyzhang-eng/career-workbench/issues/20)、[PR #19](https://github.com/johnnyzhang-eng/career-workbench/pull/19) | 同场景 2D/2.5D、精修 3D、角落尺寸与窗口层级比较 | 用户看运行效果后选择路线；角色、UI、许可与资源占用过门槛 |
 | 首日集成 | [#17](https://github.com/johnnyzhang-eng/career-workbench/issues/17) | 可先做渲染无关的适配和虚构演示脚本 | 前四线的状态、命令与所选呈现路线稳定后合并一个可玩首日 |
 
-建议的合流顺序是产品路径与通用契约先互相校验；每日事件内核随后适配；美术比较独立推进；最后在 #17 连接一条真实时钟下可重开的完整日循环。各线可以同时开发草案，合流只按上面的证据门槛，不按谁先写完代码。
+建议的合流顺序是产品路径与通用契约先互相校验；每日事件内核随后适配，活动输入保持为观察事件；美术比较独立推进；最后在 #17 连接一条真实时钟下可重开的完整日循环。各线可以同时开发草案，合流只按上面的证据门槛，不按谁先写完代码。
 
 ## 首日验收脚本（虚构资料）
 
