@@ -1,0 +1,501 @@
+{
+  "purpose": "single-factor A-baseline directional key pitch test",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "settings": {
+    "renderer": "GL Compatibility",
+    "route": "baseline",
+    "state": "idle",
+    "changed_parameter": "DirectionalLight3D.rotation_degrees.x",
+    "K0_pitch_degrees": -55.0,
+    "K1_pitch_degrees": -65.0,
+    "unchanged_yaw_degrees": -32.0,
+    "unchanged_ambient_energy": {
+      "day": 0.36,
+      "evening": 0.48
+    },
+    "unchanged_key_energy": {
+      "day": 0.65,
+      "evening": 0.35
+    }
+  },
+  "records": [
+    {
+      "variant": "K0",
+      "key_pitch_degrees": -55.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.708,
+      "reported_light": [
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "K0/baseline-360x320-day-idle.png",
+      "json": "K0/baseline-360x320-day.json",
+      "log": "K0/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 901.146,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "K0",
+      "key_pitch_degrees": -55.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.295,
+      "reported_light": [
+        [
+          "evening",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "K0/baseline-360x320-evening-idle.png",
+      "json": "K0/baseline-360x320-evening.json",
+      "log": "K0/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 749.078,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "K0",
+      "key_pitch_degrees": -55.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.319,
+      "reported_light": [
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "K0/baseline-1280x720-day-idle.png",
+      "json": "K0/baseline-1280x720-day.json",
+      "log": "K0/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "07e67608eeb9b7590340e3350c488d127c5f9b4f8917d49cbd7d13fc1bdadda9",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 835.791,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "K0",
+      "key_pitch_degrees": -55.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.25,
+      "reported_light": [
+        [
+          "evening",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "K0/baseline-1280x720-evening-idle.png",
+      "json": "K0/baseline-1280x720-evening.json",
+      "log": "K0/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "3c55439a288b38c130125b7a23d50d21b2ed63d3534b29763d552b1651afdeac",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 801.349,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "K1",
+      "key_pitch_degrees": -65.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.242,
+      "reported_light": [
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "K1/baseline-360x320-day-idle.png",
+      "json": "K1/baseline-360x320-day.json",
+      "log": "K1/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "b3abd32a658c83ea314ac005a25a952b02adb91b99b515a47e555d9e87ef44ac",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 727.162,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "K1",
+      "key_pitch_degrees": -65.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.239,
+      "reported_light": [
+        [
+          "evening",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "K1/baseline-360x320-evening-idle.png",
+      "json": "K1/baseline-360x320-evening.json",
+      "log": "K1/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "93b624eada39141a83a1e10e64637b8ef66f5f343f5f692bee924e69dda3be4e",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 732.672,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "K1",
+      "key_pitch_degrees": -65.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.285,
+      "reported_light": [
+        [
+          "day",
+          "-54.9999961853027",
+          "-31.9999980926514",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "K1/baseline-1280x720-day-idle.png",
+      "json": "K1/baseline-1280x720-day.json",
+      "log": "K1/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "6e58840a6cd4ab0ab20d7e95b34f9c07ece46f6726e14afd61d89c94c37f692e",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 834.885,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "K1",
+      "key_pitch_degrees": -65.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.252,
+      "reported_light": [
+        [
+          "evening",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "-65.0",
+          "-31.9999942779541",
+          "0.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "K1/baseline-1280x720-evening-idle.png",
+      "json": "K1/baseline-1280x720-evening.json",
+      "log": "K1/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "25fb0658a6857112a7b984d1668fe62312da861db6a2eb5d9bf6432a29205ba1",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 805.54,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}
