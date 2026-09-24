@@ -1,0 +1,364 @@
+{
+  "purpose": "Original A vs a single CC0 1K wood table asset fitted to A's desk footprint",
+  "asset_page": "https://polyhaven.com/a/wooden_table_02",
+  "license_page": "https://polyhaven.com/license",
+  "source_files_sha256": {
+    "wooden_table_02_1k.gltf": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wooden_table_02/wooden_table_02_1k.gltf",
+      "bytes": 2687,
+      "sha256": "bb38e301840cb629d72c43c83fdb7fb308518efe2d0bc01e1ed0e9a9e43ed9d3"
+    },
+    "textures/wooden_table_02_diff_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_table_02/wooden_table_02_diff_1k.jpg",
+      "bytes": 178379,
+      "sha256": "2334ac3e23d69222322515d9bad066b4e90d7d81989fe231b8fb12f39179ad9e"
+    },
+    "textures/wooden_table_02_nor_gl_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_table_02/wooden_table_02_nor_gl_1k.jpg",
+      "bytes": 122129,
+      "sha256": "9470e08e5dab4ab6a7cafab2a488a50fb54fa8f38890e9032c39dcbf7f5846d2"
+    },
+    "wooden_table_02.bin": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/wooden_table_02/wooden_table_02.bin",
+      "bytes": 7576,
+      "sha256": "52ed7cc67b3aa403375cf9bd18050e8cc21bcced6532a0183c1a733f0965df6d"
+    },
+    "textures/wooden_table_02_arm_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_table_02/wooden_table_02_arm_1k.jpg",
+      "bytes": 174545,
+      "sha256": "b970a81e4b03f3b8a341c9eb639f112fff1782d681c846255ebc9073cd803ced"
+    }
+  },
+  "glb_bytes": 485092,
+  "glb_sha256": "3a1d63e2444b39a9aef82230d8775960e15a5a6223e507efbbfce5920ed68fe2",
+  "source_code_sha256": {
+    "fetch_source.py": "7b8344015d2959ebac065a81dccd0335653cef787ffea81fa9ae83b438cce7d4",
+    "build_asset.py": "7a1f465f90e92ae380cc8858efce23dc3a84c4754f383a80fa7b4918cd372204",
+    "run_capture.py": "0d887e68ba7b1d152f68e19f2db781d57433d2688134355544dd792f611a0b29"
+  },
+  "godot_source_sha256": {
+    "desk_asset_room.gd": "be55ea63c86e8d1b26afb310217294704752bf1f83919af113cd03bc5a7f4832",
+    "desk_asset_experiment.gd": "1117d949e1d1d807f20ca4a0120e11740c4e4e78a8f7a5dd86e826f202f85b0d"
+  },
+  "notes": [
+    "The asset was non-uniformly stretched to preserve A's oversized desk footprint; this is a visual trial, not a realistic-scale furniture placement.",
+    "Pixel difference counts compare the idle scene region only, excluding changing clock text, but include shadow and aliasing changes from the desk geometry.",
+    "No claim about all-day resource use, character animation, or final 3D art route."
+  ],
+  "records": [
+    {
+      "variant": "A",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "idle",
+      "capture": "captures/A-360x320-day-idle.png",
+      "sha256": "ca95e8a236c0883b22cf63953a84e032431d1b791997ad0e7d5f97ff091c6702",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "started",
+      "capture": "captures/A-360x320-day-started.png",
+      "sha256": "98d4bec12e6b27fa7d286afe94d8518277083775f97f8f91d7f9f99ae5a34124",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "capture": "captures/A-360x320-evening-idle.png",
+      "sha256": "50f14c99080551c104830e33ed5eedce975c5dcc6d1d5c7ddf53c2363525b5cd",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "started",
+      "capture": "captures/A-360x320-evening-started.png",
+      "sha256": "db78f15918f6ca78755ba579b651bf897be6b198b1ad0052e40cb2552734bfe9",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "idle",
+      "capture": "captures/A-1280x720-day-idle.png",
+      "sha256": "38fc05619a79e0716e899b718c8d20235b8985b32e8f0a721f033afa101354dd",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "started",
+      "capture": "captures/A-1280x720-day-started.png",
+      "sha256": "2524ee10e3cb0ebbfa1cc19cca948af34e09abd35f443020bfa948ee1bcda373",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "capture": "captures/A-1280x720-evening-idle.png",
+      "sha256": "83b4eab8ff53cc519a4273c90f4e4fdb059baba3c0208fe199385dac22c91bff",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "A",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "started",
+      "capture": "captures/A-1280x720-evening-started.png",
+      "sha256": "27e34a1258dfad0b0720703b4ec97576ea7c485f625eb95616b31b96d72579f1",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "idle",
+      "capture": "captures/M2-360x320-day-idle.png",
+      "sha256": "0d299c159ea156061410152ebac66b6104f764470d31de02fbb2b1754124c9d1",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "started",
+      "capture": "captures/M2-360x320-day-started.png",
+      "sha256": "0d6e32286babf50321fa0f8e1954808ccc2f11c8b78daaaef8221ae483e44af2",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "capture": "captures/M2-360x320-evening-idle.png",
+      "sha256": "0b05b33ada55eb79c4bf8fc902ffe97bea5b2bec2ca2c53b441d1a57df0708ea",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "started",
+      "capture": "captures/M2-360x320-evening-started.png",
+      "sha256": "9b450f364f1bd724475a6a46cc72cb45c1a8713c1baee19846ca737a8ab0cc63",
+      "physical_pixels": [
+        720,
+        640
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "idle",
+      "capture": "captures/M2-1280x720-day-idle.png",
+      "sha256": "5f6802a823a829d7c6f0c5927d401e99debeb36fa44b2fbbc1756b285831919e",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "started",
+      "capture": "captures/M2-1280x720-day-started.png",
+      "sha256": "8ecc3bd805b67a9bc79e02bf2234f94a87d1e5e39c11d0f9d7e94b1863acddb1",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "capture": "captures/M2-1280x720-evening-idle.png",
+      "sha256": "e14ace6dd9fcf40c075e96ae9e32fbfafecc6cdf71efdee9e55fd914353f071a",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "variant": "M2",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "started",
+      "capture": "captures/M2-1280x720-evening-started.png",
+      "sha256": "979493c150a8814ce2f9af2b6def8bd8b33a3440eb8b11d362a31454a5cabd2f",
+      "physical_pixels": [
+        2560,
+        1440
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "idle_scene_difference": {
+        "scene_roi_physical_xywh": [
+          16,
+          92,
+          688,
+          282
+        ],
+        "changed_physical_pixels": 1270,
+        "roi_pixels": 194016,
+        "changed_fraction": 0.006546
+      }
+    },
+    {
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "idle_scene_difference": {
+        "scene_roi_physical_xywh": [
+          16,
+          92,
+          688,
+          282
+        ],
+        "changed_physical_pixels": 1269,
+        "roi_pixels": 194016,
+        "changed_fraction": 0.006541
+      }
+    },
+    {
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "idle_scene_difference": {
+        "scene_roi_physical_xywh": [
+          32,
+          188,
+          1844,
+          1100
+        ],
+        "changed_physical_pixels": 17981,
+        "roi_pixels": 2028400,
+        "changed_fraction": 0.008865
+      }
+    },
+    {
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "idle_scene_difference": {
+        "scene_roi_physical_xywh": [
+          32,
+          188,
+          1844,
+          1100
+        ],
+        "changed_physical_pixels": 17954,
+        "roi_pixels": 2028400,
+        "changed_fraction": 0.008851
+      }
+    }
+  ]
+}

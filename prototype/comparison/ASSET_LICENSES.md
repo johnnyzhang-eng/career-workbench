@@ -29,6 +29,10 @@
 
 官方许可页已于登记日期查阅；Blender 主站直连读取受限，许可说明以官方搜索结果及官方手册交叉核对。没有单独取得任何系统字体的再分发授权，故不分发字体文件。
 
+## M2 木桌外部素材实验（2026-09-25）
+
+只在 [单桌素材实验](desk_asset_experiment/README.md) 中使用 [Poly Haven Wooden Table 02](https://polyhaven.com/a/wooden_table_02)，作者 Serhii Khromov。资产页明确标 CC0，[Poly Haven 许可页](https://polyhaven.com/license)确认模型、纹理可使用与再分发。取得官方 1K glTF、BIN、diffuse/normal/ARM JPEG，核对 API 每项 MD5 后用 Blender 5.1.2 打成 `../godot/comparison/assets/polyhaven_wooden_table_02_1k.glb`；GLB 含 1 mesh、1 material、3 张内嵌 JPEG，原始下载件和本地 `.blend` 留在忽略的 `private/`。源文件 SHA、GLB SHA、固定参数及 Godot 昼夜/小窗/展开态实机截图见 [manifest](desk_asset_experiment/manifest.json)。该外部素材保留 CC0 来源说明；实验脚本沿用仓库 MIT。非均匀适配原 A 桌子仅供视觉对照，不视作生产成品。
+
 ## 参考范围
 
 《模拟人生》的剖面房间、角色定制与生活互动，Spirit City: Lofi Sessions 的房间/专注工具构图，Virtual Cottage 的真实时钟氛围，仅是产品思想参考；不提取角色、家具、贴图、音频、UI 或游戏截图进入仓库。Windup 仅参考原创角色制作与质量检查流程；未授权移植任何角色或成品画风。参考视频只记录链接与时间码，不上传他人帧图。
