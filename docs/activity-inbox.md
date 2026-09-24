@@ -16,8 +16,8 @@ flowchart LR
 ## 数据与授权边界
 
 - 连接由可信的工作台界面调用 `connect(id, source, allowed_types)` 显式建立；适配器只获得 `ingest` 通道。`ActivityInbox` 是本地持久化与字段验证层，不是跨进程身份认证系统。正式接入时，主程序仍须隔离连接控制方法并核对真实工具提供的事件 API 与权限。这里没有 Codex 桌面事件适配器。
-- 固定允许类型为 `work_session_started`、`work_session_ended`、`artifact_updated`。每个连接还须从中选择子集。来源必须与连接登记的来源完全一致；暂停、断开或未知连接不得写入新事件。
-- 一条事件仅包含 `event_id`、`source`、`kind`、带时区的 `occurred_at`，可选 `task_hint`。收件箱补充 `connection_id` 与 `observed_at`。`task_hint` 只是线索，不是已验证关联。拒绝任何其他字段，包括正文、文件路径、屏幕内容、按键、凭证和外部“成功”断言。适配器应提供随机、稳定、无个人信息的事件 ID。
+- 基础允许类型为 `work_session_started`、`work_session_ended`、`artifact_updated`；Codex Hooks 适配器另外使用 `turn_prompted`、`turn_stop_observed`、`turn_interrupted`、`tool_used`。每个连接还须从中选择子集。来源必须与连接登记的来源完全一致；暂停、断开或未知连接不得写入新事件。
+- 一条事件包含 `event_id`、`source`、`kind`、带时区的 `occurred_at`，可选 `task_hint`、哈希后的 `session_ref`／`turn_ref` 和短 `tool_name`。收件箱补充 `connection_id` 与 `observed_at`。`task_hint` 只是线索，不是已验证关联。拒绝任何其他字段，包括正文、文件路径、屏幕内容、按键、凭证和外部“成功”断言。适配器应提供稳定、无个人信息的事件 ID。实际 Codex 接入范围和安装边界见 [codex-hooks-adapter.md](codex-hooks-adapter.md)。
 - 数据默认写在传入的私有 workspace 的 `activity.sqlite3`，与 `daily.sqlite3` 分开；文件使用本机用户读写权限。不得把真实事件数据库提交到公开仓库，也不要在日志中打印个人事件。
 - 默认保留 30 天，构造时可设 1–365 天。打开收件箱、写入新事件及调用 `prune_expired()` 时清理过期观察记录。过旧或明显未来的事件会被拒绝。暂时不用云同步。
 - `pause` 停止新事件但保留旧记录；`disconnect` 撤销该连接的继续接收能力但仍可检查旧记录。`delete_observation` 删除事件内容，并保留 30 天内的事件 ID 哈希以阻止重放；`forget_connection` 删除连接、观察记录与对应去重标记。断开与删除是两个不同操作。
