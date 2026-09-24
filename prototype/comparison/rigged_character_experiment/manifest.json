@@ -1,0 +1,880 @@
+{
+  "purpose": "Original R1 seated student with one skinned sit-to-type action; original A room and R0/R1 controls retained",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "engine": "Godot 4.7 Compatibility",
+  "license": "Self-authored Blender geometry and animation, repository MIT; no downloaded assets",
+  "asset": {
+    "file": "prototype/godot/comparison/assets/adult_student_rigged.glb",
+    "bytes": 378380,
+    "sha256": "2fd35c1e0515093c6d0152b44ecf1b58b39a05f28cd04858f64ee1abe236e2fa",
+    "meshes": 1,
+    "skins": 1,
+    "joints": 8,
+    "animations": [
+      "SitToType",
+      "TypingLoop"
+    ]
+  },
+  "editable_blend": {
+    "file": "prototype/comparison/rigged_character_experiment/adult_student_rigged.blend",
+    "bytes": 222209,
+    "sha256": "11430b1d60266e884e465634777672391b660b202ca78bf9a5c456445883a168"
+  },
+  "builder_sha256": "e5044811c5ab9ed864834895f1d3fd3119c0e900cc2051953d91a9821095f569",
+  "fixed": {
+    "camera_fov_degrees": 45,
+    "room": "original A",
+    "light": "original A",
+    "UI": "original A",
+    "task": "virtual comparison fixture"
+  },
+  "records": [
+    {
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 5.18,
+      "log": "R2/360x320-day/godot.log",
+      "keyframes": {
+        "sit-start": {
+          "file": "R2/360x320-day/sit-start-360x320-day.png",
+          "sha256": "43c74aae4791bc5747e115cfe0e6c674f2ed0956123a2a1f9012cc4920968d1a",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.663,
+              1.415,
+              -1.289
+            ],
+            "Right": [
+              -1.097,
+              1.415,
+              -1.289
+            ]
+          }
+        },
+        "sit-mid": {
+          "file": "R2/360x320-day/sit-mid-360x320-day.png",
+          "sha256": "33cd35d64a20403674e44134bd7348505e95a1860f9a548d7647573e177913ca",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.3,
+          "wrists_world": {
+            "Left": [
+              -0.644,
+              1.396,
+              -1.266
+            ],
+            "Right": [
+              -1.116,
+              1.396,
+              -1.266
+            ]
+          }
+        },
+        "sit-end": {
+          "file": "R2/360x320-day/sit-end-360x320-day.png",
+          "sha256": "08fddb880ac02b72d78d6f7df6ae9cb0a01eceedd7b626a37982c3c01c690dca",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.6,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        },
+        "typing-start": {
+          "file": "R2/360x320-day/typing-start-360x320-day.png",
+          "sha256": "fbc3f023b886ee6e2d6c75664ff94d4642244940885993e306ff8257cb1f61d1",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        },
+        "typing-left-down": {
+          "file": "R2/360x320-day/typing-left-down-360x320-day.png",
+          "sha256": "eb8961e45a6f3675b08130747261a5540aee699ca35e07a5dc212d5574c45742",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.15,
+          "wrists_world": {
+            "Left": [
+              -0.527,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.106,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-right-down": {
+          "file": "R2/360x320-day/typing-right-down-360x320-day.png",
+          "sha256": "1b8a92e2a1bbf73148dac11307a491459bf8ca1685fa807f106747cbb92177bb",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.45,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.233,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-mid": {
+          "file": "R2/360x320-day/typing-mid-360x320-day.png",
+          "sha256": "40240d94542f9224543fd39472be4ce25a4229a8f4b13c2e77f4acd1143468e5",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.75,
+          "wrists_world": {
+            "Left": [
+              -0.526,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.105,
+              1.369,
+              -1.247
+            ]
+          }
+        },
+        "typing-end": {
+          "file": "R2/360x320-day/typing-end-360x320-day.png",
+          "sha256": "9469a24c33fb3f9b85e87e20721e8a98cab48d1f20759515be2fc56130ac274b",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.05,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.234,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-loop-end": {
+          "file": "R2/360x320-day/typing-loop-end-360x320-day.png",
+          "sha256": "8289deccee8037643bfa390444e855f14e52804734d246bc59f9d6096df8f495",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.2,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        }
+      },
+      "video": {
+        "file": "R2/sit-and-type-360x320-day.mp4",
+        "sha256": "5fe27109927f955bc0a44f806da7816308cf7401f47936a375f8ff6f01591d3e",
+        "bytes": 34344,
+        "frames": 91,
+        "encoding_fps": 30
+      }
+    },
+    {
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.645,
+      "log": "R2/360x320-evening/godot.log",
+      "keyframes": {
+        "sit-start": {
+          "file": "R2/360x320-evening/sit-start-360x320-evening.png",
+          "sha256": "34117fb37edde461de8ba5abee5ed96c4699f0655e68f3ed0fbff28ee94b717c",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.671,
+              1.419,
+              -1.299
+            ],
+            "Right": [
+              -1.089,
+              1.419,
+              -1.299
+            ]
+          }
+        },
+        "sit-mid": {
+          "file": "R2/360x320-evening/sit-mid-360x320-evening.png",
+          "sha256": "c36956f51e78e4f595d0e6318d1b3b5b621fe7180962a53eb3f4b4f87ad09d33",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.3,
+          "wrists_world": {
+            "Left": [
+              -0.644,
+              1.396,
+              -1.266
+            ],
+            "Right": [
+              -1.116,
+              1.396,
+              -1.266
+            ]
+          }
+        },
+        "sit-end": {
+          "file": "R2/360x320-evening/sit-end-360x320-evening.png",
+          "sha256": "a17b2e14704fe6b072053dc9203b094a1a439953be7eb007d282236152c25f2d",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "SitToType",
+          "seconds": 0.6,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        },
+        "typing-start": {
+          "file": "R2/360x320-evening/typing-start-360x320-evening.png",
+          "sha256": "50190dabbedae875f45d04641b2879449b49a58b5b387e1d87030db7e86cd592",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.371,
+              -1.25
+            ]
+          }
+        },
+        "typing-left-down": {
+          "file": "R2/360x320-evening/typing-left-down-360x320-evening.png",
+          "sha256": "d5cc1f285bb45b55738b604833cf4654725f6d3596e638d4e2ece124521d5437",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.15,
+          "wrists_world": {
+            "Left": [
+              -0.527,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.106,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-right-down": {
+          "file": "R2/360x320-evening/typing-right-down-360x320-evening.png",
+          "sha256": "b2951633da39a29a47c211ccae04dcd92e0e8f5dab903c82f91bfd2a7f062bfc",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.45,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.234,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-mid": {
+          "file": "R2/360x320-evening/typing-mid-360x320-evening.png",
+          "sha256": "7d862e1a068d0dcefb038c16eea07ddc6ccee7073d5777bdecbea03133847717",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.75,
+          "wrists_world": {
+            "Left": [
+              -0.526,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.105,
+              1.369,
+              -1.247
+            ]
+          }
+        },
+        "typing-end": {
+          "file": "R2/360x320-evening/typing-end-360x320-evening.png",
+          "sha256": "2509b1d90cc272c07b67f046baa363644ba7fea4f520f43995d145da1da47266",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.05,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.234,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-loop-end": {
+          "file": "R2/360x320-evening/typing-loop-end-360x320-evening.png",
+          "sha256": "0a29a8afb46a29b5aec306def779fec8acba04eee14427423fd33838e327225c",
+          "physical_pixels": [
+            720,
+            640
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.2,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        }
+      }
+    },
+    {
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 2.131,
+      "log": "R2/1280x720-day/godot.log",
+      "keyframes": {
+        "sit-start": {
+          "file": "R2/1280x720-day/sit-start-1280x720-day.png",
+          "sha256": "25498efad505b64b806fb2f33c8bce543074f9db4311205b5913efe7391fc55a",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.671,
+              1.419,
+              -1.299
+            ],
+            "Right": [
+              -1.089,
+              1.419,
+              -1.299
+            ]
+          }
+        },
+        "sit-mid": {
+          "file": "R2/1280x720-day/sit-mid-1280x720-day.png",
+          "sha256": "10050d0988bb2c2f2add68f464682b59a03a5ed6706e98d52fd5a740397868a7",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.3,
+          "wrists_world": {
+            "Left": [
+              -0.64,
+              1.39,
+              -1.261
+            ],
+            "Right": [
+              -1.12,
+              1.39,
+              -1.261
+            ]
+          }
+        },
+        "sit-end": {
+          "file": "R2/1280x720-day/sit-end-1280x720-day.png",
+          "sha256": "d51df4cecdfd8acac5a898c161b64c09ac0ca425e34371dc38988cc401591ba4",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.6,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        },
+        "typing-start": {
+          "file": "R2/1280x720-day/typing-start-1280x720-day.png",
+          "sha256": "0994482cbd6e992167147ab9ebe43d1c3da374f5dbf518c8cbe2ee420d659838",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.606,
+              1.371,
+              -1.253
+            ],
+            "Right": [
+              -1.124,
+              1.37,
+              -1.249
+            ]
+          }
+        },
+        "typing-left-down": {
+          "file": "R2/1280x720-day/typing-left-down-1280x720-day.png",
+          "sha256": "237b456ac6a012664065d1805a8553d36003f4e4b4b1a8a9a77405e23c5443aa",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.15,
+          "wrists_world": {
+            "Left": [
+              -0.534,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.106,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-right-down": {
+          "file": "R2/1280x720-day/typing-right-down-1280x720-day.png",
+          "sha256": "30a296397175c88005a96d4d88c4afb16cb5d0b8942a0b4d4428f87163111209",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.45,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.368,
+              -1.247
+            ],
+            "Right": [
+              -1.226,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-mid": {
+          "file": "R2/1280x720-day/typing-mid-1280x720-day.png",
+          "sha256": "4d85a181d22d156ccaf71a630881ec336be02251989a7ff392ee88e85870b6a4",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.75,
+          "wrists_world": {
+            "Left": [
+              -0.534,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.105,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-end": {
+          "file": "R2/1280x720-day/typing-end-1280x720-day.png",
+          "sha256": "90d7859d54045fa0d2208dd16329130449ba3cc97e0ed1a34d0324741fdd09cb",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.05,
+          "wrists_world": {
+            "Left": [
+              -0.652,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.225,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-loop-end": {
+          "file": "R2/1280x720-day/typing-loop-end-1280x720-day.png",
+          "sha256": "31fe55b3bdbc0b8774e19f3c6aa25355ec29813b661ebea2d4bad6df9a378030",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.2,
+          "wrists_world": {
+            "Left": [
+              -0.625,
+              1.37,
+              -1.251
+            ],
+            "Right": [
+              -1.129,
+              1.37,
+              -1.25
+            ]
+          }
+        }
+      }
+    },
+    {
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 2.045,
+      "log": "R2/1280x720-evening/godot.log",
+      "keyframes": {
+        "sit-start": {
+          "file": "R2/1280x720-evening/sit-start-1280x720-evening.png",
+          "sha256": "bcc467e3335bceb22c09286775547d7da86f878d49d5b1457fc53aebb48b4215",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.671,
+              1.419,
+              -1.299
+            ],
+            "Right": [
+              -1.089,
+              1.419,
+              -1.299
+            ]
+          }
+        },
+        "sit-mid": {
+          "file": "R2/1280x720-evening/sit-mid-1280x720-evening.png",
+          "sha256": "a7d312643f3bd64e13a5504d7fd0df320b146a1c8d822a987c55f751e3777290",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.3,
+          "wrists_world": {
+            "Left": [
+              -0.639,
+              1.389,
+              -1.26
+            ],
+            "Right": [
+              -1.121,
+              1.389,
+              -1.26
+            ]
+          }
+        },
+        "sit-end": {
+          "file": "R2/1280x720-evening/sit-end-1280x720-evening.png",
+          "sha256": "72ed0cc1c51b51d4c72395bb5e3c69ed344b19c4e584c6f134662f0fef8bf2f4",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "SitToType",
+          "seconds": 0.6,
+          "wrists_world": {
+            "Left": [
+              -0.63,
+              1.37,
+              -1.25
+            ],
+            "Right": [
+              -1.13,
+              1.37,
+              -1.25
+            ]
+          }
+        },
+        "typing-start": {
+          "file": "R2/1280x720-evening/typing-start-1280x720-evening.png",
+          "sha256": "6e803f5a069938712310c7beed404ce27ddf119abe4210250353e74ac03b784d",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.0,
+          "wrists_world": {
+            "Left": [
+              -0.605,
+              1.371,
+              -1.253
+            ],
+            "Right": [
+              -1.124,
+              1.37,
+              -1.249
+            ]
+          }
+        },
+        "typing-left-down": {
+          "file": "R2/1280x720-evening/typing-left-down-1280x720-evening.png",
+          "sha256": "a3a00a93bce66e22764de7510e404eb4d95d7bfaf44ef79b96a52caaaec0c2c4",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.15,
+          "wrists_world": {
+            "Left": [
+              -0.534,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.106,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-right-down": {
+          "file": "R2/1280x720-evening/typing-right-down-1280x720-evening.png",
+          "sha256": "a11973a881a23287c5c89944e851fa910083459864f7b16183bce2a6da60c6a2",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.45,
+          "wrists_world": {
+            "Left": [
+              -0.655,
+              1.368,
+              -1.247
+            ],
+            "Right": [
+              -1.226,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-mid": {
+          "file": "R2/1280x720-evening/typing-mid-1280x720-evening.png",
+          "sha256": "d8c29e2d333d88d5036e48ecc69847beeb55b1c65d32802f6769773ba4ca04d0",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 0.75,
+          "wrists_world": {
+            "Left": [
+              -0.534,
+              1.373,
+              -1.256
+            ],
+            "Right": [
+              -1.105,
+              1.368,
+              -1.247
+            ]
+          }
+        },
+        "typing-end": {
+          "file": "R2/1280x720-evening/typing-end-1280x720-evening.png",
+          "sha256": "706c398c82310d23a4ff35f394f68364d55b68a44c9069db8d84828aef03f053",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.05,
+          "wrists_world": {
+            "Left": [
+              -0.652,
+              1.369,
+              -1.247
+            ],
+            "Right": [
+              -1.223,
+              1.373,
+              -1.256
+            ]
+          }
+        },
+        "typing-loop-end": {
+          "file": "R2/1280x720-evening/typing-loop-end-1280x720-evening.png",
+          "sha256": "53b509e83e3aa8d9c377c76ab159bb179aff6b7b37545a7f89b1e0d45f28e446",
+          "physical_pixels": [
+            2560,
+            1440
+          ],
+          "animation": "TypingLoop",
+          "seconds": 1.2,
+          "wrists_world": {
+            "Left": [
+              -0.624,
+              1.37,
+              -1.251
+            ],
+            "Right": [
+              -1.128,
+              1.37,
+              -1.25
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
