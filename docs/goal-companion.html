@@ -283,6 +283,7 @@
         if(form.dataset.form==='goal'){
           const target=fields.target?fields.target+'T20:00:00+08:00':null;
           await write('/api/goals',{path:fields.path,title:fields.title,weekly_minutes:Number(fields.weekly_minutes),baseline:fields.baseline,success_criterion:fields.success_criterion,target_at:target,timezone:'Asia/Shanghai'});
+          history.replaceState(null,'',location.pathname+'?goal_id='+encodeURIComponent(state.selected_goal_id));
           showNewGoal=false;render();notify('目标已保存在本机');
         }
         if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
