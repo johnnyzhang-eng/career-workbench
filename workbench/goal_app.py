@@ -331,6 +331,17 @@ class GoalApp:
             if task is None or task["kind"] not in {"practice", "custom"}:
                 raise ValueError("此任务需要对应的求职原流程，不支持在此直接完成")
             daily.command("complete", "E-C-" + operation, task_id, {"evidence": evidence})
+            zone_name = snapshot["goal"]["timezone"]
+        # The completion fact is committed first. End only this task's explicit
+        # room session; a visual action never supplies completion evidence.
+        actions = SceneActionStore(self.workspace, self.clock)
+        try:
+            current = actions.snapshot(goal_id)
+            if current["task_id"] == task_id and current["state"] in {"active", "paused"}:
+                actions.command("stop", "E-A-C-" + operation, goal_id, task_id,
+                                timezone_name=zone_name)
+        finally:
+            actions.close()
         return self.state(goal_id)
 
     def confirm_result(self, payload):

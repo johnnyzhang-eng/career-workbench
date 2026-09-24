@@ -61,7 +61,16 @@
     let photoPreview = null;
     const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const id = () => crypto.randomUUID().replaceAll('-', '');
-    const dateLabel = stamp => stamp ? stamp.slice(5,10).replace('-', '月') + '日' : '日期待定';
+    const dateLabel = stamp => {
+      if(!stamp) return '日期待定';
+      const date=new Date(stamp);
+      if(Number.isNaN(date.getTime())) return '日期待定';
+      const zone=state?.selected?.goal?.timezone||'Asia/Shanghai';
+      const parts=new Intl.DateTimeFormat('en-GB',{timeZone:zone,month:'2-digit',day:'2-digit'}).formatToParts(date);
+      const month=parts.find(part=>part.type==='month')?.value;
+      const day=parts.find(part=>part.type==='day')?.value;
+      return month&&day?`${month}月${day}日`:'日期待定';
+    };
     const localClock = stamp => new Intl.DateTimeFormat('en-GB',{timeZone:state.selected.goal.timezone,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(stamp));
     const stateLabel = key => ({scheduled:'未开始',in_progress:'进行中',deferred:'已顺延',blocked:'受阻',completed:'已记录完成',cancelled:'已取消',not_scheduled:'待同步'})[key] || key;
     const outcomeLabel = key => ({completed:'已完成',missed:'未做',partial:'部分完成',blocked:'受阻'})[key] || key;
@@ -117,6 +126,8 @@
       const next=scene.task_title ? `下一项：${esc(scene.task_title)}` : '还没有今日行动';
       const actionState=scene.action?.state||'none';
       const caption=actionState==='paused' ? '行动已暂停。继续前，房间保持待机。' :
+        actionState==='completed' ? '完成依据已保存；房间回到待机。实际结果仍需本人确认。' :
+        actionState==='result_recorded' ? '本人实际结果已记录；房间回到待机。' :
         actionState==='stale' ? '已跨日回到待机；如仍要继续，请明确点击“继续行动”。' :
         actionState==='stopped' ? '这次行动已结束；任务完成仍要单独记录依据。' : mode==='idle' ?
         (suggested==='idle' ? '房间待机。开始任务后才会改变场景。' : `当前待机。${next}；建议场景：${modeLabels[suggested]}。`) :
@@ -151,7 +162,7 @@
     }
     function evidenceForm(item) {
       if(!selectedTask || selectedTask!==item.task_id) return '';
-      if(item.task_kind==='practice') return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>练习材料位置</label><input name="material_ref" maxlength="1000" placeholder="本机路径或你保存的来源" required></div><div class="field"><label>首次作答位置</label><input name="first_attempt_ref" maxlength="1000" placeholder="首次答案或测量记录" required></div><div class="field"><label>错因／复盘位置</label><input name="reflection_ref" maxlength="1000" placeholder="记录尚不会的部分" required></div><p class="form-note">这里只记录依据，不判断你已掌握，也不等于考试通过。</p><button class="primary" type="submit">保存完成依据</button></form>`;
+      if(item.task_kind==='practice') return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>材料或来源位置</label><input name="material_ref" maxlength="1000" placeholder="本机路径或你保存的来源" required></div><div class="field"><label>本人产物或基线记录位置</label><input name="first_attempt_ref" maxlength="1000" placeholder="首次作答、基线测量或核对记录" required></div><div class="field"><label>观察、错因或后续问题位置</label><input name="reflection_ref" maxlength="1000" placeholder="记录尚不会的部分或下一步" required></div><p class="form-note">这里只记录依据，不判断你已掌握，也不等于考试通过。</p><button class="primary" type="submit">保存完成依据</button></form>`;
       return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>行动产物位置</label><input name="result_ref" maxlength="1000" placeholder="你实际写下或保存的结果" required></div><button class="primary" type="submit">保存完成依据</button></form>`;
     }
     function scoreFields(metric) {
