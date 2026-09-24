@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Room scene-only bridge</title>
+  <style>
+    html,body{margin:0;width:360px;height:320px;overflow:hidden;background:#e5e9e1}
+    iframe{display:block;width:360px;height:320px;border:0}
+  </style>
+</head>
+<body>
+  <iframe id="room" src="/godot/index.html" title="任务房间画面"></iframe>
+  <script>
+    'use strict';
+    const room = document.getElementById('room');
+    const allowedPhase = new Set(['day','evening']);
+    const allowedMode = new Set(['idle','desk','study','interview','rest']);
+    const allowedActivity = new Set(['unknown','planned','declared_active','observed','self_selected']);
+    const scenario = new URLSearchParams(location.search).get('demo') || 'planned_evening';
+    let lastApplied = '';
+    window.__bridgeStatus = {ready:false,appliedCount:0,lastApplied:null,error:null};
+
+    function visualState(payload) {
+      const scene = payload && payload.scene;
+      if (!scene || !allowedPhase.has(scene.phase) || !allowedMode.has(scene.mode)
+          || !allowedActivity.has(scene.activity_state)) throw new Error('invalid scene read model');
+      // Only display fields cross this boundary. No task ID, title, evidence, or completion value.
+      return {phase:scene.phase, mode:scene.mode, activity_state:scene.activity_state};
+    }
+
+    async function refresh() {
+      try {
+        const response = await fetch('/api/state?demo=' + encodeURIComponent(scenario), {cache:'no-store'});
+        if (!response.ok) throw new Error('state HTTP ' + response.status);
+        const state = visualState(await response.json());
+        const encoded = JSON.stringify(state);
+        const setScene = room.contentWindow && room.contentWindow.careerRoomSetScene;
+        window.__bridgeStatus.ready = typeof setScene === 'function';
+        if (window.__bridgeStatus.ready && encoded !== lastApplied) {
+          setScene(encoded);
+          lastApplied = encoded;
+          window.__bridgeStatus.lastApplied = state;
+          window.__bridgeStatus.appliedCount += 1;
+        }
+        window.__bridgeStatus.error = null;
+      } catch (error) {
+        window.__bridgeStatus.error = String(error);
+      }
+    }
+    room.addEventListener('load', refresh);
+    refresh();
+    setInterval(refresh, 2000);
+  </script>
+</body>
+</html>
