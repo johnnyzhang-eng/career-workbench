@@ -146,6 +146,49 @@ class GoalWebTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             GoalHTTPServer(("0.0.0.0", 0), self.temp.name)
 
+    def test_three_shell_routes_and_local_scene_script(self):
+        for route in ("/", "/compact", "/collapsed"):
+            status, body, headers = self.request("GET", route)
+            self.assertEqual(status, 200, route)
+            self.assertIn("goal-room-scene", body)
+            self.assertIn('script-src \'self\' \'nonce-', headers["Content-Security-Policy"])
+            self.assertNotIn("unsafe-inline", headers["Content-Security-Policy"])
+        status, script, headers = self.request("GET", "/goal-scene.js")
+        self.assertEqual(status, 200)
+        self.assertEqual(headers["Content-Type"], "text/javascript; charset=utf-8")
+        self.assertIn("customElements.define('goal-room-scene'", script)
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=3)
+        connection.request("GET", "/scene-assets/room-day.png",
+                           headers={"Host": f"127.0.0.1:{self.port}"})
+        asset = connection.getresponse()
+        self.assertEqual(asset.status, 200)
+        self.assertEqual(asset.getheader("Content-Type"), "image/png")
+        self.assertTrue(asset.read().startswith(b"\x89PNG\r\n\x1a\n"))
+        connection.close()
+        self.assertEqual(self.request("GET", "/scene-assets/../goal-scene.js")[0], 404)
+        self.assertEqual(self.request("GET", "/scene-assets/unlisted.png")[0], 404)
+
+    def test_explicit_room_actions_do_not_complete_daily_task(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id = self.goal(token, "U" * 24)["selected_goal_id"]
+        proposal = self.post("/api/plans/propose", {
+            "operation_id": "V" * 24, "goal_id": goal_id, "start_on": "2026-10-05"}, token)[1]["selected"]["pending_proposals"][0]
+        self.post("/api/plans/decide", {
+            "operation_id": "W" * 24, "proposal_id": proposal["id"], "decision": "accept"}, token)
+        applied = self.post("/api/plans/sync", {
+            "operation_id": "X" * 24, "goal_id": goal_id}, token)[1]
+        task_id = applied["selected"]["today_tasks"][0]["task_id"]
+        self.assertEqual(applied["scene"]["mode"], "idle")
+        for index, (action, scene_mode, action_state) in enumerate((
+                ("start", "study", "active"), ("pause", "idle", "paused"),
+                ("resume", "study", "active"), ("stop", "idle", "stopped"))):
+            status, changed, _ = self.post("/api/actions/" + action, {
+                "operation_id": "ACT" + str(index) * 20, "goal_id": goal_id, "task_id": task_id}, token)
+            self.assertEqual(status, 200, changed)
+            self.assertEqual(changed["scene"]["mode"], scene_mode)
+            self.assertEqual(changed["scene"]["action"]["state"], action_state)
+            self.assertEqual(changed["selected"]["today_tasks"][0]["daily_state"], "scheduled")
+
 
 if __name__ == "__main__":
     unittest.main()

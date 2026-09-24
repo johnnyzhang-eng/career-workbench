@@ -3,13 +3,18 @@
 import fnmatch
 import os
 import re
+import struct
 import subprocess
+import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SCENE_PNG = tuple("docs/scene-assets/" + name for name in (
+    "room-day.png", "room-evening.png", "avatar-idle.png", "avatar-desk.png",
+    "avatar-study.png", "avatar-interview.png", "avatar-rest.png"))
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py", "daily.py",
          "workbench/*.py",
-         "docs/*.md", "docs/*.html", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py")
+         "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py", *SCENE_PNG)
 RULES = {
     "email": re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"),
     "mobile": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
@@ -30,6 +35,34 @@ def findings(text, private_terms=()):
     if any(term.casefold() in text.casefold() for term in private_terms if term.strip()):
         hits.append("private_term")
     return hits
+
+
+def png_findings(data):
+    """Reject unexpected PNG metadata or malformed chunks in public scene art."""
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return ["invalid_png"]
+    safe_chunks = {b"IHDR", b"PLTE", b"IDAT", b"IEND", b"tRNS", b"sRGB", b"gAMA", b"cHRM", b"pHYs"}
+    offset = 8
+    seen = []
+    while offset + 12 <= len(data):
+        length = struct.unpack(">I", data[offset:offset + 4])[0]
+        end = offset + 12 + length
+        if end > len(data):
+            return ["invalid_png"]
+        chunk_type = data[offset + 4:offset + 8]
+        payload = data[offset + 8:offset + 8 + length]
+        checksum = struct.unpack(">I", data[offset + 8 + length:end])[0]
+        if zlib.crc32(chunk_type + payload) & 0xffffffff != checksum:
+            return ["invalid_png_crc"]
+        if chunk_type not in safe_chunks:
+            return ["png_metadata_or_unknown_chunk"]
+        seen.append(chunk_type)
+        offset = end
+        if chunk_type == b"IEND":
+            break
+    if not seen or seen[0] != b"IHDR" or seen[-1] != b"IEND" or offset != len(data):
+        return ["invalid_png"]
+    return []
 
 
 def main():
@@ -56,10 +89,13 @@ def main():
         if path.is_symlink() or not path.is_file() or path.stat().st_size > 2_000_000:
             failures.append((relative, ["symlink_missing_or_oversized"]))
             continue
-        try:
-            hits = findings(path.read_text(encoding="utf-8"), terms)
-        except UnicodeError:
-            hits = ["non_text_file"]
+        if relative in SCENE_PNG:
+            hits = png_findings(path.read_bytes())
+        else:
+            try:
+                hits = findings(path.read_text(encoding="utf-8"), terms)
+            except UnicodeError:
+                hits = ["non_text_file"]
         if hits:
             failures.append((relative, hits))
     for relative, hits in failures:

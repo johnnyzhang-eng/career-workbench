@@ -10,9 +10,16 @@ from .goal_app import GoalApp
 
 
 HTML = Path(__file__).resolve().parents[1] / "docs" / "goal-companion.html"
+SCENE_JS = Path(__file__).resolve().parents[1] / "docs" / "goal-scene.js"
+SCENE_ASSETS = Path(__file__).resolve().parents[1] / "docs" / "scene-assets"
+SCENE_ASSET_NAMES = frozenset({"room-day.png", "room-evening.png", "avatar-idle.png",
+                               "avatar-desk.png", "avatar-study.png", "avatar-interview.png",
+                               "avatar-rest.png"})
 ROUTES = {"/api/goals": "create_goal", "/api/plans/propose": "propose_plan",
           "/api/plans/decide": "decide_plan", "/api/plans/sync": "sync_plan",
-          "/api/tasks/complete": "complete_task"}
+          "/api/tasks/complete": "complete_task",
+          "/api/actions/start": "start_action", "/api/actions/pause": "pause_action",
+          "/api/actions/resume": "resume_action", "/api/actions/stop": "stop_action"}
 
 
 class GoalHTTPServer(HTTPServer):
@@ -46,7 +53,7 @@ class GoalHandler(BaseHTTPRequestHandler):
         self.send_header("X-Frame-Options", "DENY")
         if nonce:
             self.send_header("Content-Security-Policy", "default-src 'none'; "
-                             f"script-src 'nonce-{nonce}'; style-src 'nonce-{nonce}'; "
+                             f"script-src 'self' 'nonce-{nonce}'; style-src 'nonce-{nonce}'; "
                              "connect-src 'self'; img-src 'self' data:; "
                              "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
 
@@ -78,10 +85,19 @@ class GoalHandler(BaseHTTPRequestHandler):
             return
         try:
             parsed = self._checked_path()
-            if parsed.path in {"/", "/compact"}:
+            if parsed.path in {"/", "/compact", "/collapsed"}:
                 nonce = secrets.token_urlsafe(20)
                 body = HTML.read_text(encoding="utf-8").replace("__CSP_NONCE__", nonce).encode("utf-8")
                 self._send(200, body, "text/html; charset=utf-8", nonce)
+            elif parsed.path == "/goal-scene.js" and SCENE_JS.is_file():
+                self._send(200, SCENE_JS.read_bytes(), "text/javascript; charset=utf-8")
+            elif (parsed.path.startswith("/scene-assets/") and not parsed.query
+                  and parsed.path.removeprefix("/scene-assets/") in SCENE_ASSET_NAMES):
+                asset = SCENE_ASSETS / parsed.path.removeprefix("/scene-assets/")
+                if asset.is_file():
+                    self._send(200, asset.read_bytes(), "image/png")
+                else:
+                    self._send(404, {"error": "场景素材尚未准备好"})
             elif parsed.path == "/api/state":
                 query = parse_qs(parsed.query)
                 goal_id = query.get("goal_id", [None])[0]
