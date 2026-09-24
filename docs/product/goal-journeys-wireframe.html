@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>目标执行伴随系统｜逐屏线框</title>
+  <style>
+    :root { color-scheme: light; font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #243143; background: #f0eee9; }
+    * { box-sizing: border-box; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; border: 1px solid #a9b4be; background: #fff; border-radius: 10px; padding: 7px 12px; color: inherit; }
+    button:hover, button:focus-visible { border-color: #435e77; outline-color: #435e77; }
+    button[aria-pressed="true"], .primary { background: #273f54; color: white; border-color: #273f54; }
+    button:disabled { opacity: .48; cursor: not-allowed; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 23px; }
+    h2 { font-size: 18px; }
+    h3 { font-size: 15px; }
+    small, .muted { color: #596b78; }
+    a { color: #205b79; }
+    .page { max-width: 1440px; padding: 22px; margin: auto; }
+    .intro { display: flex; justify-content: space-between; gap: 24px; align-items: start; margin-bottom: 16px; }
+    .intro p { max-width: 850px; margin-top: 4px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .legend span, .pill { display: inline-block; border-radius: 999px; background: #e4e9ea; color: #354c5a; padding: 2px 9px; font-size: 12px; }
+    .legend .design { background: #f9e6c9; }
+    .shell { display: grid; grid-template-columns: 205px minmax(360px, 1fr) minmax(290px, .8fr); gap: 12px; min-height: 700px; }
+    .box { border: 1px solid #b9c2c4; background: #faf9f6; border-radius: 16px; padding: 16px; box-shadow: 0 3px 12px #3440500a; }
+    nav { display: flex; flex-direction: column; gap: 14px; }
+    nav .stack { display: grid; gap: 6px; }
+    nav button { width: 100%; text-align: left; }
+    .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .days button { padding: 5px 0; text-align: center; }
+    .scene { height: 220px; margin: 14px 0; border: 1px dashed #9baeb8; border-radius: 14px; background: linear-gradient(135deg, #e9e4d7 0%, #e9e4d7 60%, #d3dfda 60%); display: grid; place-items: center; text-align: center; }
+    .scene span { padding: 9px; background: #faf9f6db; border-radius: 10px; }
+    .section-title { display: flex; justify-content: space-between; align-items: baseline; margin: 15px 0 9px; gap: 8px; }
+    .task { display: block; width: 100%; text-align: left; padding: 11px; margin-bottom: 8px; background: #fff; }
+    .task.active { border: 2px solid #435e77; padding: 10px; }
+    .task strong { display: block; margin-bottom: 4px; }
+    .task small { display: block; }
+    .task .pill { margin-top: 5px; }
+    .detail { display: grid; align-content: start; gap: 12px; }
+    .fact { border-top: 1px solid #d8ddda; padding-top: 9px; }
+    .fact b { display: block; font-size: 12px; color: #576a75; font-weight: 600; }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .field { display: grid; gap: 4px; }
+    .field input, .field textarea { width: 100%; border: 1px solid #adb9bd; background: white; border-radius: 8px; padding: 8px; }
+    .field input[type="checkbox"] { width: auto; padding: 0; margin-right: 6px; }
+    .check { display: flex; align-items: center; gap: 5px; font-size: 13px; }
+    .field textarea { min-height: 78px; resize: vertical; }
+    .notice { border-left: 4px solid #ad7b30; background: #fff7e9; padding: 9px 11px; font-size: 13px; }
+    .proposal { margin-top: 14px; padding: 13px; border: 1px solid #b9c2c4; border-radius: 12px; background: #fff; }
+    .proposal p { margin: 6px 0 9px; }
+    .mini { position: fixed; z-index: 10; right: 20px; bottom: 20px; width: 260px; background: #f8f8f3ef; backdrop-filter: blur(8px); border: 1px solid #8a9aa1; border-radius: 18px; box-shadow: 0 12px 40px #1f2d3450; padding: 13px; }
+    .mini .top { display: flex; justify-content: space-between; align-items: center; }
+    .mini button { font-size: 12px; padding: 4px 8px; }
+    .mini p { margin: 7px 0; }
+    .mini .avatar { display: inline-grid; place-items: center; width: 35px; height: 35px; background: #d9e1d7; border-radius: 10px; margin-right: 5px; }
+    .mini-collapsed { width: 76px; height: 68px; display: grid; place-items: center; }
+    .mini-collapsed button { font-size: 25px; border: 0; background: transparent; }
+    .mini-only .shell { display: none; }
+    .footer { margin-top: 14px; font-size: 12px; color: #596b78; }
+    @media (max-width: 1050px) { .shell { grid-template-columns: 180px 1fr; } .detail { grid-column: 2; } .mini { right: 10px; bottom: 10px; } }
+    @media (max-width: 680px) { .shell { display: block; } .shell > * { margin-bottom: 10px; } .detail { display: grid; } .intro { display: block; } .mini { position: static; width: auto; margin: 12px 22px; } }
+  </style>
+</head>
+<body>
+<div class="page" id="page">
+  <header class="intro">
+    <div>
+      <h1>目标执行伴随系统｜逐屏线框</h1>
+      <p>Issue #13 的虚构交互稿。点击目标、D1–D7、任务及操作，观察完整页和角落小窗如何读取同一状态。这里的 D1–D7 是<strong>演示时钟</strong>；正式产品须按设备真实时间与选定时区运行。</p>
+      <div class="legend"><span>已确认方向：秋招＋CET6 两条完整路径</span><span>其他目标：手动任务</span><span>活动输入：工作台＋明确连接工具</span><span>规则/模板起步，AI 修改需确认</span><span class="design">界面布局仍待逐屏评审</span></div>
+    </div>
+    <button id="viewSwitch" type="button">只看桌面小窗</button>
+  </header>
+  <div class="shell">
+    <nav class="box" aria-label="演示导航">
+      <div><h2>目标</h2><div class="stack" id="goalNav"></div></div>
+      <div><h2>情境日</h2><p><small>仅用于演示，不替代系统时钟</small></p><div class="days" id="dayNav"></div></div>
+      <div><h2>入口说明</h2><p class="muted">小窗、今日页与任务详情共享任务状态。角色画面此处只占位，最终美术路线在 #20 验证。</p></div>
+    </nav>
+    <main class="box" aria-label="完整工作台">
+      <div class="section-title"><div><small id="context"></small><h2 id="goalTitle"></h2></div><span class="pill" id="planVersion"></span></div>
+      <div class="scene"><span>角色＋房间场景占位<br><small>这里呈现“正在做什么”，不模拟企业或考试结果</small></span></div>
+      <div class="section-title"><h2>今天先做什么</h2><small id="daySummary"></small></div>
+      <div id="tasks"></div>
+      <div class="proposal" id="proposal"></div>
+    </main>
+    <aside class="box detail" aria-label="任务详情" id="detail"></aside>
+  </div>
+  <p class="footer">所有示例均为虚构；按钮只修改本页内存中的演示数据，不访问招聘网站、不投递、不保存学习记录。详细逐日剧本见 <a href="goal-journeys.md">goal-journeys.md</a>。</p>
+</div>
+<div class="mini" id="mini" aria-label="桌面小窗"></div>
+<script>
+  "use strict";
+  const fixture = {
+    job: {
+      title: "秋招求职｜阿青", version: 1, summary: "核验、材料、本人投递与面试准备",
+      tasks: [
+        { id: "J-A-VERIFY", day: 1, title: "核验岗位 A 的届别要求", source: "虚构岗位 A 原页；上次核验：待完成", reason: "资格未知，材料准备前需核对", rule: "记录来源、核验时刻与资格结论", time: "14:00 提醒；示例截止 10-09 18:00，使用前再核验", kind: "verify" },
+        { id: "J-B-VERIFY", day: 2, title: "核验岗位 B", source: "虚构岗位 B 原页；招满即止", reason: "资格及截止未知", rule: "记录可读页面、核验时刻与未知项", time: "20:00 提醒；截止待确认，无倒计时", kind: "verify" },
+        { id: "J-EVENT-BRIEF", day: 3, title: "参加校园宣讲并记笔记", source: "用户录入的虚构活动通知", reason: "获取岗位信息并验证疑问", rule: "记录至少三条信息及来源", time: "19:00 活动时间（用户确认）", kind: "event" },
+        { id: "J-A-MATERIAL", day: 4, title: "准备岗位 A 的材料", source: "岗位 A 原页和本人事实库", reason: "示例截止将近，需先核实项目指标", rule: "文件存在、事实核对、材料版本确认", time: "21:00 提醒；原计划 D4", kind: "material" },
+        { id: "J-A-SUBMIT", day: 5, title: "本人决定后提交岗位 A", source: "岗位 A 原页；仅演示占位地址", reason: "材料和资格已核对，可选择投递", rule: "本人外站提交、当前材料确认、可核对回执", time: "示例截止 10-09 18:00，打开前重验", kind: "submit" },
+        { id: "J-A-INTERVIEW", day: 6, title: "核对邀请并准备模拟问答", source: "虚构邀请消息，须本人核对", reason: "新的外部事件改变优先级", rule: "确认邀请，完成模拟问答并记薄弱点", time: "D7 15:00 虚构面试；时间须核对", kind: "interview" },
+        { id: "J-WEEK-REVIEW", day: 7, title: "复盘本周求职事实", source: "本周任务及岗位事件", reason: "区分已投、未投、未知与延续", rule: "记录事实和下周待核验项", time: "D7 自定提醒", kind: "review" }
+      ],
+      proposal: { day: 6, reason: "新录入的虚构面试邀请待核对；建议优先准备，B 的资格核验延至下周。", change: "v1 → v2：D7 模拟问答优先；B 核验顺延。" }
+    },
+    cet6: {
+      title: "CET6 备考｜小岚", version: 1, summary: "每周 5 小时，听力与阅读练习",
+      tasks: [
+        { id: "C-BASELINE", day: 1, title: "记录听力与阅读起点", source: "本人选择的虚构练习材料", reason: "先建立可比较的起点", rule: "记录题目来源、首次作答、得分与错因", time: "20:00 自定提醒；无外部截止", kind: "practice" },
+        { id: "C-LISTEN-1", day: 2, title: "听力精听 35 分钟", source: "本人选择的练习片段", reason: "D1 听力相对薄弱", rule: "记录首次作答、订正与一个错因", time: "D2 自定时段；无外部截止", kind: "practice" },
+        { id: "C-READ-1", day: 3, title: "阅读练习 40 分钟", source: "本人选择的练习材料", reason: "保持本周阅读训练", rule: "记录原始题目、首次正确数与错因", time: "原计划 D3；延期时保留原日与原因", kind: "practice" },
+        { id: "C-LISTEN-2", day: 5, title: "听力复练 30 分钟", source: "D2 错题及本人材料", reason: "复测同类错误，不预设已掌握", rule: "记录首次成绩与是否借助", time: "D5 自定时段", kind: "practice" },
+        { id: "C-REVIEW-READ", day: 6, title: "阅读错因回看 20 分钟", source: "D4 练习原始结果", reason: "D4 首次 11/20，低于预期 14/20", rule: "自己解释三道错题并标记借助", time: "D6 自定时段", kind: "practice" },
+        { id: "C-WEEK-REVIEW", day: 7, title: "回顾实际投入与下周计划", source: "本周学习结果", reason: "D3 延期、D4 低于预期，需重排", rule: "保留旧计划和结果，确认新安排", time: "D7 自定提醒；无考试倒计时", kind: "review" }
+      ],
+      proposal: { day: 4, reason: "D3 阅读因课程冲突延期；D4 首次 11/20，低于期望 14/20。建议减新题、加错因回看。", change: "v1 → v2：D6 阅读错因 20 分钟＋听力复测 20 分钟。" }
+    },
+    custom: {
+      title: "其他目标｜手动任务", version: 1, summary: "首版可自定义目标和每日行动；领域计划尚未自动生成",
+      tasks: [{ id: "X-MANUAL", day: 1, title: "手动写下一件可完成的小事", source: "用户本人设定", reason: "将目标落到可执行动作", rule: "由用户写明产物并确认", time: "用户自行设置提醒；无外部截止", kind: "custom" }]
+    }
+  };
+  const state = { goal: "job", day: 1, selected: null, records: {}, jobExternal: { opened: false, receipt: "", approved: false, confirmed: false }, proposalStates: { job: "pending", cet6: "pending" }, autoMoves: { job: null, cet6: null, custom: null }, autoMoveHistory: { job: [], cet6: [], custom: [] }, mini: "expanded", miniOnly: false };
+  const $ = (id) => document.getElementById(id);
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+  function record(task) { return state.records[task.id] || { status: "scheduled", result: "", originDay: task.day, reason: "" }; }
+  function visibleTasks() {
+    const tasks = fixture[state.goal].tasks;
+    return tasks.filter(t => t.day === state.day || (t.day < state.day && ["deferred", "blocked"].includes(record(t).status)));
+  }
+  function chooseGoal(goal) { state.goal = goal; state.day = 1; state.selected = null; render(); }
+  function chooseDay(day) { state.day = day; state.selected = null; render(); }
+  function chooseTask(id) { state.selected = id; render(); }
+  function taskStatus(task) { return ({ scheduled: "已安排", in_progress: "进行中", completed: "已完成", deferred: "已延期", blocked: "卡住" })[record(task).status]; }
+  function updateTask(action) {
+    const task = fixture[state.goal].tasks.find(t => t.id === state.selected);
+    if (!task) return;
+    const r = record(task);
+    if (action === "start") r.status = "in_progress";
+    if (action === "defer" || action === "block") { r.status = action === "defer" ? "deferred" : "blocked"; r.reason = $("resultInput").value.trim() || "原因待填写"; }
+    if (action === "complete") {
+      const result = $("resultInput").value.trim();
+      if (!result) { alert("请先记录结果或证据；任务勾选不能代替实际结果。"); return; }
+      if (task.kind === "submit" && !state.jobExternal.receipt.trim()) { alert("外站提交必须由本人确认并登记回执；打开原页不算投递。"); return; }
+      r.status = "completed"; r.result = result;
+    }
+    state.records[task.id] = r;
+    render();
+  }
+  function render() {
+    const current = fixture[state.goal];
+    $("goalNav").innerHTML = Object.entries(fixture).map(([key, value]) => `<button type="button" data-goal="${key}" aria-pressed="${key === state.goal}">${esc(value.title)}</button>`).join("");
+    $("dayNav").innerHTML = Array.from({ length: 7 }, (_, i) => `<button type="button" data-day="${i + 1}" aria-pressed="${state.day === i + 1}">D${i + 1}</button>`).join("");
+    $("context").textContent = `虚构情境 D${state.day} · 正式产品按系统时钟`;
+    $("goalTitle").textContent = current.title;
+    $("planVersion").textContent = `计划 v${current.version}`;
+    const tasks = visibleTasks();
+    $("daySummary").textContent = `${tasks.filter(t => record(t).status === "completed").length}/${tasks.length} 已记录完成`;
+    const mood = tasks.some(t => record(t).status === "in_progress") ? "正在专注做事" : tasks.some(t => ["deferred", "blocked"].includes(record(t).status)) ? "先整理阻碍，明天接着做" : tasks.some(t => record(t).status === "completed") ? "留下实际记录，稍作休息" : "等待你选择下一步";
+    document.querySelector(".scene").innerHTML = `<span>角色＋房间场景占位<br><strong>${esc(mood)}</strong><br><small>温和反馈；不惩罚未完成，也不模拟外部结果</small></span>`;
+    $("tasks").innerHTML = tasks.length ? tasks.map(t => `<button class="task ${state.selected === t.id ? "active" : ""}" type="button" data-task="${esc(t.id)}"><strong>${esc(t.title)}</strong><small>${esc(t.reason)}</small><span class="pill">${esc(taskStatus(t))}</span>${state.autoMoves[state.goal]?.id === t.id ? '<span class="pill">弹性时段 21:00 · 可撤销</span>' : ""}${t.day < state.day ? `<span class="pill">原计划 D${t.day} · ${esc(record(t).reason || "未完成原因待补充")}</span>` : ""}</button>`).join("") : `<p class="muted">本情境日没有预置任务；过去的结果仍在历史中。</p>`;
+    renderDetail(tasks);
+    renderProposal(current);
+    renderMini(tasks);
+    $("page").classList.toggle("mini-only", state.miniOnly);
+    $("viewSwitch").textContent = state.miniOnly ? "返回完整工作台" : "只看桌面小窗";
+  }
+  function renderDetail(tasks) {
+    let task = tasks.find(t => t.id === state.selected) || tasks[0];
+    if (task) state.selected = task.id;
+    if (!task) { $("detail").innerHTML = "<h2>任务详情</h2><p>选择有任务的情境日。</p>"; return; }
+    const r = record(task);
+    const jobExtra = task.kind === "submit" ? `<div class="fact"><b>岗位状态（单独记录）</b><p id="jobState">${state.jobExternal.receipt ? "已投递 · 有回执" : state.jobExternal.opened ? "已打开原页 · 未投递" : "未投递"}</p><div class="actions"><button type="button" id="openSource">模拟打开原页</button></div><label class="check"><input type="checkbox" id="approvalCheck" ${state.jobExternal.approved ? "checked" : ""}> 本人已核对并批准当前材料</label><label class="check"><input type="checkbox" id="submitCheck" ${state.jobExternal.confirmed ? "checked" : ""}> 本人确认已在外站实际提交</label><label class="field">本人核对的外站回执位置（虚构演示）<input id="receiptInput" value="${esc(state.jobExternal.receipt)}" placeholder="没有回执就保持未投递"></label><button type="button" id="saveReceipt">确认并记录回执</button><small>本线框要求核验任务和材料任务已完成；正式产品还须由求职状态机验证真实材料版本与回执。</small></div>` : "";
+    $("detail").innerHTML = `<h2>任务详情</h2><p><strong>${esc(task.title)}</strong> <span class="pill">${esc(taskStatus(task))}</span></p><small>${esc(task.id)} · 原计划 D${task.day}</small><div class="fact"><b>为什么现在做</b><p>${esc(task.reason)}</p></div><div class="fact"><b>来源及核验</b><p>${esc(task.source)}</p></div><div class="fact"><b>完成条件</b><p>${esc(task.rule)}</p></div><div class="fact"><b>时间与可信度</b><p>${esc(task.time)}</p></div>${jobExtra}<label class="field">实际结果 / 延期原因<textarea id="resultInput" placeholder="先记录实际发生的事。工具活动仅是线索，不能自动完成。">${esc(r.result)}</textarea></label><div class="actions"><button class="primary" type="button" data-action="start">开始</button><button type="button" data-action="complete">记录完成</button><button type="button" data-action="defer">延期</button><button type="button" data-action="block">卡住</button></div><p class="notice">任务状态和真实岗位/考试结果分开。${task.kind === "practice" ? "练习完成不等于独立掌握或考试通过。" : task.kind === "submit" ? "打开原站不等于投递。" : "虚构游戏反馈不代表外部结果。"}</p>`;
+    $("detail").querySelectorAll("[data-action]").forEach(el => el.addEventListener("click", () => updateTask(el.dataset.action)));
+    if (task.kind === "submit") {
+      $("openSource").addEventListener("click", () => { state.jobExternal.opened = true; render(); });
+      $("saveReceipt").addEventListener("click", () => {
+        const value = $("receiptInput").value.trim();
+        const verifyDone = state.records["J-A-VERIFY"]?.status === "completed";
+        const materialDone = state.records["J-A-MATERIAL"]?.status === "completed";
+        if (!verifyDone || !materialDone) { alert("请先完成岗位核验和材料核对；演示任务不能越过求职状态门槛。"); return; }
+        if (!$("approvalCheck").checked || !$("submitCheck").checked || !value) { alert("须由本人确认当前材料、外站实际提交并记录可核对回执；打开原页不算投递。"); return; }
+        state.jobExternal.approved = true; state.jobExternal.confirmed = true; state.jobExternal.receipt = value; render();
+      });
+    }
+  }
+  function renderProposal(current) {
+    const p = current.proposal;
+    const auto = state.autoMoves[state.goal];
+    const history = state.autoMoveHistory[state.goal];
+    const autoHtml = `<div class="fact"><h3>弹性时段调整记录</h3><p>${auto ? `${esc(auto.task)}：原 D${auto.day} 20:00 → D${auto.day} 21:00。原因：避开用户已安排时段；只调整未开始的弹性任务。` : "当前没有生效的自动微调。仅未开始且无硬截止的弹性任务可调整。"}</p><div class="actions"><button type="button" id="autoMove" ${auto ? "disabled" : ""}>演示自动挪时段</button>${auto ? '<button type="button" id="undoMove">撤销本次调整</button>' : ""}</div><small>调整可撤销；真实截止、完成条件和已发生的结果不变。</small>${history.length ? `<p><small>审计：${history.map(entry => esc(entry)).join("；")}</small></p>` : ""}</div>`;
+    const proposalHtml = !p || state.day < p.day ? `<h3>计划与复盘</h3><p class="muted">本情境日无新提案。过去的结果与计划版本仍保留。</p>` : `<h3>待确认的计划建议 <span class="pill">${esc(state.proposalStates[state.goal])}</span></h3><p>${esc(p.reason)}</p><p><strong>${esc(p.change)}</strong></p><label class="field">修改建议（可选）<input id="proposalEdit" placeholder="例如保留 B 核验在周日"></label><div class="actions"><button type="button" data-proposal="accept">接受</button><button type="button" data-proposal="edit">修改并接受</button><button type="button" data-proposal="decline">拒绝</button></div><small>只有接受后新计划生效；拒绝保持当前版本。旧版和实际结果不可覆盖。</small>`;
+    $("proposal").innerHTML = proposalHtml + autoHtml;
+    $("proposal").querySelectorAll("[data-proposal]").forEach(el => el.addEventListener("click", () => {
+      if (el.dataset.proposal === "edit" && !$("proposalEdit").value.trim()) { alert("请先填写修改内容。"); return; }
+      state.proposalStates[state.goal] = el.dataset.proposal === "decline" ? "已拒绝（v1 保持）" : el.dataset.proposal === "edit" ? "用户修改后接受" : "已接受";
+      current.version = el.dataset.proposal === "decline" ? 1 : 2;
+      render();
+    }));
+    $("autoMove").addEventListener("click", () => {
+      const flexible = visibleTasks().find(t => record(t).status === "scheduled" && ["practice", "review", "custom"].includes(t.kind));
+      if (!flexible) { alert("此日没有未开始的弹性任务。硬截止和已开始任务不能自动挪动。"); return; }
+      state.autoMoves[state.goal] = { id: flexible.id, task: flexible.title, day: state.day };
+      state.autoMoveHistory[state.goal].push(`D${state.day} ${flexible.title} 20:00→21:00，本机记录 ${new Date().toLocaleString("zh-CN")}`);
+      render();
+    });
+    if (auto) $("undoMove").addEventListener("click", () => { state.autoMoveHistory[state.goal].push(`D${auto.day} ${auto.task} 已撤销，本机记录 ${new Date().toLocaleString("zh-CN")}`); state.autoMoves[state.goal] = null; render(); });
+  }
+  function renderMini(tasks) {
+    const task = tasks.find(t => record(t).status !== "completed") || tasks[0];
+    const el = $("mini");
+    el.classList.toggle("mini-collapsed", state.mini === "collapsed");
+    if (state.mini === "collapsed") { el.innerHTML = `<button type="button" id="expandMini" aria-label="展开桌面小窗">⌂</button>`; $("expandMini").addEventListener("click", () => { state.mini = "expanded"; render(); }); return; }
+    el.innerHTML = `<div class="top"><strong><span class="avatar" aria-hidden="true">⌂</span>伴随小窗</strong><button type="button" id="collapseMini">收起</button></div><small>${esc(fixture[state.goal].title)} · 情境 D${state.day} · v${fixture[state.goal].version}</small><p>${task ? `下一件：<strong>${esc(task.title)}</strong>` : "当前没有预置任务"}</p><p><span class="pill">${tasks.filter(t => record(t).status === "completed").length}/${tasks.length} 已记录完成</span>${fixture[state.goal].proposal && state.day >= fixture[state.goal].proposal.day && state.proposalStates[state.goal] === "pending" ? '<span class="pill">计划待确认</span>' : ""}${state.autoMoves[state.goal] ? '<span class="pill">时段已调整，可撤销</span>' : ""}</p><button type="button" id="openFull">打开完整页 / 详情</button><p><small>角落入口与完整页读取同一任务事实。</small></p>`;
+    $("collapseMini").addEventListener("click", () => { state.mini = "collapsed"; render(); });
+    $("openFull").addEventListener("click", () => { state.miniOnly = false; render(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  }
+  $("goalNav").addEventListener("click", event => { const el = event.target.closest("[data-goal]"); if (el) chooseGoal(el.dataset.goal); });
+  $("dayNav").addEventListener("click", event => { const el = event.target.closest("[data-day]"); if (el) chooseDay(Number(el.dataset.day)); });
+  $("tasks").addEventListener("click", event => { const el = event.target.closest("[data-task]"); if (el) chooseTask(el.dataset.task); });
+  $("viewSwitch").addEventListener("click", () => { state.miniOnly = !state.miniOnly; render(); });
+  render();
+</script>
+</body>
+</html>
