@@ -16,13 +16,14 @@
     .scene-column{position:sticky;top:18px;min-width:0}.workbench-column{display:grid;gap:18px;min-width:0}
     .scene-panel{overflow:hidden;padding:0}.scene-heading{padding:17px 19px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
     .scene-heading h2{margin:0;font-size:17px}.scene-heading small{color:var(--muted)}
-    .scene-frame{background:#e7eff0;min-height:310px}.scene-frame goal-room-scene{display:block;width:100%;height:340px}
+    .scene-frame{background:#e7eff0}.scene-frame goal-room-scene{display:block;width:100%;height:auto;aspect-ratio:16/9}
     .scene-caption{padding:13px 19px 17px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
     .scene-caption strong{color:var(--ink)}.scene-fallback{display:grid;place-items:center;min-height:240px;color:var(--muted)}
     .shell-hint{font-size:12px;color:var(--muted);margin:10px 4px 0}.compact-prompt{padding:11px 0;font-size:13px;color:var(--muted)}
+    .photo-panel{margin-top:14px}.photo-panel h2{font-size:15px}.photo-preview{width:80px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block;margin:8px 0}.photo-panel input[type=file]{width:100%;font-size:12px}.photo-panel .actions{margin-top:8px}
     body.compact .shell-grid{display:block}body.compact .scene-column{position:static}body.compact .scene-panel{margin-bottom:10px}
     body.compact .scene-heading{padding:10px 12px 8px}body.compact .scene-heading h2{font-size:14px}
-    body.compact .scene-frame{min-height:190px}body.compact .scene-frame goal-room-scene{height:210px}
+    body.compact .scene-frame goal-room-scene{height:auto;aspect-ratio:16/9}
     body.compact .scene-caption{padding:9px 12px 11px;font-size:12px}
     body.compact .workbench-column{gap:10px}body.compact #today-panel{max-height:360px;overflow:auto}
     body.compact #today-panel .task:nth-of-type(n+3){display:none}body.compact .hero{padding:10px 0}
@@ -31,8 +32,8 @@
     .collapsed-dock{display:block;width:58px;height:58px;background:var(--sea);border-radius:17px;color:#fff;box-shadow:0 10px 24px rgba(13,65,70,.28);text-decoration:none;border:2px solid #fff}
     .collapsed-dock svg{display:block;width:100%;height:100%;padding:13px}
     .collapsed-dock:hover{background:var(--sea-dark)}
-    @media(max-width:840px){.shell-grid{display:block}.scene-column{position:static;margin-bottom:18px}.scene-frame goal-room-scene{height:300px}}
-    @media(max-width:520px){.scene-frame goal-room-scene{height:235px}.scene-heading{padding:12px 15px 9px}.scene-caption{padding:11px 15px}}
+    @media(max-width:840px){.shell-grid{display:block}.scene-column{position:static;margin-bottom:18px}}
+    @media(max-width:520px){.scene-heading{padding:12px 15px 9px}.scene-caption{padding:11px 15px}}
   </style>
 </head>
 <body>
@@ -52,6 +53,8 @@
     let state = null;
     let selectedTask = null;
     let showNewGoal = false;
+    let photoStatus = {present:false,generated_avatar:false};
+    let photoPreview = null;
     const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const id = () => crypto.randomUUID().replaceAll('-', '');
     const dateLabel = stamp => stamp ? stamp.slice(5,10).replace('-', '月') + '日' : '日期待定';
@@ -65,13 +68,34 @@
       const response = await fetch(url,{cache:'no-store'});
       const data = await response.json();
       if(!response.ok) throw Error(data.error || '无法读取本机数据');
-      state=data;render();
+      state=data;
+      const photoResponse=await fetch('/api/avatar/photo/status',{cache:'no-store'});
+      if(photoResponse.ok) photoStatus=await photoResponse.json();
+      if(photoStatus.present && !photoPreview) await fetchPhotoPreview();
+      if(!photoStatus.present && photoPreview){URL.revokeObjectURL(photoPreview);photoPreview=null}
+      render();
     }
     async function write(path, payload) {
       const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(op(payload))});
       const data=await response.json();
       if(!response.ok) throw Error(data.error || '操作没有保存');
       state=data;selectedTask=null;render();
+    }
+    async function fetchPhotoPreview(){
+      const response=await fetch('/api/avatar/photo/image',{headers:{'X-CSRF-Token':state.csrf_token},cache:'no-store'});
+      if(!response.ok) return;
+      const next=URL.createObjectURL(await response.blob());
+      if(photoPreview) URL.revokeObjectURL(photoPreview);
+      photoPreview=next;
+    }
+    async function photoWrite(path,payload){
+      const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(payload)});
+      const data=await response.json();
+      if(!response.ok) throw Error(data.error||'照片未保存');
+      photoStatus=data;
+      if(photoPreview){URL.revokeObjectURL(photoPreview);photoPreview=null}
+      if(data.present) await fetchPhotoPreview();
+      render();
     }
     function mast(goal) {
       if(shellMode==='collapsed') return `<a class="collapsed-dock" href="${routeLink('/compact')}" aria-label="展开今日房间" title="展开今日房间"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 15.5 16 5l13 10.5v12H3v-12Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 27.5v-10h8v10" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></a>`;
@@ -92,6 +116,10 @@
         (suggested==='idle' ? '房间待机。开始任务后才会改变场景。' : `当前待机。${next}；建议场景：${modeLabels[suggested]}。`) :
         `房间显示：${modeLabels[mode]}。这只反映已声明或已连接的活动线索，不代表任务完成。`;
       return `<section class="panel scene-panel" aria-label="实时房间"><div class="scene-heading"><h2>你的小房间</h2><small>现实时间 · ${phase==='day'?'白天':'夜晚'}</small></div><div class="scene-frame"><goal-room-scene mode="${mode}" phase="${phase}" avatar="student" renderer="pixel" room-day-src="/scene-assets/room-day.png" room-evening-src="/scene-assets/room-evening.png" avatar-idle-src="/scene-assets/avatar-idle.png" avatar-desk-src="/scene-assets/avatar-desk.png" avatar-study-src="/scene-assets/avatar-study.png" avatar-interview-src="/scene-assets/avatar-interview.png" avatar-rest-src="/scene-assets/avatar-rest.png"><span class="scene-fallback">场景载入中；今日任务仍可正常使用。</span></goal-room-scene></div><div class="scene-caption"><strong>${modeLabels[mode]}</strong>　${caption}</div></section><p class="shell-hint">这是可试的场景与窗口层级，角色和视觉方向待一起评审。</p>`;
+    }
+    function photoPanel(){
+      const summary=photoStatus.present?`已选本机原照 · ${esc(photoStatus.mime_type)} · ${Math.ceil(photoStatus.byte_size/1024)} KB`:'尚未选择原照';
+      return `<section class="panel photo-panel" aria-label="个人角色原照"><h2>个人角色原照</h2><p class="small muted">仅存在本机私有工作区；目前尚未生成游戏角色。照片可能保留原有 EXIF 信息，不会上传到外部服务。</p>${photoPreview?`<img class="photo-preview" src="${photoPreview}" alt="本人选的角色参考原照">`:''}<p class="small">${summary}</p><form data-form="photo"><label class="small" for="avatar_photo">选择 PNG 或 JPEG（最多 2 MB）</label><input id="avatar_photo" type="file" name="photo" accept="image/png,image/jpeg" required><div class="actions"><button class="plain-button" type="submit">仅存本机</button>${photoStatus.present?'<button class="danger" type="button" data-action="delete-photo">删除原照</button>':''}</div></form></section>`;
     }
     function goalForm() {
       return `<section class="panel" id="new-goal-panel"><h2>设定一个目标</h2><p class="muted small">先说明真实起点和可用时间；计划会单独提出，由你确认后才执行。</p><form data-form="goal"><div class="form-grid"><div class="field"><label for="path">路径</label><select id="path" name="path"><option value="cet6">CET6 学习</option><option value="recruiting">秋招求职</option></select></div><div class="field"><label for="weekly_minutes">每周可用分钟</label><input id="weekly_minutes" name="weekly_minutes" type="number" min="105" max="10080" value="300" required></div><div class="field wide"><label for="goal_title">目标名称</label><input id="goal_title" name="title" maxlength="100" placeholder="例如：八周内完成 CET6 练习与复盘" required></div><div class="field wide"><label for="baseline">目前起点</label><textarea id="baseline" name="baseline" maxlength="1000" placeholder="填你已知的实际起点；还未测过也可以说明"></textarea></div><div class="field wide"><label for="success">你怎样判断有进展</label><textarea id="success" name="success_criterion" maxlength="500" placeholder="例如：每周保存首次作答和错因，下一周独立复测" required></textarea></div><div class="field wide"><label for="target">本人设定的目标日期（可选）</label><input id="target" name="target" type="date"><span class="hint">这是你自己设的日期，不是官方考试或岗位截止。</span></div></div><button class="primary" type="submit">创建目标</button></form></section>`;
@@ -150,7 +178,7 @@
         `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
         `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
       const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+planPanel(selected)+recordsPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
-      app.innerHTML=mast(goal)+`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section><div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
+      app.innerHTML=mast(goal)+`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section><div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
       const start=document.getElementById('start_on');
       if(start&&!start.value){
         const localHour=Number(selected.local_time.slice(11,13));
@@ -170,6 +198,7 @@
         if(action==='accept'||action==='decline'){await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
         if(action==='sync'){await write('/api/plans/sync',{goal_id:state.selected_goal_id})}
         if(['start','pause','resume','stop'].includes(action)){await write('/api/actions/'+action,{goal_id:state.selected_goal_id,task_id:button.dataset.id})}
+        if(action==='delete-photo'){await photoWrite('/api/avatar/photo/delete',{});notify('本机原照已删除')}
       }catch(error){notify(error.message)}finally{button.disabled=false}
     });
     app.addEventListener('change',event=>{if(event.target.id==='goal_switch'){selectedTask=null;history.replaceState(null,'',location.pathname+'?goal_id='+encodeURIComponent(event.target.value));load(event.target.value).catch(error=>notify(error.message))}});
@@ -185,6 +214,12 @@
         }
         if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
         if(form.dataset.form==='complete'){await write('/api/tasks/complete',{goal_id:state.selected_goal_id,task_id:form.dataset.id,evidence:fields});notify('完成依据已保存；尚未判定掌握程度')}
+        if(form.dataset.form==='photo'){
+          const file=fields.photo;
+          if(!(file instanceof File)||!['image/png','image/jpeg'].includes(file.type)||!file.size||file.size>2000000) throw Error('请选择 2 MB 以内的 PNG 或 JPEG');
+          const encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',',2)[1]);reader.onerror=()=>reject(Error('无法读取照片'));reader.readAsDataURL(file)});
+          await photoWrite('/api/avatar/photo',{mime_type:file.type,data_base64:encoded});notify('原照仅存本机；尚未生成角色');
+        }
       }catch(error){notify(error.message)}finally{submit.disabled=false}
     });
     setInterval(tick,1000);

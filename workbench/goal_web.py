@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+from .avatar_photo import AvatarPhotoStore
 from .goal_app import GoalApp
 
 
@@ -30,6 +31,7 @@ class GoalHTTPServer(HTTPServer):
         if host != "127.0.0.1":
             raise ValueError("目标工作台只允许绑定 127.0.0.1")
         self.app = GoalApp(workspace, clock)
+        self.avatar_photo = AvatarPhotoStore(workspace)
         self.csrf_token = secrets.token_urlsafe(32)
         super().__init__(address, GoalHandler)
 
@@ -54,7 +56,7 @@ class GoalHandler(BaseHTTPRequestHandler):
         if nonce:
             self.send_header("Content-Security-Policy", "default-src 'none'; "
                              f"script-src 'self' 'nonce-{nonce}'; style-src 'nonce-{nonce}'; "
-                             "connect-src 'self'; img-src 'self' data:; "
+                             "connect-src 'self'; img-src 'self' data: blob:; "
                              "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
 
     def _send(self, code, data, content_type="application/json; charset=utf-8", nonce=None):
@@ -104,6 +106,18 @@ class GoalHandler(BaseHTTPRequestHandler):
                 state = self.server.app.state(goal_id)
                 state["csrf_token"] = self.server.csrf_token
                 self._send(200, state)
+            elif parsed.path == "/api/avatar/photo/status" and not parsed.query:
+                self._send(200, self.server.avatar_photo.status())
+            elif parsed.path == "/api/avatar/photo/image" and not parsed.query:
+                if not secrets.compare_digest(self.headers.get("X-CSRF-Token", ""), self.server.csrf_token):
+                    self._send(403, {"error": "页面令牌无效，请刷新"})
+                    return
+                try:
+                    data, mime_type = self.server.avatar_photo.read()
+                except FileNotFoundError:
+                    self._send(404, {"error": "还没有选择照片"})
+                else:
+                    self._send(200, data, mime_type)
             else:
                 self._send(404, {"error": "页面不存在"})
         except ValueError as exc:
@@ -122,17 +136,24 @@ class GoalHandler(BaseHTTPRequestHandler):
         try:
             parsed = self._checked_path()
             method_name = ROUTES.get(parsed.path)
-            if method_name is None or parsed.query:
+            avatar_route = parsed.path in {"/api/avatar/photo", "/api/avatar/photo/delete"}
+            if (method_name is None and not avatar_route) or parsed.query:
                 self._send(404, {"error": "操作不存在"})
                 return
             length = int(self.headers.get("Content-Length", "0"))
-            if not 0 < length <= 32768:
+            maximum = 2_700_000 if parsed.path == "/api/avatar/photo" else 32768
+            if not 0 < length <= maximum:
                 self._send(413, {"error": "请求体过大或为空"})
                 return
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
             if not isinstance(payload, dict):
                 raise ValueError("请求需要对象")
-            state = getattr(self.server.app, method_name)(payload)
+            if parsed.path == "/api/avatar/photo":
+                state = self.server.avatar_photo.save(payload.get("data_base64"), payload.get("mime_type"))
+            elif parsed.path == "/api/avatar/photo/delete":
+                state = self.server.avatar_photo.delete()
+            else:
+                state = getattr(self.server.app, method_name)(payload)
             state["csrf_token"] = self.server.csrf_token
             self._send(200, state)
         except (ValueError, UnicodeError, json.JSONDecodeError) as exc:

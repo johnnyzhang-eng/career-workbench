@@ -5,8 +5,11 @@ import json
 import tempfile
 import threading
 import unittest
+import base64
 from datetime import datetime, timezone
+from pathlib import Path
 
+from workbench.avatar_photo import AvatarPhotoStore
 from workbench.goal_web import GoalHTTPServer
 
 
@@ -188,6 +191,50 @@ class GoalWebTests(unittest.TestCase):
             self.assertEqual(changed["scene"]["mode"], scene_mode)
             self.assertEqual(changed["scene"]["action"]["state"], action_state)
             self.assertEqual(changed["selected"]["today_tasks"][0]["daily_state"], "scheduled")
+
+    def test_private_photo_upload_read_delete_and_restart(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        self.assertFalse(self.request("GET", "/api/avatar/photo/status")[1]["present"])
+        source = Path(__file__).resolve().parents[1] / "docs/scene-assets/room-day.png"
+        data = source.read_bytes()
+        payload = {"mime_type": "image/png", "data_base64": base64.b64encode(data).decode("ascii")}
+        self.assertEqual(self.request("POST", "/api/avatar/photo", payload,
+                                      origin="http://evil.example", csrf=token,
+                                      content_type="application/json")[0], 403)
+        status, result, _ = self.post("/api/avatar/photo", payload, token)
+        self.assertEqual(status, 200, result)
+        self.assertTrue(result["present"])
+        self.assertFalse(result["generated_avatar"])
+        private_path = Path(self.temp.name) / "private_avatar/source.png"
+        self.assertEqual(private_path.read_bytes(), data)
+        self.assertEqual(private_path.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.request("GET", "/api/avatar/photo/image")[0], 403)
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=3)
+        connection.request("GET", "/api/avatar/photo/image", headers={
+            "Host": f"127.0.0.1:{self.port}", "X-CSRF-Token": token})
+        response = connection.getresponse()
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.getheader("Content-Type"), "image/png")
+        self.assertEqual(response.read(), data)
+        connection.close()
+        self.stop_server()
+        self.start_server()
+        self.assertTrue(self.request("GET", "/api/avatar/photo/status")[1]["present"])
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        self.assertEqual(self.post("/api/avatar/photo/delete", {}, token)[0], 200)
+        self.assertFalse(private_path.exists())
+        self.assertFalse(self.request("GET", "/api/avatar/photo/status")[1]["present"])
+        self.assertEqual(self.request("GET", "/api/avatar/photo/image", csrf=token)[0], 404)
+
+    def test_private_photo_rejects_invalid_content(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        for payload in ({"mime_type": "image/svg+xml", "data_base64": "PHN2Zy8+"},
+                        {"mime_type": "image/png", "data_base64": "aW52YWxpZA=="},
+                        {"mime_type": "image/jpeg", "data_base64": "aW52YWxpZA=="}):
+            self.assertEqual(self.post("/api/avatar/photo", payload, token)[0], 400)
+        with self.assertRaisesRegex(ValueError, "最多 2 MB"):
+            AvatarPhotoStore(self.temp.name).save(base64.b64encode(b"x" * 2_000_001).decode("ascii"), "image/png")
+        self.assertFalse((Path(self.temp.name) / "private_avatar").exists())
 
 
 if __name__ == "__main__":
