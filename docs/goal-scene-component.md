@@ -4,7 +4,7 @@
 
 ## 两层美术素材
 
-- `renderer="pixel"` 使用仓库内的原生 320×180 **正交 2D 像素画**背景，叠放 64×96 透明人物 sprite，并以 `image-rendering: pixelated` 缩放。背景和人物都是逐像素绘制的平面资产，未使用 3D 截图降采样或模糊滤镜。生成源码为 `scripts/build_goal_pixel_scene.py`，只依赖 Python 标准库；PNG 只含 IHDR、IDAT、IEND，无文本或 EXIF 元数据。这是首轮原创像素草案，角色还不是用户本人。
+- `renderer="pixel"` 使用仓库内的原生 320×180 **正交 2D 像素画**背景，叠放 64×96 透明人物 sprite，并以 `image-rendering: pixelated` 缩放。背景和人物都是逐像素绘制的平面资产，未使用 3D 截图降采样或模糊滤镜。生成源码为 `scripts/build_goal_pixel_scene.py`，只依赖 Python 标准库；PNG 只含 IHDR、IDAT、IEND，无文本或 EXIF 元数据。这是原创像素草案，角色还不是用户本人。
 - 默认 SVG 是 2.5D 插画**回退草案**，不称为像素成品。像素文件未配置、载入失败或 URL 未通过本机路径校验时，组件会回到此画面，并在无障碍说明中明确是草案。最终路线仍由用户看运行效果决定；可以更换整个 renderer/素材，而不改变目标与任务契约。
 
 ```html
@@ -32,4 +32,6 @@
 ## 现阶段核验与限制
 
 - `node --check docs/goal-scene.js`、`python3 -m py_compile scripts/build_goal_pixel_scene.py`；逐张核对 PNG 签名、尺寸及 chunk 清单；在原生 320×180 合成 day/idle、day/study、day/interview、evening/rest 画面作本地视觉检查。
+- 第一轮素材见 Git 提交 `214c051`。第二轮只改了 `avatar-desk.png` 与 `avatar-interview.png`：电脑任务增加椅背、弯腿、伸手和键盘；面试增加正式上衣、耳麦及视频图标。背景和另外三态保持同一文件。`private/qa/scene-*-320.png` 是本机真实 320 CSS px 的五态截图，不随公开仓提交，可从两个提交复现素材对照。
+- 第二轮 320px 截图里，书本、休息椅、电脑任务的坐姿和面试装束有不同轮廓；电脑人物与桌面仍像前景贴片，视频图标也很小。它们仅满足状态草案的可辨性，尚未达到用户参考视频的精修质量。下一轮需将人物坐姿、桌沿和屏幕按同一空间关系重绘，并与授权的高质量像素素材做同尺寸实机对照。
 - 这些素材代表一个原创 2D 视觉方向，并不是对用户喜欢的完整游戏开发视频的最终美术对齐。最终角色风格、照片生成和桌面角落窗口的实际透明/置顶/鼠标穿透仍需后续设计与真实窗口验收。

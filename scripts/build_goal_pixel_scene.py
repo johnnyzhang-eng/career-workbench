@@ -2,7 +2,7 @@
 """Draw original orthographic pixel art with Python's standard library.
 
 The output contains only IHDR/IDAT/IEND PNG chunks, no private metadata.
-It is an intentionally small first art study, not a photo-derived avatar.
+It is an intentionally small art study, not a photo-derived avatar.
 """
 
 import struct
@@ -266,6 +266,22 @@ def draw_avatar(mode):
         c.rect(36, 83, 52, 87, P["cream"])
         c.rect(18, 55, 48, 74, outline)
         c.rect(21, 56, 46, 71, "#61918b")
+    elif mode == "desk":
+        # Side-on seated silhouette: chair back, horizontal thigh, bent shin.
+        # The laptop/keyboard prop below touches the reaching hand.
+        c.rect(12, 47, 20, 79, outline)
+        c.rect(14, 49, 18, 75, "#a96d54")
+        c.rect(16, 72, 46, 78, outline)
+        c.rect(18, 73, 43, 76, "#c68a62")
+        c.rect(27, 68, 48, 77, outline)
+        c.rect(29, 70, 46, 75, "#566b77")
+        c.rect(42, 74, 49, 86, outline)
+        c.rect(44, 76, 48, 85, "#566b77")
+        c.rect(43, 84, 58, 90, outline)
+        c.rect(45, 85, 56, 88, P["cream"])
+        c.rect(21, 46, 46, 73, outline)
+        c.rect(23, 48, 44, 69, P["teal"])
+        c.rect(23, 49, 27, 67, P["teal_light"])
     else:
         c.rect(21, 68, 31, 86, outline)
         c.rect(34, 68, 44, 86, outline)
@@ -318,14 +334,19 @@ def draw_avatar(mode):
         c.rect(44, 68, 50, 73, skin)
         c.rect(23, 53, 41, 54, P["teal_light"])
     elif mode == "desk":
-        c.rect(15, 50, 23, 64, outline)
-        c.rect(16, 52, 21, 62, P["teal"])
-        c.rect(20, 59, 35, 65, skin)
-        c.rect(42, 50, 50, 64, outline)
-        c.rect(44, 52, 49, 62, P["teal"])
-        c.rect(35, 60, 49, 66, skin)
-        c.rect(26, 63, 35, 65, shade)
-        c.rect(35, 64, 45, 66, shade)
+        c.rect(42, 51, 49, 63, outline)
+        c.rect(44, 52, 48, 61, P["teal"])
+        c.rect(45, 60, 58, 65, skin)
+        c.rect(56, 61, 62, 64, shade)
+        c.rect(12, 52, 19, 66, outline)
+        c.rect(14, 53, 18, 63, P["teal"])
+        c.rect(18, 61, 32, 67, skin)
+        c.rect(29, 65, 39, 68, shade)
+        # Raised keyboard edge and two bright keys make the work action legible.
+        c.rect(48, 67, 64, 73, outline)
+        c.rect(50, 68, 64, 71, P["paper"])
+        c.rect(52, 68, 55, 69, P["blue"])
+        c.rect(58, 68, 61, 69, P["blue"])
     elif mode == "study":
         c.rect(14, 51, 22, 64, outline)
         c.rect(16, 53, 21, 61, P["teal"])
@@ -344,17 +365,33 @@ def draw_avatar(mode):
         c.rect(42, 23, 44, 39, P["gold"])
         c.rect(24, 17, 42, 20, P["gold"])
     elif mode == "interview":
-        c.rect(15, 51, 23, 68, outline)
-        c.rect(17, 53, 22, 64, "#415978")
-        c.rect(19, 64, 29, 69, skin)
-        c.rect(43, 51, 51, 68, outline)
-        c.rect(44, 53, 49, 64, "#415978")
-        c.rect(38, 64, 47, 69, skin)
-        c.rect(19, 23, 22, 37, P["cream"])
-        c.rect(44, 23, 47, 38, P["cream"])
-        c.rect(21, 17, 45, 19, P["cream"])
-        c.rect(45, 36, 52, 38, P["cream"])
-        c.rect(51, 36, 54, 39, P["gold"])
+        # Formal jacket, headset and held video call tile, visible at 320 px.
+        c.rect(14, 49, 25, 71, outline)
+        c.rect(17, 51, 23, 67, "#415978")
+        c.rect(40, 49, 51, 71, outline)
+        c.rect(42, 51, 49, 67, "#415978")
+        c.rect(19, 46, 46, 72, "#354960")
+        c.rect(24, 49, 31, 62, "#526e8b")
+        c.rect(35, 49, 42, 62, "#526e8b")
+        c.rect(29, 48, 37, 63, P["paper"])
+        c.polygon([(32, 51), (35, 51), (36, 58), (33, 64), (31, 58)], P["rust"])
+        c.rect(16, 62, 27, 68, skin)
+        c.rect(43, 61, 57, 68, skin)
+        c.rect(19, 17, 22, 35, P["blue_light"])
+        c.rect(22, 14, 43, 17, P["blue_light"])
+        c.rect(43, 17, 47, 35, P["blue_light"])
+        c.rect(17, 28, 23, 39, outline)
+        c.rect(18, 29, 22, 37, P["blue_light"])
+        c.rect(43, 28, 49, 39, outline)
+        c.rect(44, 29, 48, 37, P["blue_light"])
+        c.line(46, 36, 42, 41, P["blue_light"], 2)
+        c.line(42, 41, 37, 41, P["blue_light"], 2)
+        c.rect(37, 40, 41, 43, P["gold"])
+        c.rect(49, 42, 63, 61, outline)
+        c.rect(51, 44, 61, 58, "#406e7d")
+        c.rect(52, 45, 60, 47, P["blue_light"])
+        c.rect(54, 49, 59, 54, P["skin"])
+        c.rect(52, 55, 61, 57, P["paper"])
     elif mode == "rest":
         c.rect(14, 52, 21, 67, outline)
         c.rect(16, 53, 20, 63, P["teal"])
