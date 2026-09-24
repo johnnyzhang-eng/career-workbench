@@ -15,7 +15,7 @@ KINDS = {
     "prepare_materials": "在求职记录中保存已核对的材料包",
     "approve_materials": "本人核对当前材料，并在求职记录中明确确认",
     "apply_job": "本人实际投递，完成材料确认，并在求职记录中保存投递回执",
-    "practice": "在求职记录中保存本人独立练习与作品证据；不代表掌握",
+    "practice": "保存练习材料、首次作答与复盘依据；不代表掌握",
     "attend_event": "记录参加情况、时间和可回看的依据",
     "prepare_interview": "保存面试准备笔记的位置",
     "follow_up": "保存本人跟进结果或发出信息的依据",
@@ -28,6 +28,7 @@ JOB_EVENT_KINDS = {
     "apply_job": "submitted",
     "practice": "practice",
 }
+JOB_REQUIRED_KINDS = set(JOB_EVENT_KINDS) - {"practice"}
 TERMINAL = {"completed", "cancelled"}
 ID = re.compile(r"[A-Za-z0-9_-]{1,80}\Z")
 
@@ -126,9 +127,17 @@ class DailyStore:
             require(nonempty(task.get(key)), f"缺少 {key}")
         require(ID.fullmatch(task["id"]), "任务 ID 只允许字母、数字、下划线和连字符")
         require(task["kind"] in KINDS, "任务类型无效")
-        require(task["source_kind"] in {"job", "event", "learning", "self"}, "来源类型无效")
-        if task["kind"] in JOB_EVENT_KINDS:
+        require(task["source_kind"] in {"job", "event", "learning", "self", "goal"}, "来源类型无效")
+        if task["kind"] in JOB_REQUIRED_KINDS:
             require(task["source_kind"] == "job", "该任务需要岗位来源")
+        if task["source_kind"] == "goal":
+            require(task["kind"] in {"practice", "custom"}, "目标来源只用于通用行动")
+        if task["source_kind"] == "goal" or task.get("goal_id") is not None or task.get("plan_version") is not None:
+            require(nonempty(task.get("goal_id")) and ID.fullmatch(task["goal_id"]), "goal_id 无效")
+            require(type(task.get("plan_version")) is int and task["plan_version"] > 0,
+                    "plan_version 必须是正整数")
+            if task["source_kind"] == "goal":
+                require(task["source_id"] == task["goal_id"], "目标来源 ID 不匹配")
         stamp(task["scheduled_at"], "scheduled_at")
         due = task.get("due_at")
         if due is not None:
@@ -142,7 +151,8 @@ class DailyStore:
         else:
             require(checked is None, "未核实截止不能设置 due_verified_at")
         require(set(task) <= {"id", "title", "kind", "source_kind", "source_id", "reason",
-                             "scheduled_at", "due_at", "due_verified", "due_verified_at"}, "task 含未知字段")
+                             "scheduled_at", "due_at", "due_verified", "due_verified_at",
+                             "goal_id", "plan_version"}, "task 含未知字段")
 
     def _job_event(self, task, evidence, occurred):
         require(isinstance(evidence, dict) and type(evidence.get("job_event_seq")) is int,
@@ -170,10 +180,15 @@ class DailyStore:
                     and nonempty(details.get("evidence")), "独立练习事件缺少作品依据")
 
     def _validate_completion(self, task, evidence, occurred):
-        if task["kind"] in JOB_EVENT_KINDS:
+        if task["kind"] in JOB_EVENT_KINDS and task["source_kind"] == "job":
             self._job_event(task, evidence, occurred)
             return
         require(isinstance(evidence, dict), "完成依据必须是对象")
+        if task["kind"] == "practice":
+            fields = ("material_ref", "first_attempt_ref", "reflection_ref")
+            require(all(nonempty(evidence.get(key)) for key in fields),
+                    "练习需要材料、首次作答与复盘依据；不代表掌握")
+            return
         fields = {"attend_event": ("attendance_ref", "observed_at"),
                   "prepare_interview": ("notes_ref",),
                   "follow_up": ("contact_ref",), "custom": ("result_ref",)}[task["kind"]]
@@ -312,6 +327,7 @@ class DailyStore:
                 "id": task["id"], "title": task["title"], "kind": task["kind"],
                 "state": task["state"], "source_kind": task["source_kind"],
                 "source_id": task["source_id"], "reason": task["reason"],
+                "goal_id": task.get("goal_id"), "plan_version": task.get("plan_version"),
                 "scheduled_at": task["scheduled_at"], "due_at": task.get("due_at"),
                 "due_verified": task["due_verified"], "completion_rule": KINDS[task["kind"]],
                 "evidence_state": task["evidence_state"],
