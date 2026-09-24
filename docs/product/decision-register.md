@@ -101,7 +101,7 @@ flowchart LR
 | 接点 | 已形成的可审内容 | 下一道门槛 |
 |---|---|---|
 | 本机通用目标与小窗 | [PR #38](https://github.com/johnnyzhang-eng/career-workbench/pull/38) 接入秋招、CET6 和手动目标，真实时钟驱动三层网页，放入原创正交 2D 像素房间及待机/电脑/阅读/面试/休息草案。 | 角色像素稿还需精修，照片只在私有工作区预览，**照片生成的个人角色尚未交付**。 |
-| 实际结果与复盘 | [PR #40](https://github.com/johnnyzhang-eng/career-workbench/pull/40) 在 #38 上叠结果确认、未完成/受阻记录、温和复盘与重启恢复；它带入 [#36](https://github.com/johnnyzhang-eng/career-workbench/pull/36) 的桥代码，合流时需去重。 | 接受后的复盘提案当前保留原任务与时段；**人工改期和真实的计划调整仍需集成**，不能把“已同步”解释为已重排。 |
+| 实际结果与复盘 | [PR #40](https://github.com/johnnyzhang-eng/career-workbench/pull/40) 在 #38 上叠结果确认、未完成/受阻记录、温和复盘与重启恢复；它带入 [#36](https://github.com/johnnyzhang-eng/career-workbench/pull/36) 的桥代码，合流时需去重。[PR #45](https://github.com/johnnyzhang-eng/career-workbench/pull/45) 进一步让本人预览并确认单项同日改期，再同步到每日清单；独立虚构 CET6 样例在浏览器确认、刷新和事件库中核对过。 | #45 只处理有弹性标记、未开始的单项同日时段；跨日仍待提案流程。旧版日程缺改期元数据时保持可读，但此入口不提供改期；不能将旧数据悄悄重写。 |
 | 原生桌面窗口 | [PR #39](https://github.com/johnnyzhang-eng/career-workbench/pull/39) 把同一网页放入本机 macOS 浮动面板，验证图标、小窗、展开三种尺寸及实际运行画面；另把本地服务换成并发处理，受控 WKWebView 展开导航由一次约 29 秒降至重复测试约 0.36 秒。 | 修复后的服务尚需接到当前 8794 演示并再验实体鼠标首击；穿透与遮挡、全屏、多屏、长时资源和安装包仍未完成实机验收。 |
 | 原 3D 质感 | [PR #35](https://github.com/johnnyzhang-eng/career-workbench/pull/35) 保留用户较认可的 A 光影并逐项试环境光、主光角度、镜头、单件 Blender 桌面；R2 原创可编辑角色已具八骨和坐姿打字两段动画，真实 Godot 窗口有图和录屏。 | 髋部椅面穿插、袖口接缝及不完整站坐过渡仍存在；小窗手部动作微弱，阅读与休息动作和材质统一还待做。不能凭骨骼或动画数量宣布“精修 3D 已过门槛”。 |
 | 小窗 3D 构图 | [PR #42](https://github.com/johnnyzhang-eng/career-workbench/pull/42) 只把 A 小窗相机距离改为 93%，人物投影高约 33.02→35.74 逻辑像素，但地板前缘余量约 12.66→6.18 像素；全窗保持原样。 | 放大有裁切代价，并不能凭构图产生电脑、阅读、休息三种独立动作。 |
