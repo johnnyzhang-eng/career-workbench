@@ -160,16 +160,18 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(headers["Content-Type"], "text/javascript; charset=utf-8")
         self.assertIn("customElements.define('goal-room-scene'", script)
-        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=3)
-        connection.request("GET", "/scene-assets/room-day.png",
-                           headers={"Host": f"127.0.0.1:{self.port}"})
-        asset = connection.getresponse()
-        self.assertEqual(asset.status, 200)
-        self.assertEqual(asset.getheader("Content-Type"), "image/png")
-        self.assertTrue(asset.read().startswith(b"\x89PNG\r\n\x1a\n"))
-        connection.close()
+        for filename in ("room-day.png", "desk-front.png"):
+            connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=3)
+            connection.request("GET", "/scene-assets/" + filename,
+                               headers={"Host": f"127.0.0.1:{self.port}"})
+            asset = connection.getresponse()
+            self.assertEqual(asset.status, 200, filename)
+            self.assertEqual(asset.getheader("Content-Type"), "image/png")
+            self.assertTrue(asset.read().startswith(b"\x89PNG\r\n\x1a\n"))
+            connection.close()
         self.assertEqual(self.request("GET", "/scene-assets/../goal-scene.js")[0], 404)
         self.assertEqual(self.request("GET", "/scene-assets/unlisted.png")[0], 404)
+        self.assertEqual(self.request("GET", "/scene-assets/desk-front.png?extra=1")[0], 404)
 
     def test_explicit_room_actions_do_not_complete_daily_task(self):
         token = self.request("GET", "/api/state")[1]["csrf_token"]

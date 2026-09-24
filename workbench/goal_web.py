@@ -15,7 +15,7 @@ SCENE_JS = Path(__file__).resolve().parents[1] / "docs" / "goal-scene.js"
 SCENE_ASSETS = Path(__file__).resolve().parents[1] / "docs" / "scene-assets"
 SCENE_ASSET_NAMES = frozenset({"room-day.png", "room-evening.png", "avatar-idle.png",
                                "avatar-desk.png", "avatar-study.png", "avatar-interview.png",
-                               "avatar-rest.png"})
+                               "avatar-rest.png", "desk-front.png"})
 ROUTES = {"/api/goals": "create_goal", "/api/plans/propose": "propose_plan",
           "/api/plans/decide": "decide_plan", "/api/plans/sync": "sync_plan",
           "/api/tasks/complete": "complete_task",
