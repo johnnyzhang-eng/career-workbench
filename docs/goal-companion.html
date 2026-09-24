@@ -34,6 +34,23 @@
     .collapsed-dock:hover{background:var(--sea-dark)}
     @media(max-width:840px){.shell-grid{display:block}.scene-column{position:static;margin-bottom:18px}}
     @media(max-width:520px){.scene-heading{padding:12px 15px 9px}.scene-caption{padding:11px 15px}}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    body.compact .app{max-width:none;padding:7px 8px 18px}
+    body.compact .mast{display:grid;grid-template-columns:27px minmax(0,1fr) auto;gap:7px;padding:0 0 7px;align-items:center}
+    body.compact .brand{gap:0}body.compact .brand-mark{width:27px;height:27px;border-radius:8px;font-size:17px}
+    body.compact .goal-picker{min-width:0;margin:0}body.compact .goal-picker select{min-width:0;height:34px;min-height:34px;padding:4px 6px;font-size:12px;text-overflow:ellipsis}
+    body.compact .mast-actions{gap:4px;flex-wrap:nowrap}body.compact .mini-link{min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:5px 6px;font-size:11px;white-space:nowrap}
+    body.compact .shell-grid{gap:0}body.compact .scene-column{margin:0}body.compact .scene-panel{margin:0 0 7px;padding:0}
+    body.compact .scene-heading{padding:6px 10px 5px}body.compact .scene-heading h2{font-size:13px}body.compact .scene-heading small{font-size:11px}
+    body.compact .scene-caption{padding:6px 10px 7px;font-size:11px;line-height:1.35;max-height:37px;overflow:hidden}
+    body.compact .scene-fallback{min-height:0}body.compact .shell-hint{display:none}
+    body.compact .workbench-column{gap:7px}body.compact .compact-action{padding:9px 11px 10px}
+    body.compact .compact-action .section-head{align-items:center}body.compact .compact-action h2{font-size:12px;margin:0;color:var(--sea-dark)}
+    body.compact .compact-action h3{font-size:15px;line-height:1.28;margin:5px 0 2px;max-height:2.56em;overflow:hidden}
+    body.compact .compact-action .task-meta{font-size:11px;margin:0}body.compact .compact-action .task-actions{margin-top:7px;gap:7px}
+    body.compact .compact-action .primary{padding:6px 12px;min-height:34px;font-size:12px}body.compact .compact-action .mini-link{min-height:34px}
+    body.compact .compact-action .status{font-size:10px;padding:2px 7px}body.compact .compact-action .form-note{font-size:11px;margin:6px 0 0}
+    body.compact .privacy{font-size:10px;line-height:1.35;margin-top:7px}
   </style>
 </head>
 <body>
@@ -103,8 +120,9 @@
       if(data.present) await fetchPhotoPreview();
       render();
     }
-    function mast(goal) {
+    function mast(goal, goalOptions) {
       if(shellMode==='collapsed') return `<a class="collapsed-dock" href="${routeLink('/compact')}" aria-label="展开今日房间" title="展开今日房间"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 15.5 16 5l13 10.5v12H3v-12Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 27.5v-10h8v10" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></a>`;
+      if(compact) return `<header class="mast" aria-label="角落小窗导航"><div class="brand"><div class="brand-mark" aria-hidden="true">⌂</div><span class="sr-only">Career Workbench</span></div><div class="goal-picker">${goal?`<label class="sr-only" for="goal_switch">切换当前目标</label><select id="goal_switch" aria-label="切换当前目标">${goalOptions}</select>`:'<span class="small muted">尚无目标</span>'}</div><div class="mast-actions"><a class="mini-link" href="${routeLink('/collapsed')}" aria-label="收起为房子图标">收起</a><a class="mini-link" href="${routeLink('/')}" aria-label="展开完整工作台">展开</a></div></header>`;
       const zone=goal?.timezone || 'Asia/Shanghai';
       return `<header class="mast"><div class="brand"><div class="brand-mark" aria-hidden="true">⌂</div><div><div class="brand-name">Career Workbench</div><div class="brand-sub">目标陪伴 · 本机保存</div></div></div><div class="mast-actions"><div class="clock"><strong id="clock">--:--</strong><small>${esc(zone)} · 现实时间</small></div><a class="mini-link" href="${routeLink('/collapsed')}">收起</a><a class="mini-link" href="${routeLink(compact?'/':'/compact')}">${compact?'展开工作台':'角落小窗'}</a>${compact?'':'<button class="plain-button" type="button" data-action="new-goal">新建目标</button>'}</div></header>`;
     }
@@ -186,6 +204,22 @@
       const more=compact&&selected.today_tasks.length>2?`<p class="form-note">还有 ${selected.today_tasks.length-2} 项；展开工作台查看全部。</p>`:'';
       return `<section class="panel" id="today-panel"><div class="section-head"><h2>今天的行动</h2>${badge(sync.state==='applied'?'done':'pending',sync.state==='applied'?'清单已同步':sync.state==='conflict'?'需处理冲突':'待同步')}</div>${banner}<p class="note small">${esc(selected.feedback)}</p>${cards}${more}</section>`;
     }
+    function compactActionPanel(selected) {
+      const action=state.scene?.action||{state:'none',task_id:null};
+      const tasks=selected.today_tasks;
+      const item=tasks.find(task=>task.task_id===action.task_id)||tasks.find(task=>task.sync_state==='applied'&&!['completed','cancelled'].includes(task.daily_state))||tasks[0];
+      const full=`<a class="mini-link" href="${routeLink('/')}#today-panel">全部任务</a>`;
+      if(selected.sync.state==='sync_pending') return `<section class="panel compact-action" aria-label="当前行动"><div class="section-head"><h2>当前行动</h2>${badge('pending','待同步')}</div><h3>计划尚未写入今日清单</h3><div class="task-actions"><button class="primary" data-action="sync">写入今日清单</button>${full}</div></section>`;
+      if(selected.sync.state==='conflict') return `<section class="panel compact-action" aria-label="当前行动"><div class="section-head"><h2>当前行动</h2>${badge('conflict','需核对')}</div><h3>计划与今日清单有冲突</h3><div class="task-actions">${full}</div></section>`;
+      if(!item) return `<section class="panel compact-action" aria-label="当前行动"><div class="section-head"><h2>当前行动</h2>${badge('','暂无')}</div><h3>今天没有到期行动</h3><div class="task-actions">${full}</div></section>`;
+      const ownsAction=action.task_id===item.task_id;
+      const startable=item.sync_state==='applied'&&!['completed','cancelled'].includes(item.daily_state)&&['none','stopped'].includes(action.state);
+      const control=startable?`<button class="primary" data-action="start" data-id="${esc(item.task_id)}">开始行动</button>`:
+        ownsAction&&action.state==='active'?`<button class="primary" data-action="pause" data-id="${esc(item.task_id)}">暂停行动</button>`:
+        ownsAction&&['paused','stale'].includes(action.state)&&action.can_resume?`<button class="primary" data-action="resume" data-id="${esc(item.task_id)}">继续行动</button>`:'';
+      const label=ownsAction&&action.state==='active'?'行动中':ownsAction&&action.state==='paused'?'已暂停':ownsAction&&action.state==='stale'?'需重新确认':stateLabel(item.daily_state);
+      return `<section class="panel compact-action" aria-label="当前行动"><div class="section-head"><h2>当前行动</h2>${badge(item.sync_state==='conflict'?'conflict':item.daily_state==='completed'?'done':'',label)}</div><h3 title="${esc(item.title)}">${esc(item.title)}</h3><p class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} ${localClock(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</p><div class="task-actions">${control||full}${control?full:''}</div></section>`;
+    }
     function planPanel(selected) {
       const plan=selected.active_plan;
       if(!plan) return `<section class="panel" id="plan-panel"><h2>计划如何生效</h2><p class="muted">创建目标 → 查看有来源的建议 → 本人决定 → 安排每日任务。没有确认前不会自动执行。</p></section>`;
@@ -211,18 +245,19 @@
     }
     function render() {
       const selected=state.selected,goal=selected?.goal;
-      if(shellMode==='collapsed') {app.innerHTML=mast(goal);return}
+      if(shellMode==='collapsed') {app.innerHTML=mast(goal,'');return}
       const goalOptions=state.goals.map(g=>`<option value="${esc(g.id)}" ${g.id===state.selected_goal_id?'selected':''}>${esc(g.title)}</option>`).join('');
       const picker=goal?`<div class="goal-picker"><label for="goal_switch">当前目标</label><select id="goal_switch">${goalOptions}</select></div>`:'';
       const title=goal?esc(goal.title):'把大目标落到今天';
       const lede=goal?`每周 ${goal.weekly_minutes} 分钟 · ${goal.active_version?'计划第 '+goal.active_version+' 版':'尚无生效计划'} · ${esc(goal.timezone)}`:'先创建一个目标，再审阅每天具体做什么。';
       const pendingCount=selected?.result_status?.tasks?.filter(item=>item.state==='awaiting_user_confirmation').length||0;
       const compactResultPrompt=pendingCount?`<section class="panel"><h2>${pendingCount} 项实际结果待确认</h2><p class="compact-prompt">每日完成依据已存，仍需要本人填写实际耗时与观察。</p><a class="mini-link" href="${routeLink('/')}#records-panel">展开确认结果</a></section>`:'';
-      const compactBody=goal ? (selected.active_plan ? todayPanel(selected)+compactResultPrompt :
+      const compactBody=goal ? (selected.active_plan ? compactActionPanel(selected)+compactResultPrompt :
         `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
         `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
       const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
-      app.innerHTML=mast(goal)+`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section><div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
+      const hero=compact?'':`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section>`;
+      app.innerHTML=mast(goal,goalOptions)+hero+`<div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
       const start=document.getElementById('start_on');
       if(start&&!start.value){
         const localHour=Number(selected.local_time.slice(11,13));
