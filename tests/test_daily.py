@@ -116,6 +116,39 @@ class DailyTests(unittest.TestCase):
                 self.command("complete", f"E-BAD-{number}", {"evidence": {}}, task_id)
             self.command("complete", f"E-OK-{number}", {"evidence": evidence}, task_id)
 
+    def test_cet6_practice_without_job_record_keeps_goal_plan_link(self):
+        task = self.task("DEMO-CET6-READ", "practice", "goal", "DEMO-CET6")
+        task.update(goal_id="DEMO-CET6", plan_version=1)
+        self.schedule(task)
+        with self.assertRaises(ValueError):
+            self.command("complete", "E-CET6-BAD", {"evidence": {"result_ref": "practice-score"}}, task["id"])
+        completed = self.command("complete", "E-CET6-DONE", {"evidence": {
+            "material_ref": "fictional-material", "first_attempt_ref": "fictional-first-attempt",
+            "reflection_ref": "fictional-mistake-note"}}, task["id"])
+        self.assertEqual(completed["state"], "completed")
+        snapshot_task = self.daily.snapshot()["tasks"][0]
+        self.assertEqual(snapshot_task["goal_id"], "DEMO-CET6")
+        self.assertEqual(snapshot_task["plan_version"], 1)
+        self.assertEqual(snapshot_task["source_kind"], "goal")
+        self.assertFalse((Path(self.temp.name) / "state.sqlite3").exists())
+
+    def test_job_practice_still_uses_job_event_and_goal_link_is_validated(self):
+        job_practice = self.task("DEMO-JOB-PRACTICE", "practice", "job", "DEMO-JOB")
+        self.schedule(job_practice)
+        with self.assertRaises(ValueError):
+            self.command("complete", "E-JOB-PRACTICE-BAD", {"evidence": {
+                "material_ref": "fictional-material", "first_attempt_ref": "fictional-first-attempt",
+                "reflection_ref": "fictional-mistake-note"}}, job_practice["id"])
+        goal_task = self.task("DEMO-GOAL-MISMATCH", "practice", "goal", "DEMO-OTHER")
+        goal_task.update(goal_id="DEMO-CET6", plan_version=1)
+        with self.assertRaises(ValueError):
+            self.schedule(goal_task, "E-GOAL-MISMATCH")
+        with self.assertRaises(ValueError):
+            self.schedule(self.task("DEMO-GOAL-ORPHAN", "practice", "goal", "DEMO-CET6"),
+                          "E-GOAL-ORPHAN")
+        with self.assertRaises(ValueError):
+            self.schedule({**goal_task, "source_id": "DEMO-CET6", "plan_version": True}, "E-GOAL-BOOL")
+
     def test_reminder_dedup_across_restart_and_timezone(self):
         self.schedule()
         self.assertEqual(self.daily.claim_reminders(), [])
