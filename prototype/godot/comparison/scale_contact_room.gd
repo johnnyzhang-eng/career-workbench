@@ -1,5 +1,8 @@
 extends "res://comparison/mpfb_character_room.gd"
 
+var camera_target := Vector3(0, 1.25, 0)
+var camera_tween: Tween
+
 # M3 is a joint meter-scale/contact diagnosis. It reuses the exact 1K CC0
 # table from draft #56, keeps the original A lighting, and places the seated
 # MPFB student, keyboard, chair and monitor at compatible heights. A's walls
@@ -43,12 +46,26 @@ func apply_state(value: String) -> void:
 	super.apply_state(value)
 	if not camera:
 		return
-	if value == "in_progress":
-		camera.position = Vector3(2.1, 2.0, 2.3)
-		camera.look_at(Vector3(-0.78, 0.80, -0.53))
-	else:
-		camera.position = Vector3(7.5, 6.2, 9.0)
-		camera.look_at(Vector3(0, 1.25, 0))
+	var goal_position := Vector3(2.1, 2.0, 2.3) if value == "in_progress" else Vector3(7.5, 6.2, 9.0)
+	var goal_target := Vector3(-0.78, 0.80, -0.53) if value == "in_progress" else Vector3(0, 1.25, 0)
+	if not is_node_ready():
+		camera.position = goal_position
+		camera_target = goal_target
+		camera.look_at(camera_target)
+		return
+	if camera_tween and camera_tween.is_running():
+		camera_tween.kill()
+	camera_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.set_parallel(true)
+	camera_tween.tween_property(camera, "position", goal_position, 0.65)
+	camera_tween.tween_property(self, "camera_target", goal_target, 0.65)
+	print("M3_CAMERA_TWEEN ", value, " target=", goal_position)
+
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	if camera:
+		camera.look_at(camera_target)
 
 
 func _is_original_desk_leg(child: Node) -> bool:

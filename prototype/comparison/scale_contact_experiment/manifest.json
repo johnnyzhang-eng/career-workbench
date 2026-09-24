@@ -9,15 +9,15 @@
     "polyhaven_wooden_table_02_1k.glb": "3a1d63e2444b39a9aef82230d8775960e15a5a6223e507efbbfce5920ed68fe2"
   },
   "source_sha256": {
-    "run_capture.py": "92f983bc1daf9984e67e1a0828c0baf6d59e3923101993bb7b98b10e064e4112",
-    "scale_contact_room.gd": "94c63e938e34e096923fb142fdd51c97e4171767115793a08fc16a52c3c5a3f0",
+    "run_capture.py": "0e0e8404f4f9910c69f971c84afec81440c272fc6c2d7e0d5d517818cce43c8b",
+    "scale_contact_room.gd": "4255c5bd458a5d3dc5cfaf9654bf8a832b5bec8bec2f60ac94e8ce8666121315",
     "mpfb_character_experiment.gd": "8103b5a4c570a0a7e606db86bcdad0db22f50b027e36d8c654fc0f61b046f58b"
   },
   "notes": [
     "R4 control uses enlarged character and fixed near camera; M3 uses unscaled seated mesh and state-dependent camera.",
     "M3 lowers desk/monitor/chair/student together and moves chair forward; the 3.55 m desk width is still distorted to A's footprint.",
     "Projected mesh bounds include hidden/clipped pixels and are not a visible-pixel count or quality score.",
-    "Both variants still switch static poses/cameras without transition animation; no automatic task inference or completion."
+    "M3 camera eases over 0.65 s after explicit task state changes, but the standing placeholder and seated MPFB mesh still switch abruptly; no automatic task inference or completion."
   ],
   "records": [
     {
@@ -72,7 +72,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-360x320-day-started.png",
-      "sha256": "be61e1ed156b8429d1b4b29212a69c75a6b7dd9f6bb2c6363c6d6503744fae66",
+      "sha256": "92a8ff1034cbc7b27502107f640356fca2d15ae42c9cdabc8fc93b3eae9ff67f",
       "physical_pixels": [
         720,
         640
@@ -140,7 +140,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-360x320-evening-started.png",
-      "sha256": "968abc06726f31d0793e26bb1d664a933bcbbed51dc3258cc4fc0bee48356111",
+      "sha256": "e5b93ffea3bfea2742ab17723a1cad37e0e5780342e8a17190ef9ecd54cc70f3",
       "physical_pixels": [
         720,
         640
@@ -174,7 +174,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-1280x720-day-idle.png",
-      "sha256": "838929f68e8d7cb90ffb8c82d4a191699490966f20eec73543126891701e7b49",
+      "sha256": "705c27bc9d465db43042e95dc836e4c4eb40b93d7dcc95d3d6fc307f5ea757f5",
       "physical_pixels": [
         2560,
         1440
@@ -208,7 +208,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-1280x720-day-started.png",
-      "sha256": "321ad8902015f5666a11baee67e55091c495009796cd333bb18a1253a368e6aa",
+      "sha256": "1745aa55cf5f5c74f12f7c1fd43d60f0f26d0037c92a964010c82965a46f53c1",
       "physical_pixels": [
         2560,
         1440
@@ -242,7 +242,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-1280x720-evening-idle.png",
-      "sha256": "71b291299009066493bbcbf63e1c750c981c30dc2ebdefe451740f6db8c9c43c",
+      "sha256": "d2634df817a94776965913ce430a703d1fc136c51ee229c51e4bc233ba32c2d7",
       "physical_pixels": [
         2560,
         1440
@@ -276,7 +276,7 @@
         "--scaled-character"
       ],
       "capture": "captures/R4-1280x720-evening-started.png",
-      "sha256": "274d97c4b853ef63848d34740e40c2aefaf2eaa9794e8e53e65673157c5a5fe0",
+      "sha256": "9626d6254a53810a3734ee6149718c3ce5ab48ca9ffc0c73118ac72f413c268f",
       "physical_pixels": [
         2560,
         1440
@@ -307,7 +307,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-360x320-day-idle.png",
-      "sha256": "aaeb04ed2c9d8fdf2249ade215f7aa590142ec84dedb45da8f959eeccf01ced9",
+      "sha256": "ad3144da3068b43db002ae344a427e6d6a622bd893c1f4fa1224ad6d5a0beada",
       "physical_pixels": [
         720,
         640
@@ -338,7 +338,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-360x320-day-started.png",
-      "sha256": "b32bd52a0d9c68ec0b1946352d49fdf35063152510a84876a9a17367dff6cae6",
+      "sha256": "29a5f9f8809f5b205fb81a83eaf8dac0ad552684969a6943f71949f0f111a2d0",
       "physical_pixels": [
         720,
         640
@@ -369,7 +369,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-360x320-evening-idle.png",
-      "sha256": "150179f0e9832ba4668270076fee0e439afab10b78ebb55d78f1f616bb137e8b",
+      "sha256": "cd4c13a41f09a60af520cbb3a8f1ad4776b6ff8503508aa1d2a5cac4d8bd0f65",
       "physical_pixels": [
         720,
         640
@@ -400,7 +400,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-360x320-evening-started.png",
-      "sha256": "e9ea29609bc2b39fdd7ccd62b36549afc2f7210c2deda1ca1cbf7ea8dc404981",
+      "sha256": "e6e62c388e3576ac535d71a20cf67a6d85cac3959954e66a2d2c5df71a9d0640",
       "physical_pixels": [
         720,
         640
@@ -431,7 +431,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-1280x720-day-idle.png",
-      "sha256": "71dfb1bdc98cdf1bfc583151c3fa92876296a00eb8e50100dad428875ec59f78",
+      "sha256": "c7e5135205b0e14e30138acb2ff6e5901afd912d753740b63697021d390f1040",
       "physical_pixels": [
         2560,
         1440
@@ -462,7 +462,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-1280x720-day-started.png",
-      "sha256": "cd6810c5c48120d42ee051763559616e210da08f7c5a8838bb971d2299a6e0ef",
+      "sha256": "0890de18a644e67d6d5817ffb89e726aa090015c4ec56e45f25de42a7ae1efd0",
       "physical_pixels": [
         2560,
         1440
@@ -493,7 +493,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-1280x720-evening-idle.png",
-      "sha256": "a9e88ee0107cae02be91ea093e07d4b9084d20da485f0022edada1570b393107",
+      "sha256": "9221b56ea80e6b77c84436bf2c7117945e70ace9056391668573a8f0d92df9b6",
       "physical_pixels": [
         2560,
         1440
@@ -524,7 +524,7 @@
         "--scale-contact-m3"
       ],
       "capture": "captures/M3-1280x720-evening-started.png",
-      "sha256": "f1affa31676122559c8368448ddfa8b68a0cc830e0be60f12869387a36c6d2a5",
+      "sha256": "d325ac8e514304eb89a07dcd6939d950f45bd342de53fc541c6a2f9101aae363",
       "physical_pixels": [
         2560,
         1440

@@ -111,7 +111,7 @@ def main() -> None:
             "R4 control uses enlarged character and fixed near camera; M3 uses unscaled seated mesh and state-dependent camera.",
             "M3 lowers desk/monitor/chair/student together and moves chair forward; the 3.55 m desk width is still distorted to A's footprint.",
             "Projected mesh bounds include hidden/clipped pixels and are not a visible-pixel count or quality score.",
-            "Both variants still switch static poses/cameras without transition animation; no automatic task inference or completion.",
+            "M3 camera eases over 0.65 s after explicit task state changes, but the standing placeholder and seated MPFB mesh still switch abruptly; no automatic task inference or completion.",
         ],
         "records": records,
     }
