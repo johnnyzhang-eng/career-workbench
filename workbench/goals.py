@@ -87,7 +87,8 @@ def _items(items, goal_id):
     seen = set()
     for item in items:
         _need(isinstance(item, dict), "计划任务必须是对象")
-        _need(set(item) == {"task_id", "title", "task_kind", "source_kind", "source_id",
+        _need(set(item) == {"task_id", "title", "reason", "source_ref",
+                             "task_kind", "source_kind", "source_id",
                              "scheduled_at", "estimated_minutes", "completion_rule",
                              "due_at", "due_confidence", "due_source_ref", "due_checked_at",
                              "flexible"},
@@ -95,7 +96,7 @@ def _items(items, goal_id):
         _id(item["task_id"], "task_id")
         _need(item["task_id"] not in seen, "同一计划版本中 task_id 不能重复")
         seen.add(item["task_id"])
-        for key in ("title", "completion_rule"):
+        for key in ("title", "reason", "source_ref", "completion_rule"):
             _text(item[key], key)
         _need(item["task_kind"] in KINDS, "task_kind 无效")
         _need(item["source_kind"] in {"goal", "job", "event", "learning"}, "source_kind 无效")

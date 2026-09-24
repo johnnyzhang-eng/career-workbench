@@ -32,7 +32,7 @@ flowchart LR
 | Goal | ID、修订号、标题、领域、IANA 时区、每周分钟、起点文字、本人成功条件、目标时间与可信度 | `target_confidence` 为 `unknown/self_set/estimated/verified`。本人设的目标日不等于官方考试日；`verified` 必须附来源和核验时间。`update_goal` 只接受用户操作，旧修订保留；任意自定义目标不需要岗位 ID。 |
 | PlanProposal | ID、Goal ID、基于目标修订和计划版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，且 `source_ref` 必须指向所修改的模板版本或用户结果来源。规则模板提案也必须有来源。目标更新后旧提案标为 `superseded`。提案本身不会安排每日任务。 |
 | PlanVersion | 递增版本、来源提案、决策、决策时间、完整任务列表、撤销目标版本 | 接受、编辑、受策略约束的自动微调、撤销都会生成新版本；旧版和旧结果不覆盖。 |
-| Plan item | 稳定 task ID、标题、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | CET6 练习用 `source_kind=goal`、`source_id=goal ID`、`task_kind=practice`；其他手动目标可以用 `custom`。求职练习仍可关联岗位，但目标契约本身不核验岗位真伪。截止可信度独立于安排时间。 |
+| Plan item | 稳定 task ID、标题、**每项非空 `reason` 与 `source_ref`**、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | `reason` 说明为何安排此项；`source_ref` 指向模板版本、经核验页面或本人输入，接受后随 PlanVersion 原样保留，不能只依赖提案级来源。CET6 练习用 `source_kind=goal`、`source_id=goal ID`、`task_kind=practice`；其他手动目标可以用 `custom`。截止可信度独立于安排时间。 |
 | Result | 关联生效版本与 task ID、实际分钟、状态、练习指标、证据位置、备注、依据类型 | `self_report` 可记录完成／部分／未做／受阻；`tool_observation` 只能记录 `observed`，不能直接转成完成。`metric` 是记录的测量值，不等于考试通过。 |
 | Review | 目标、当前版本、触发原因、关联结果、发现、外部事件来源 | 支持漏做、低于预期、新外部事件、本人修改目标、周期回顾。外部事件必须有引用位置。算法如何提出建议属于后续适配器；此层保留候选和理由。 |
 | PlanDecision | `accept/edit/decline/auto_apply`、发起者、原因、策略 ID | 手动决策要求 `actor=user`；自动决策要求系统策略钩子通过，且 diff 只含允许的弹性时段或顺序。`undo_auto` 产生新的恢复版本，不删除审计记录。 |
@@ -87,13 +87,17 @@ store.close()
 {
   "goal": {"id": "DEMO-CET6", "active_version": 1, "timezone": "Asia/Shanghai"},
   "goal_revisions": [{"revision": 1, "actor": "user", "reason": "创建目标"}],
-  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "C-READ-1", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
+  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "C-READ-1", "reason": "根据虚构基线安排阅读练习", "source_ref": "fictional-template-v1;self:baseline", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
   "proposals": [{"id": "P-1", "method": "rule_template", "source_ref": "fictional-template-v1", "status": "accepted", "version": 1}],
   "results": [], "reviews": []
 }
 ```
 
 快照是**节选**，实际 API 返回上述表格所列的完整字段。角落小窗可只显示今日行动和一个“有待决定的调整”提示；展开应用显示提案差异、理由、来源及接受／编辑／拒绝。自动微调须提供可点开的“调整记录／撤销”入口，不能只悄悄移动任务。
+
+### 旧草案 fixture 的字段迁移
+
+PR #24 早期的实验 fixture 缺少每项 `reason/source_ref`。新版命令会拒绝这样的新提案；仓库内 `templates/goal_contract_fixture.json` 已逐项补齐。若本地保存了旧实验 JSON，需为**每个** `items[]` 从实际模板版本、原页面或本人输入补入这两个非空字段后再重放；不能把提案级 `source_ref` 机械复制成任务级来源，也不能为不存在的来源补造 URL。旧 `goals.sqlite3` 事件不应在未核对来源的情况下默默“修复”或公开迁移；#17 集成前需为真实存量数据单独设计可审阅迁移。
 
 ## 与 #18、求职状态机的连接
 

@@ -41,6 +41,8 @@
             {
               "task_id": "C-READ-1",
               "title": "D3 虚构阅读练习",
+              "reason": "根据虚构基线阅读 16/30 安排首周阅读练习",
+              "source_ref": "fictional-template-v1;self:baseline",
               "task_kind": "practice",
               "source_kind": "goal",
               "source_id": "FIXTURE-CET6",

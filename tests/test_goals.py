@@ -23,7 +23,10 @@ def goal(goal_id="DEMO-CET6"):
 
 
 def item(task_id="DEMO-READ-1", scheduled_at="2026-09-24T20:00:00+08:00"):
-    return {"task_id": task_id, "title": "阅读一组虚构练习", "task_kind": "practice",
+    return {"task_id": task_id, "title": "阅读一组虚构练习",
+            "reason": "根据虚构基线安排阅读练习",
+            "source_ref": "fictional-template-v1;self:baseline",
+            "task_kind": "practice",
             "source_kind": "goal", "source_id": "DEMO-CET6",
             "scheduled_at": scheduled_at, "estimated_minutes": 35,
             "completion_rule": "本人记录完成页数、正确数和错题位置",
@@ -79,6 +82,8 @@ class GoalContractTests(unittest.TestCase):
         self.assertFalse((self.store.workspace / "state.sqlite3").exists())
         self.assertEqual(self.store.snapshot("DEMO-CET6")["goal"]["active_version"], 1)
         original = self.store.snapshot("DEMO-CET6")["plans"][0]["items"]
+        self.assertEqual(original[0]["reason"], "根据虚构基线安排阅读练习")
+        self.assertEqual(original[0]["source_ref"], "fictional-template-v1;self:baseline")
         self.command("record_result", "E-RESULT-1", {"result": result("R-1", metric={"correct": 11, "total": 20, "expected": 14})})
         self.command("record_review", "E-REVIEW-1",
                      {"review": review("RV-1", "lower_result", ["R-1"])})
@@ -101,6 +106,24 @@ class GoalContractTests(unittest.TestCase):
             self.assertEqual(reopened.snapshot("DEMO-CET6"), snap)
         finally:
             reopened.close()
+
+    def test_each_plan_item_requires_reason_and_source_reference(self):
+        self.command("create_goal", "E-GOAL", {"goal": goal()})
+        for field in ("reason", "source_ref"):
+            bad = item()
+            bad[field] = "  "
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, f"{field} 必须是非空文本"):
+                self.command("propose_plan", f"E-BAD-{field}",
+                             {"proposal": proposal(f"P-BAD-{field}", 0, None, [bad])})
+        good = item()
+        self.command("propose_plan", "E-GOOD",
+                     {"proposal": proposal("P-GOOD", 0, None, [good])})
+        self.command("decide_plan", "E-GOOD-ACCEPT",
+                     {"proposal_id": "P-GOOD", "decision": "accept", "actor": "user",
+                      "reason": "本人确认", "edited_items": None, "policy_ref": None})
+        saved = self.store.snapshot("DEMO-CET6")["plans"][0]["items"][0]
+        self.assertEqual((saved["reason"], saved["source_ref"]),
+                         (good["reason"], good["source_ref"]))
 
     def test_missed_day_and_external_event_can_propose_but_decline_preserves_plan(self):
         self.initial_plan()
