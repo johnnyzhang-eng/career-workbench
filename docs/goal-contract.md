@@ -30,7 +30,7 @@ flowchart LR
 | 对象 | 核心字段 | 含义和限制 |
 |---|---|---|
 | Goal | ID、修订号、标题、领域、IANA 时区、每周分钟、起点文字、本人成功条件、目标时间与可信度 | `target_confidence` 为 `unknown/self_set/estimated/verified`。本人设的目标日不等于官方考试日；`verified` 必须附来源和核验时间。`update_goal` 只接受用户操作，旧修订保留；任意自定义目标不需要岗位 ID。 |
-| PlanProposal | ID、Goal ID、基于目标修订和计划版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，`source_ref` 记录规则模板版本或外部来源。目标更新后旧提案标为 `superseded`。提案本身不会安排每日任务。 |
+| PlanProposal | ID、Goal ID、基于目标修订和计划版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，且 `source_ref` 必须指向所修改的模板版本或用户结果来源。规则模板提案也必须有来源。目标更新后旧提案标为 `superseded`。提案本身不会安排每日任务。 |
 | PlanVersion | 递增版本、来源提案、决策、决策时间、完整任务列表、撤销目标版本 | 接受、编辑、受策略约束的自动微调、撤销都会生成新版本；旧版和旧结果不覆盖。 |
 | Plan item | 稳定 task ID、标题、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | CET6 练习用 `source_kind=goal`、`source_id=goal ID`、`task_kind=practice`；其他手动目标可以用 `custom`。求职练习仍可关联岗位，但目标契约本身不核验岗位真伪。截止可信度独立于安排时间。 |
 | Result | 关联生效版本与 task ID、实际分钟、状态、练习指标、证据位置、备注、依据类型 | `self_report` 可记录完成／部分／未做／受阻；`tool_observation` 只能记录 `observed`，不能直接转成完成。`metric` 是记录的测量值，不等于考试通过。 |
@@ -101,7 +101,7 @@ store.close()
 2. CET6 的计划项在此契约中是 `task_kind=practice`、`source_kind=goal`。[PR #25](https://github.com/johnnyzhang-eng/career-workbench/pull/25) 已提出 #18 的目标练习适配草案，保留岗位练习的旧 `job_event_seq` 门槛；#17 仍需审查并连接两个存储，不能把两份草案视为已实时同步。其他通用手动任务可用 `custom`；任务详情通过目标 ID 查回 PlanVersion。GoalStore 的 Result 保存练习指标和复盘解释；工具观察不可补造完成命令。
 3. 岗位任务的 DailyStore `source_kind=job`、`source_id=job ID` 不变；GoalStore 的 plan item 通过稳定 task ID 关联它。`apply_job` 仍由原 `career.py` 的批准、材料和 `submitted` 回执事件验证；PlanVersion、打开链接或 GoalStore 的自述都不能代替旧门槛。
 4. 自动微调在契约层检查 task ID 集合不变、除安排时间外所有字段不变、顺序只涉及弹性、无外部截止且未开始的任务、移动后仍是同一目标时区的同一天；再由外部策略钩子核验策略 ID。撤销时再次检查受影响任务仍未开始；否则拒绝并要求本人确认新提案。**默认没有自动策略，因此不能自动生效。** #17 必须从 DailyStore 读取真实任务状态，并安全同步时段变化。目标、截止、任务增删和完成规则不在这条自动路径里。
-5. 初版模板必须版本化、列明依据；AI 个性化内容带 `method=ai_suggestion` 进入提案区。外部来源仍需人工核验，尤其官方考试日与岗位截止。无来源的通用自定义目标从本人手动任务起步。
+5. 初版模板必须版本化、列明依据；AI 个性化内容带 `method=ai_suggestion` 与非空 `source_ref` 进入提案区，指向被修改的模板版本或用户结果。该引用只是可追溯线索，外部来源仍需人工核验，尤其官方考试日与岗位截止。没有领域模板的自定义目标从本人手动任务起步。
 
 ### #17 的最小一致性方案
 

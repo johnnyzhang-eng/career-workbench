@@ -337,7 +337,7 @@ class GoalStore:
             if proposal["base_version"] == 0:
                 _need(proposal["method"] != "ai_suggestion",
                       "初始计划从有来源的规则模板或手动任务起步")
-            if proposal["method"] == "rule_template":
+            if proposal["method"] in {"rule_template", "ai_suggestion"}:
                 _text(proposal["source_ref"], "proposal.source_ref")
             _need(proposal["source_ref"] is None or isinstance(proposal["source_ref"], str),
                   "source_ref 必须是文字或 null")

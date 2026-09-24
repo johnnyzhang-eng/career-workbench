@@ -36,7 +36,7 @@ def proposal(proposal_id, base, review_id, items, reason="根据实际结果调�
             "base_version": base,
             "review_id": review_id, "reason": reason, "items": items,
             "method": "rule_template" if base == 0 else "ai_suggestion",
-            "source_ref": "fictional-template-v1" if base == 0 else None}
+            "source_ref": "fictional-template-v1" if base == 0 else f"fictional-template-v1;review:{review_id}"}
 
 
 def result(result_id, task_id="DEMO-READ-1", outcome="completed", basis="self_report",
@@ -313,6 +313,19 @@ class GoalContractTests(unittest.TestCase):
         latest = self.store.snapshot("DEMO-CET6")
         self.assertEqual(latest["goal"]["active_version"], 2)
         self.assertFalse(latest["goal"]["needs_replan"])
+
+    def test_ai_plan_proposal_requires_source(self):
+        self.initial_plan()
+        self.command("record_result", "E-RESULT", {"result": result("R-AI")})
+        self.command("record_review", "E-REVIEW",
+                     {"review": review("RV-AI", "weekly", ["R-AI"])})
+        unsourced = proposal("P-AI-UNSOURCED", 1, "RV-AI", [item("AI-NEXT")])
+        unsourced["source_ref"] = None
+        with self.assertRaisesRegex(ValueError, "proposal.source_ref 必须是非空文本"):
+            self.command("propose_plan", "E-AI-UNSOURCED", {"proposal": unsourced})
+        sourced = proposal("P-AI-SOURCED", 1, "RV-AI", [item("AI-NEXT")])
+        self.command("propose_plan", "E-AI-SOURCED", {"proposal": sourced})
+        self.assertEqual(self.store.snapshot("DEMO-CET6")["proposals"][-1]["status"], "pending")
 
 
 if __name__ == "__main__":
