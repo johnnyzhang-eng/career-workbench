@@ -1,0 +1,6 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(1280, 720) pixels=(2560, 1440) scale=2.0
+CAPTURE <repo>/prototype/comparison/compact_distance_experiment/P1/baseline-1280x720-evening-idle.png
+COMPACT_METRICS {"avatar_foot_local":[489.43,366.29],"avatar_head_local":[491.9,237.5],"avatar_logic_px":128.79,"camera_position":[7.5,6.19999980926514,9.0],"camera_target":[0,1.25,0],"distance_scale":1.0,"fov_degrees":45.0,"hotspot_buttons":{"calendar":[577.791931152344,223.186462402344,64.0,35.0],"computer":[471.350219726562,261.591613769531,64.0,35.0]},"logical_size":[1280,720],"phase":"evening","room_floor_corners_local":{"floor_back_left":[428.6,248.66],"floor_back_right":[703.48,332.59],"floor_front_left":[218.09,333.19],"floor_front_right":[525.51,500.6]},"scene_rect":[16.0,94.0,922.0,550.0]}

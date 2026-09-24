@@ -1,0 +1,11 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CAPTURE <repo>/prototype/comparison/compact_distance_experiment/P1/baseline-360x320-evening-idle.png
+CAPTURE <repo>/prototype/comparison/compact_distance_experiment/P1/baseline-360x320-evening-started.png
+CAPTURE <repo>/prototype/comparison/compact_distance_experiment/P1/baseline-360x320-evening-completed.png
+CAPTURE <repo>/prototype/comparison/compact_distance_experiment/P1/baseline-360x320-evening-deferred.png
+COMPARISON_PROOF_PASS baseline
+COMPACT_METRICS {"avatar_foot_local":[179.87,95.78],"avatar_head_local":[180.62,60.04],"avatar_logic_px":35.74,"camera_position":[6.97499990463257,5.85349988937378,8.36999988555908],"camera_target":[0,1.25,0],"distance_scale":0.93,"fov_degrees":45.0,"hotspot_buttons":{"calendar":[290.0,150.0,54.0,32.0],"computer":[16.0,150.0,54.0,32.0]},"logical_size":[360,320],"phase":"evening","room_floor_corners_local":{"floor_back_left":[163.25,63.39],"floor_back_right":[238.65,86.33],"floor_front_left":[105.22,86.5],"floor_front_right":[190.39,134.82]},"scene_rect":[8.0,46.0,344.0,141.0]}
+2026-09-25 01:54:39.845 Godot[35010:4003760] error messaging the mach port for IMKCFRunLoopWakeUpReliable

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原版 A · 小窗相机距离对照</title>
+<style>
+body{font:15px/1.6 system-ui,-apple-system,sans-serif;color:#344742;background:#f6efdf;margin:28px}
+h1{font-size:24px;margin:0 0 8px}p{max-width:850px}label{display:block;margin:20px 0}
+select{font:inherit;padding:6px;border:1px solid #a8b7aa;border-radius:5px;background:white}
+main{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+figure{margin:0;padding:12px;background:#fff9ec;border:1px solid #d6d9ca;border-radius:9px}
+figcaption{font-weight:700;margin-bottom:8px}
+img{width:360px;height:320px;display:block;object-fit:fill}
+a{color:#405e51}
+</style>
+<h1>原版 A · 小窗相机距离对照</h1>
+<p>两张都按 360×320 逻辑原大显示；源图为 2 倍 Retina 像素。只改变 3D 相机沿原视线的距离，FOV 保持 45°。<a href="README.md">参数、测量和限制</a></p>
+<label>时段 <select id="phase"><option value="day">白天</option><option value="evening">夜晚</option></select></label>
+<main>
+<figure><figcaption>P0 · 原版距离</figcaption><img id="p0" alt="原版 A 小窗场景，人物与房间原版占比"></figure>
+<figure><figcaption>P1 · 距离 93%</figcaption><img id="p1" alt="同一场景只缩短小窗相机距离"></figure>
+</main>
+<script>
+const phase=document.querySelector('#phase');
+function update(){for(const key of ['p0','p1'])document.querySelector('#'+key).src=`${key.toUpperCase()}/baseline-360x320-${phase.value}-idle.png`}
+phase.addEventListener('change',update);update();
+</script>
+</html>
