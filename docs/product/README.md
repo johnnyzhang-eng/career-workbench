@@ -1,6 +1,6 @@
 # 学习与求职工作台：产品发现（草案）
 
-**方向更新（2026-09-24）：**用户确认产品首先帮助人设置目标、每天执行并按实际情况调整；秋招求职与技能学习是首批重点，CET6 是通用性对照用例。先看[定位与体验门槛](product-direction-gate.md)，再看以秋招为例的[每日工作台计划](daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。具体模型与游戏形式仍待评审；本目录其余材料保留为此前的岗位、学习与证据设计。
+**方向更新（2026-09-24）：**用户确认产品首先帮助人设置目标、每天执行并按实际情况调整；秋招求职与技能学习是首批重点，CET6 是通用性对照用例。先看[定位与体验门槛](product-direction-gate.md)及[集中决策台](decision-register.md)，再看以秋招为例的[每日工作台计划](daily-workbench-plan.md)和 [Issue #12](https://github.com/johnnyzhang-eng/career-workbench/issues/12)。具体模型与游戏形式仍待评审；本目录其余材料保留为此前的岗位、学习与证据设计。
 
 本目录描述下一阶段产品方向，**不是已上线功能清单**。当前仓库实现的是本地命令行投递状态机；网页入口、零基础教学、每日训练与复测闭环仍待开发和用户验收。
 
