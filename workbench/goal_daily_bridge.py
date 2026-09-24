@@ -122,9 +122,14 @@ class GoalDailyBridge:
             recorded_version = recorded.get("plan_version")
             old_plan = prior_by_version.get(recorded_version)
             old_item = next((old for old in old_plan["items"] if old["task_id"] == task_id), None) if old_plan else None
+            expected_schedule = daily_task(old_plan, old_item, goal_id) if old_item is not None else None
+            legacy_metadata = ("flexible" not in recorded and "display_order" not in recorded)
+            if legacy_metadata and expected_schedule is not None:
+                expected_schedule = {key: value for key, value in expected_schedule.items()
+                                     if key not in {"flexible", "display_order"}}
             owned = (recorded.get("goal_id") == goal_id and old_item is not None
                      and row["event_id"] == schedule_event_id(goal_id, recorded_version, task_id)
-                     and recorded == daily_task(old_plan, old_item, goal_id))
+                     and recorded == expected_schedule)
             if not owned:
                 items.append({"task_id": task_id, "state": "conflict", "reason": "每日任务 ID 已被其他安排占用或内容不匹配",
                               "source_ref": item.get("source_ref")})
@@ -150,7 +155,7 @@ class GoalDailyBridge:
                     conflict = "新版计划改变了任务内容，需要本人确认每日任务变更"
                     break
                 if changed:
-                    if plan["decision"] not in {"auto_apply", "undo_auto"} or not _safe_transition(
+                    if plan["decision"] not in {"auto_apply", "undo_auto", "edit"} or not _safe_transition(
                             snapshot["goal"], last_item, next_item, last_position, next_position):
                         conflict = "计划变更超出同日弹性任务微调范围"
                         break
@@ -195,7 +200,7 @@ class GoalDailyBridge:
                 continue
             task = daily_states[task_id]
             if (task["plan_version"] != current_version
-                    or task.get("display_order") != last_position
+                    or (not legacy_metadata and task.get("display_order") != last_position)
                     or (task["state"] == "scheduled" and task["scheduled_at"] != last_item["scheduled_at"])):
                 items.append({"task_id": task_id, "state": "conflict",
                               "reason": "每日任务当前投影与已接受计划不一致",
@@ -205,6 +210,7 @@ class GoalDailyBridge:
                               "daily_state": task["state"],
                               "scheduled_from_version": recorded_version,
                               "current_daily_version": current_version,
+                              "legacy_schedule": legacy_metadata,
                               "source_ref": item.get("source_ref")})
 
         # A new complete plan may remove tasks. Never leave an unstarted task

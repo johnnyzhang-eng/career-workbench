@@ -93,6 +93,61 @@ class GoalDailyBridgeTests(unittest.TestCase):
         self.assertEqual(self.bridge.status(goal_id)["items"][0]["daily_state"], "completed")
         self.assertFalse((self.goals.workspace / "state.sqlite3").exists())
 
+    def test_pre_reschedule_daily_schedule_remains_readable_without_rewriting_provenance(self):
+        goal_id, task_id = "DEMO-LEGACY", "DEMO-OLD-SCHEDULE"
+        self.accept(goal_id, [self.item(task_id, goal_id)])
+        plan = self.goals.snapshot(goal_id)["plans"][-1]
+        legacy = daily_task(plan, plan["items"][0], goal_id)
+        legacy.pop("flexible")
+        legacy.pop("display_order")
+        event_id = schedule_event_id(goal_id, 1, task_id)
+        self.daily.command("schedule", event_id, task_id, {"task": legacy})
+        row_before = dict(self.daily.db.execute("SELECT * FROM daily_events WHERE event_id=?", (event_id,)).fetchone())
+        status = self.bridge.status(goal_id)
+        self.assertEqual(status["state"], "applied")
+        self.assertTrue(status["items"][0]["legacy_schedule"])
+        self.assertEqual(self.bridge.sync(goal_id)["state"], "applied")
+        self.assertEqual(dict(self.daily.db.execute("SELECT * FROM daily_events WHERE event_id=?", (event_id,)).fetchone()),
+                         row_before)
+
+    def test_user_confirmed_edit_recovers_pending_daily_write_after_restart(self):
+        goal_id, task_id = "DEMO-MANUAL", "DEMO-FUTURE"
+        original = self.item(task_id, goal_id)
+        self.accept(goal_id, [original])
+        self.assertEqual(self.bridge.sync(goal_id)["state"], "applied")
+        self.goals.command("record_review", "REVIEW-MANUAL-E", {"review": {
+            "id": "REVIEW-MANUAL", "goal_id": goal_id, "plan_version": 1,
+            "trigger": "external_event", "result_ids": [], "finding": "虚构温和复盘",
+            "source_ref": "fictional-note"}})
+        proposal_id = "P-MANUAL"
+        self.goals.command("propose_plan", "PROPOSE-MANUAL-E", {"proposal": {
+            "id": proposal_id, "goal_id": goal_id, "goal_revision": 1, "base_version": 1,
+            "review_id": "REVIEW-MANUAL", "reason": "本人考虑改时段", "items": [original],
+            "method": "manual", "source_ref": "fictional-note"}})
+        changed = {**original, "scheduled_at": (self.now + timedelta(hours=2)).isoformat()}
+        self.goals.command("decide_plan", "DECIDE-MANUAL-E", {
+            "proposal_id": proposal_id, "decision": "edit", "actor": "user",
+            "reason": "本人查看前后时段并确认", "edited_items": [changed], "policy_ref": None})
+        self.assertEqual(self.goals.snapshot(goal_id)["plans"][0]["items"][0]["scheduled_at"],
+                         original["scheduled_at"])
+        self.assertEqual(self.bridge.status(goal_id)["state"], "sync_pending")
+        actual_command = self.daily.command
+        def interrupted(*_args, **_kwargs):
+            raise sqlite3.OperationalError("fictional daily write interruption")
+        self.daily.command = interrupted
+        self.assertEqual(self.bridge.sync(goal_id)["state"], "sync_pending")
+        self.daily.command = actual_command
+        self.daily.close()
+        self.goals.close()
+        self.daily = DailyStore(self.temp.name, self.clock)
+        self.goals = GoalStore(self.temp.name, self.clock)
+        self.bridge = GoalDailyBridge(self.goals, self.daily)
+        self.assertEqual(self.bridge.sync(goal_id)["state"], "applied")
+        self.assertEqual(self.daily._tasks()[task_id]["scheduled_at"], changed["scheduled_at"])
+        self.assertEqual(self.bridge.sync(goal_id)["state"], "applied")
+        self.assertEqual(self.daily.db.execute("SELECT COUNT(*) FROM daily_events WHERE command='reschedule'")
+                         .fetchone()[0], 1)
+
     def test_partial_sync_recovers_after_transient_failure(self):
         goal_id = "DEMO-CET6"
         self.accept(goal_id, [self.item("DEMO-READ", goal_id), self.item("DEMO-LISTEN", goal_id)])

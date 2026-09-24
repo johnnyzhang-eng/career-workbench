@@ -2,14 +2,18 @@
 
 import http.client
 import json
+import socket
 import tempfile
 import threading
+import time
 import unittest
 import base64
+from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 
 from workbench.avatar_photo import AvatarPhotoStore
+from workbench.daily import DailyStore
 from workbench.goal_web import GoalHTTPServer
 
 
@@ -345,6 +349,76 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(retried_declined["selected"]["pending_proposals"], [])
         self.assertEqual(len(self.request("GET", "/api/state?goal_id=" + first_goal)[1]
                              ["selected"]["results"]), 2)
+
+    def test_confirmed_review_edit_changes_daily_schedule_and_survives_retry(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id, missed_id = self.active_goal(token, "R")
+        before = self.request("GET", "/api/state?goal_id=" + goal_id)[1]["selected"]
+        future = before["active_plan"]["items"][1]
+        old_schedule = future["scheduled_at"]
+        report = self.post("/api/results/report", {"operation_id": "REPORTED-1",
+            "goal_id": goal_id, "task_id": missed_id, "outcome": "missed", "actual_minutes": 0,
+            "metric": None, "evidence_ref": None, "note": "虚构的时间冲突"}, token)[1]
+        result_id = report["selected"]["results"][0]["id"]
+        reviewed = self.post("/api/reviews/propose", {"operation_id": "REVIEWED-1",
+            "goal_id": goal_id, "result_id": result_id}, token)[1]
+        proposal_id = reviewed["selected"]["pending_proposals"][0]["id"]
+        self.assertEqual(reviewed["selected"]["active_plan"]["items"][1]["current_scheduled_at"], old_schedule)
+        request = {"operation_id": "EDITED-1", "proposal_id": proposal_id, "decision": "edit",
+                   "task_id": future["task_id"], "local_time": "21:30"}
+        status, edited, _ = self.post("/api/plans/decide", request, token)
+        self.assertEqual(status, 200, edited)
+        selected = edited["selected"]
+        self.assertEqual(selected["goal"]["active_version"], 2)
+        self.assertEqual(selected["sync"]["state"], "applied")
+        self.assertEqual(selected["active_plan"]["items"][1]["current_scheduled_at"],
+                         "2026-10-06T21:30:00+08:00")
+        self.assertEqual(selected["results"][0]["id"], result_id)
+        with closing(DailyStore(self.temp.name, self.clock)) as daily:
+            self.assertEqual(daily._tasks()[future["task_id"]]["scheduled_at"], "2026-10-06T21:30:00+08:00")
+            self.assertEqual(daily.db.execute("SELECT COUNT(*) FROM daily_events WHERE command='reschedule'")
+                             .fetchone()[0], 1)
+        self.stop_server()
+        self.start_server()
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        self.assertEqual(self.post("/api/plans/decide", request, token)[0], 200)
+        self.assertEqual(self.post("/api/plans/decide", {**request, "local_time": "22:00"}, token)[0], 400)
+        with closing(DailyStore(self.temp.name, self.clock)) as daily:
+            self.assertEqual(daily.db.execute("SELECT COUNT(*) FROM daily_events WHERE command='reschedule'")
+                             .fetchone()[0], 1)
+
+    def test_review_edit_rejects_started_task_without_activating_plan(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id, missed_id = self.active_goal(token, "Q")
+        future = self.request("GET", "/api/state?goal_id=" + goal_id)[1]["selected"]["active_plan"]["items"][1]
+        report = self.post("/api/results/report", {"operation_id": "REPORTED-2",
+            "goal_id": goal_id, "task_id": missed_id, "outcome": "blocked", "actual_minutes": 0,
+            "metric": None, "evidence_ref": None, "note": "虚构的阻碍"}, token)[1]
+        reviewed = self.post("/api/reviews/propose", {"operation_id": "REVIEWED-2",
+            "goal_id": goal_id, "result_id": report["selected"]["results"][0]["id"]}, token)[1]
+        proposal_id = reviewed["selected"]["pending_proposals"][0]["id"]
+        daily = DailyStore(self.temp.name, self.clock)
+        try:
+            daily.command("start", "START-FUTURE-1", future["task_id"])
+        finally:
+            daily.close()
+        status, error, _ = self.post("/api/plans/decide", {"operation_id": "EDITED-2",
+            "proposal_id": proposal_id, "decision": "edit", "task_id": future["task_id"],
+            "local_time": "21:30"}, token)
+        self.assertEqual(status, 400, error)
+        self.assertEqual(self.request("GET", "/api/state?goal_id=" + goal_id)[1]
+                         ["selected"]["goal"]["active_version"], 1)
+
+    def test_idle_client_does_not_block_review_page(self):
+        idle = socket.create_connection(("127.0.0.1", self.port), timeout=2)
+        try:
+            idle.sendall(b"GET / HTTP/1.1\r\n")
+            time.sleep(0.2)
+            start = time.monotonic()
+            self.assertEqual(self.request("GET", "/")[0], 200)
+            self.assertLess(time.monotonic() - start, 1)
+        finally:
+            idle.close()
 
 
 if __name__ == "__main__":
