@@ -1,0 +1,544 @@
+{
+  "purpose": "R4 scale-fit candidate versus M3 contact and explicit-task camera",
+  "license_sources": [
+    "https://github.com/makehumancommunity/mpfb2/blob/master/LICENSE.md",
+    "https://polyhaven.com/a/wooden_table_02"
+  ],
+  "glb_sha256": {
+    "fictional_student_mpfb_casual_ik.glb": "0b6e9116ac425556f7c97449b03c8eab3b162d0876b120a761e9df92369d9642",
+    "polyhaven_wooden_table_02_1k.glb": "3a1d63e2444b39a9aef82230d8775960e15a5a6223e507efbbfce5920ed68fe2"
+  },
+  "source_sha256": {
+    "run_capture.py": "92f983bc1daf9984e67e1a0828c0baf6d59e3923101993bb7b98b10e064e4112",
+    "scale_contact_room.gd": "94c63e938e34e096923fb142fdd51c97e4171767115793a08fc16a52c3c5a3f0",
+    "mpfb_character_experiment.gd": "8103b5a4c570a0a7e606db86bcdad0db22f50b027e36d8c654fc0f61b046f58b"
+  },
+  "notes": [
+    "R4 control uses enlarged character and fixed near camera; M3 uses unscaled seated mesh and state-dependent camera.",
+    "M3 lowers desk/monitor/chair/student together and moves chair forward; the 3.55 m desk width is still distorted to A's footprint.",
+    "Projected mesh bounds include hidden/clipped pixels and are not a visible-pixel count or quality score.",
+    "Both variants still switch static poses/cameras without transition animation; no automatic task inference or completion."
+  ],
+  "records": [
+    {
+      "variant": "R4",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-360x320-day-idle.png",
+      "sha256": "a0b959431a3f69a0133c7c4daf904c27160a7f103b7400f9f7fc99a4427c1a0b",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        166.97,
+        -1.17,
+        132.25,
+        247.67
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-360x320-day-started.png",
+      "sha256": "be61e1ed156b8429d1b4b29212a69c75a6b7dd9f6bb2c6363c6d6503744fae66",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        151.15,
+        38.12,
+        52.23,
+        77.0
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-360x320-evening-idle.png",
+      "sha256": "daf14a446fde4c8eadd7905dac115d628d845894b19b650f64078f2b4ccc59a7",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        166.97,
+        -1.17,
+        132.25,
+        247.67
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-360x320-evening-started.png",
+      "sha256": "968abc06726f31d0793e26bb1d664a933bcbbed51dc3258cc4fc0bee48356111",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        151.15,
+        38.12,
+        52.23,
+        77.0
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-1280x720-day-idle.png",
+      "sha256": "838929f68e8d7cb90ffb8c82d4a191699490966f20eec73543126891701e7b49",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        441.39,
+        -4.55,
+        515.87,
+        966.09
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-1280x720-day-started.png",
+      "sha256": "321ad8902015f5666a11baee67e55091c495009796cd333bb18a1253a368e6aa",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        379.66,
+        148.71,
+        203.74,
+        300.37
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-1280x720-evening-idle.png",
+      "sha256": "71b291299009066493bbcbf63e1c750c981c30dc2ebdefe451740f6db8c9c43c",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        441.39,
+        -4.55,
+        515.87,
+        966.09
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "R4",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--chair-low",
+        "--hero-focus",
+        "--contact-layout",
+        "--scaled-character"
+      ],
+      "capture": "captures/R4-1280x720-evening-started.png",
+      "sha256": "274d97c4b853ef63848d34740e40c2aefaf2eaa9794e8e53e65673157c5a5fe0",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        379.66,
+        148.71,
+        203.74,
+        300.37
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-360x320-day-idle.png",
+      "sha256": "aaeb04ed2c9d8fdf2249ade215f7aa590142ec84dedb45da8f959eeccf01ced9",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        170.35,
+        58.82,
+        18.7,
+        39.29
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-360x320-day-started.png",
+      "sha256": "b32bd52a0d9c68ec0b1946352d49fdf35063152510a84876a9a17367dff6cae6",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        155.35,
+        49.35,
+        38.6,
+        58.21
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-360x320-evening-idle.png",
+      "sha256": "150179f0e9832ba4668270076fee0e439afab10b78ebb55d78f1f616bb137e8b",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        170.35,
+        58.82,
+        18.7,
+        39.29
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-360x320-evening-started.png",
+      "sha256": "e9ea29609bc2b39fdd7ccd62b36549afc2f7210c2deda1ca1cbf7ea8dc404981",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        155.35,
+        49.35,
+        38.6,
+        58.21
+      ],
+      "scene_view_physical_pixels": [
+        688,
+        282
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-1280x720-day-idle.png",
+      "sha256": "71dfb1bdc98cdf1bfc583151c3fa92876296a00eb8e50100dad428875ec59f78",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        454.57,
+        229.45,
+        72.95,
+        153.27
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-1280x720-day-started.png",
+      "sha256": "cd6810c5c48120d42ee051763559616e210da08f7c5a8838bb971d2299a6e0ef",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        396.06,
+        192.51,
+        150.55,
+        227.05
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "idle",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-1280x720-evening-idle.png",
+      "sha256": "a9e88ee0107cae02be91ea093e07d4b9084d20da485f0022edada1570b393107",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        454.57,
+        229.45,
+        72.95,
+        153.27
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    },
+    {
+      "variant": "M3",
+      "size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "state": "started",
+      "flags": [
+        "--mpfb-student",
+        "--mpfb-ik",
+        "--mpfb-casual",
+        "--scale-contact-m3"
+      ],
+      "capture": "captures/M3-1280x720-evening-started.png",
+      "sha256": "f1affa31676122559c8368448ddfa8b68a0cc830e0be60f12869387a36c6d2a5",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "projected_mesh_bounds_logical_xywh": [
+        396.06,
+        192.51,
+        150.55,
+        227.05
+      ],
+      "scene_view_physical_pixels": [
+        1844,
+        1100
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M3 · 房间尺度与任务镜头对照</title>
+<style>
+  :root { font-family: system-ui, "PingFang SC", sans-serif; background: #ebeee8; color: #27352f; }
+  body { max-width: 1450px; padding: 24px; margin: auto; }
+  h1 { font-size: 27px; margin: 0 0 8px; }
+  p { line-height: 1.55; max-width: 980px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(360px,1fr)); gap: 16px; }
+  figure { background: white; border: 1px solid #cbd4ca; border-radius: 13px; margin: 0; padding: 12px; }
+  img { display: block; width: 360px; max-width: 100%; height: auto; }
+  figcaption { font-size: 14px; line-height: 1.45; padding-top: 8px; }
+  strong { color: #2e624c; }
+</style>
+<body>
+  <h1>M3 · 任务镜头、桌椅高度与角色接触</h1>
+  <p>原大 360×320 小窗，2× Retina 实机输出，保留清单与按钮。R4 固定近镜头／放大人物；M3 待开始看全景、明确开始后切桌面，人物与桌椅高度同步校正。<a href="README.md">来源与局限</a> · <a href="manifest.json">原始记录</a></p>
+  <div class="grid">
+    <figure><img src="captures/R4-360x320-day-idle.png" alt="R4 固定近镜头待开始，站立角色被裁切"><figcaption><strong>R4 待开始</strong><br>固定桌面近镜头让站立角色裁切；不能只评估进行中截图。</figcaption></figure>
+    <figure><img src="captures/M3-360x320-day-idle.png" alt="M3 待开始，房间全景与站立角色"><figcaption><strong>M3 待开始</strong><br>明确任务尚未开始，镜头展示全景。</figcaption></figure>
+    <figure><img src="captures/R4-360x320-day-started.png" alt="R4 放大角色在桌面近景"><figcaption><strong>R4 已开始</strong><br>放大 1.35 倍人物，动作占屏更多，但桌椅高度未按人体统一。</figcaption></figure>
+    <figure><img src="captures/M3-360x320-day-started.png" alt="M3 原比例人物在较低桌椅前"><figcaption><strong>M3 已开始</strong><br>镜头随明确开始而切近桌面；桌椅高度更合理，人物仍小、椅背有遮挡。</figcaption></figure>
+  </div>
+  <p>更多证据：<a href="captures/R4-1280x720-day-started.png">R4 展开白天</a> · <a href="captures/M3-1280x720-day-started.png">M3 展开白天</a> · <a href="captures/R4-360x320-evening-started.png">R4 小窗夜晚</a> · <a href="captures/M3-360x320-evening-started.png">M3 小窗夜晚</a>。</p>
+  <p>图片仅含虚构任务与许可明确的实验素材。相机、坐姿、灯光变化不修改任务事实或完成状态。</p>
+</body>
+</html>
