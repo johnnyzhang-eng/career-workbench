@@ -253,7 +253,7 @@
       const hour = Number(new Intl.DateTimeFormat('en-GB', {
         timeZone: timezone || 'Asia/Shanghai', hour: '2-digit', hourCycle: 'h23',
       }).format(new Date()));
-      return hour >= 7 && hour < 18 ? 'day' : 'evening';
+      return hour >= 6 && hour < 18 ? 'day' : 'evening';
     } catch (_) {
       return 'day';
     }
@@ -329,7 +329,7 @@
     _pixelFallback(failedSrc) {
       if (failedSrc) this._failedAssets.add(failedSrc);
       this._pixel.hidden = true;
-      this._svg.hidden = false;
+      this._svg.removeAttribute('hidden');
       this.setAttribute('data-scene-fallback', 'illustrated');
       this.setAttribute('aria-label', this._desc.textContent + '。像素素材尚未加载，当前显示插画草案');
     }
@@ -355,11 +355,11 @@
         && this._pixelBg.naturalWidth > 0 && this._pixelAvatar.naturalWidth > 0;
       if (pixelReady) {
         this._pixel.hidden = false;
-        this._svg.hidden = true;
+        this._svg.setAttribute('hidden', '');
         this.removeAttribute('data-scene-fallback');
       } else {
         this._pixel.hidden = true;
-        this._svg.hidden = false;
+        this._svg.removeAttribute('hidden');
         if (this.getAttribute('renderer') === 'pixel') this.setAttribute('data-scene-fallback', 'illustrated');
         else this.removeAttribute('data-scene-fallback');
       }
