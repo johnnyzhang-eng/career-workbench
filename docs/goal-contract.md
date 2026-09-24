@@ -1,0 +1,118 @@
+# 通用目标、计划版本与复盘契约（#21 草案）
+
+状态：独立 draft；须与 [#13 的双路径线框](https://github.com/johnnyzhang-eng/career-workbench/issues/13) 对照评审后，才能用于 #17 集成。本文和测试数据全部虚构。`workbench/goals.py` 是本地契约验证器，不生成学习内容、不调用模型、不读取桌面，也不宣称已经完成真人试用。
+
+## 已确认的产品规则
+
+- 首版把秋招和 CET6 做成两条完整路径；其他目标先允许本人手动安排任务。计划从有来源的规则／模板起步，AI 只能提出个性化修改。提案与生效计划严格分开。
+- 本人可修改目标和每周可用时间；目标修订不可覆盖，基于旧目标的待决提案失效。目标改动不会暗中改正在执行的任务，需再提出并确认计划版本。
+- “实时”按系统时间推进。目标自己的时区决定本地日；不让角色动画改变现实截止。未核实的岗位截止、考试时间或外部事件不显示为精确事实。
+- 工作台操作与用户明确连接的工具事件可作为活动线索。工具时长、窗口切换、Codex 任务或代码提交都不能独自证明任务完成、掌握知识、考试通过或投递成功。
+- 未完成和低于预期保留实际结果与原因，给出温和且可解释的调整建议；没有罚分或自动断签逻辑。
+- 自动权限仅含：**调整未开始、没有外部截止的弹性任务在同一个本地日内的时段，或重排这类任务的显示顺序**。每次自动应用都记录提案、策略 ID、前后版本、时间和撤销事件。跨日顺延、周任务量、阶段计划、目标、硬截止、任务删除、完成证据规则均需用户决策。
+
+```mermaid
+flowchart LR
+  G["G1 目标\n期限/起点/可用时间/成功条件"] --> P["P1 有来源的初始计划提案"]
+  P --> D{"D1 决策"}
+  D -- 本人接受/编辑 --> V["V1 不可覆盖的生效版本"]
+  D -- 拒绝 --> H["H1 留存提案和原因"]
+  V --> T["T1 每日任务\n由 #18 执行"]
+  T --> R["R1 结果或活动观察\n明确标注依据"]
+  R --> W["W1 复盘\n差距和原因"]
+  W --> P2["P2 下一版提案\n规则/模板或 AI 建议"]
+  P2 --> D
+  P2 -. 经低风险策略核验 .-> A["A1 自动微调 + 审计 + 可撤销"] --> V
+```
+
+## 数据与事实边界
+
+| 对象 | 核心字段 | 含义和限制 |
+|---|---|---|
+| Goal | ID、修订号、标题、领域、IANA 时区、每周分钟、起点文字、本人成功条件、目标时间与可信度 | `target_confidence` 为 `unknown/self_set/estimated/verified`。本人设的目标日不等于官方考试日；`verified` 必须附来源和核验时间。`update_goal` 只接受用户操作，旧修订保留；任意自定义目标不需要岗位 ID。 |
+| PlanProposal | ID、Goal ID、基于目标修订和计划版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，且 `source_ref` 必须指向所修改的模板版本或用户结果来源。规则模板提案也必须有来源。目标更新后旧提案标为 `superseded`。提案本身不会安排每日任务。 |
+| PlanVersion | 递增版本、来源提案、决策、决策时间、完整任务列表、撤销目标版本 | 接受、编辑、受策略约束的自动微调、撤销都会生成新版本；旧版和旧结果不覆盖。 |
+| Plan item | 稳定 task ID、标题、**每项非空 `reason` 与 `source_ref`**、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | `reason` 说明为何安排此项；`source_ref` 指向模板版本、经核验页面或本人输入，接受后随 PlanVersion 原样保留，不能只依赖提案级来源。CET6 练习用 `source_kind=goal`、`source_id=goal ID`、`task_kind=practice`；其他手动目标可以用 `custom`。截止可信度独立于安排时间。 |
+| Result | 关联生效版本与 task ID、实际分钟、状态、练习指标、证据位置、备注、依据类型 | `self_report` 可记录完成／部分／未做／受阻；`tool_observation` 只能记录 `observed`，不能直接转成完成。`metric` 是记录的测量值，不等于考试通过。 |
+| Review | 目标、当前版本、触发原因、关联结果、发现、外部事件来源 | 支持漏做、低于预期、新外部事件、本人修改目标、周期回顾。外部事件必须有引用位置。算法如何提出建议属于后续适配器；此层保留候选和理由。 |
+| PlanDecision | `accept/edit/decline/auto_apply`、发起者、原因、策略 ID | 手动决策要求 `actor=user`；自动决策要求系统策略钩子通过，且 diff 只含允许的弹性时段或顺序。`undo_auto` 产生新的恢复版本，不删除审计记录。 |
+
+计划项 `due_confidence=unknown` 时 `due_at=null`。`verified` 必须有 `due_source_ref` 和 `due_checked_at`。由于普通任务的 `scheduled_at` 是内部计划时间，它不会自动变成外部硬截止。
+
+```mermaid
+erDiagram
+  GOAL ||--o{ PLAN_VERSION : has
+  GOAL ||--|{ GOAL_REVISION : preserves
+  GOAL ||--o{ PLAN_PROPOSAL : receives
+  PLAN_PROPOSAL o|--o| PLAN_VERSION : activates_as
+  PLAN_VERSION ||--|{ PLAN_ITEM : contains
+  PLAN_ITEM ||--o{ RESULT : records
+  GOAL ||--o{ REVIEW : reflects_on
+  REVIEW ||--o{ PLAN_PROPOSAL : motivates
+  PLAN_PROPOSAL ||--o| PLAN_DECISION : resolves_with
+```
+
+## 两条七日虚构路径
+
+以下所有岗位、练习分数和时间都是**虚构设计数据**，不是实时招聘或考试信息。此表与 [#13 的详细七日剧本](https://github.com/johnnyzhang-eng/career-workbench/pull/22) 使用同一事实；#13 负责将状态画成角落小窗、今日页、任务详情和复盘页，并由用户逐屏校正。
+
+| 日 | 秋招路径：事实 → 计划反应 | CET6 路径：事实 → 计划反应 |
+|---|---|---|
+| D1 · 10-05 | 核验虚构 A 岗届别与城市，保存来源和核验时间；打开原页没有投递。 | 本人设每周 5 小时、8 周自定周期；基线听力 12/25、阅读 16/30，记录材料、原始作答和错因。 |
+| D2 · 10-06 | 虚构 B 岗页面暂不可读，核验卡住；“招满即止”仍是未知截止，没有倒计时。 | 听力首次 9/15，订正后 13/15；两个数都保留，不宣称已掌握。 |
+| D3 · 10-07 | 参加虚构宣讲并留 3 条信息；B 恢复可读但资格仍未知，岗位保持 `hold`。 | `C-READ-1` 因课程冲突延期，原日期与原因保留，D4 出现延续卡；完成数不增加。 |
+| D4 · 10-08 | A 材料只有初稿，项目指标待核实，任务卡住并保留 D4 原日期。 | 延续阅读首次 11/20，低于本人预期 14/20；系统只提出 v2（降难度、增加错因回看），不自动生效。 |
+| D5 · 10-09 | A 材料核实并经本人批准；15:20 打开原站仍未投；15:38 本人登记虚构回执后才可记提交。 | 听力复练 10/15；本人编辑并接受 v2，周末改为阅读错因 20 分钟＋听力复测 20 分钟，v1 和延期记录仍在。 |
+| D6 · 10-10 | 有来源的虚构面试邀请经本人确认后，系统提出 v2 调整优先级；不模拟招聘方评价。 | 回看 3 道阅读错题，其中 1 道借助讲解；记录部分借助，仍待独立复测。 |
+| D7 · 10-11 | 做 30 分钟模拟问答，B 仍未投；周回顾区分真实回执、准备练习和未知资格。 | 周回顾展示 D3 延期、D4 11/20、D6 借助情况；提出下周独立复测 v3，用户可接受、编辑或拒绝。 |
+
+## 契约与命令样例
+
+下面是 #21 的本地 Python API；使用一次性虚构 workspace。可执行的 [`goal_contract_fixture.json`](../templates/goal_contract_fixture.json) 是 #13 CET6 路径的 **D4 结果与复盘切片**；D3 的实际延期由 DailyStore 记录，fixture 没有冒充完整一周。测试会逐条重放它。同一 `event_id` 和相同内容重复提交会幂等；复用 ID 改命令会拒绝。
+
+```python
+from workbench.goals import GoalStore
+
+store = GoalStore("private/fictional-demo")
+store.command("create_goal", "E-1", {"goal": {"id": "DEMO-CET6", "title": "虚构 CET6 练习", "domain": "learning", "timezone": "Asia/Shanghai", "weekly_minutes": 300, "success_criterion": "记录阶段练习与本人复盘", "baseline": "虚构听力 12/25、阅读 16/30", "target_at": "2026-11-30T20:00:00+08:00", "target_confidence": "self_set", "target_source_ref": None, "target_checked_at": None}})
+# propose_plan -> decide_plan(accept/edit/decline) -> record_result -> record_review -> propose_plan
+snapshot = store.snapshot("DEMO-CET6")
+assert snapshot["goal"]["active_version"] == 0  # 仅创建目标，还没有生效计划
+store.close()
+```
+
+接受初版后的快照结构（节选）如下；`plans[0].items` 是生效版本，`proposals[0]` 仍保存原候选与决策元数据：
+
+```json
+{
+  "goal": {"id": "DEMO-CET6", "active_version": 1, "timezone": "Asia/Shanghai"},
+  "goal_revisions": [{"revision": 1, "actor": "user", "reason": "创建目标"}],
+  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "C-READ-1", "reason": "根据虚构基线安排阅读练习", "source_ref": "fictional-template-v1;self:baseline", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
+  "proposals": [{"id": "P-1", "method": "rule_template", "source_ref": "fictional-template-v1", "status": "accepted", "version": 1}],
+  "results": [], "reviews": []
+}
+```
+
+快照是**节选**，实际 API 返回上述表格所列的完整字段。角落小窗可只显示今日行动和一个“有待决定的调整”提示；展开应用显示提案差异、理由、来源及接受／编辑／拒绝。自动微调须提供可点开的“调整记录／撤销”入口，不能只悄悄移动任务。
+
+### 旧草案 fixture 的字段迁移
+
+PR #24 早期的实验 fixture 缺少每项 `reason/source_ref`。新版命令会拒绝这样的新提案；仓库内 `templates/goal_contract_fixture.json` 已逐项补齐。若本地保存了旧实验 JSON，需为**每个** `items[]` 从实际模板版本、原页面或本人输入补入这两个非空字段后再重放；不能把提案级 `source_ref` 机械复制成任务级来源，也不能为不存在的来源补造 URL。旧 `goals.sqlite3` 事件不应在未核对来源的情况下默默“修复”或公开迁移；#17 集成前需为真实存量数据单独设计可审阅迁移。
+
+## 与 #18、求职状态机的连接
+
+1. GoalStore 保存目标、版本、结果、复盘和提案；`DailyStore` 保存任务 schedule/start/complete/defer/block/cancel、跨日和提醒。二者使用同一私有 workspace，但本 draft **尚未执行跨库命令**；#17 集成需要设计一致性与失败恢复，再将生效版本中的新增任务安排到 DailyStore。
+2. CET6 的计划项在此契约中是 `task_kind=practice`、`source_kind=goal`。[PR #25](https://github.com/johnnyzhang-eng/career-workbench/pull/25) 已提出 #18 的目标练习适配草案，保留岗位练习的旧 `job_event_seq` 门槛；#17 仍需审查并连接两个存储，不能把两份草案视为已实时同步。其他通用手动任务可用 `custom`；任务详情通过目标 ID 查回 PlanVersion。GoalStore 的 Result 保存练习指标和复盘解释；工具观察不可补造完成命令。
+3. 岗位任务的 DailyStore `source_kind=job`、`source_id=job ID` 不变；GoalStore 的 plan item 通过稳定 task ID 关联它。`apply_job` 仍由原 `career.py` 的批准、材料和 `submitted` 回执事件验证；PlanVersion、打开链接或 GoalStore 的自述都不能代替旧门槛。
+4. 自动微调在契约层检查 task ID 集合不变、除安排时间外所有字段不变、顺序只涉及弹性、无外部截止且未开始的任务、移动后仍是同一目标时区的同一天；再由外部策略钩子核验策略 ID。撤销时再次检查受影响任务仍未开始；否则拒绝并要求本人确认新提案。**默认没有自动策略，因此不能自动生效。** #17 必须从 DailyStore 读取真实任务状态，并安全同步时段变化。目标、截止、任务增删和完成规则不在这条自动路径里。
+5. 初版模板必须版本化、列明依据；AI 个性化内容带 `method=ai_suggestion` 与非空 `source_ref` 进入提案区，指向被修改的模板版本或用户结果。该引用只是可追溯线索，外部来源仍需人工核验，尤其官方考试日与岗位截止。没有领域模板的自定义目标从本人手动任务起步。
+
+### #17 的最小一致性方案
+
+首选把 Goal 与 Daily 事件写入同一个 SQLite 数据库，用**同一连接的事务**提交计划决策和要安排／改期的任务命令；客户端只在提交成功后刷新两种视图。若短期继续双库，计划决策事务应同时写一条 durable outbox（稳定命令 ID、目标版本、task ID、预期动作、状态）；后台适配器以该 ID 幂等写入 DailyStore，成功后将 outbox 标为 `applied`，失败保留并重试。同步完成前快照必须标出 `sync_pending`，不把 GoalStore 中的新时间当作已安排成功。撤销同样走 outbox；它生成补偿命令，不删除已经发生的每日任务事件。两条方案是 #17 的设计建议，本 PR **尚未实现**任一方案。
+
+## 尚待评审的实现风险
+
+- `GoalStore` 与 `DailyStore` 分属两个 SQLite 文件。自动应用与真实任务改期目前没有原子事务；在 #17 集成前不应对外宣称两处已实时同步。
+- `auto_policy` 是受信任的宿主钩子。调用方必须核查用户允许的策略版本，且不能把提案自报的“低风险”当证明。撤销一个自动版本会恢复它之前的任务列表；若其后还有自动微调，会一并撤回，UI 须先展示差异；若其后已有本人决策，则需新提案由本人确认。撤销不抹掉已发生的任务和用户结果。
+- `record_result` 保存自述与引用位置，不替用户验证源文件内容。考试是否通过、岗位是否提交、技能是否掌握各由相应领域证据流程确认。
