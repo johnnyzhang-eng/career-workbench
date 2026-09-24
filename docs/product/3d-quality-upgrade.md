@@ -41,7 +41,7 @@
 
 因此下一轮先把家具与人体建到同一米制尺度，定三个接触检查点（髋／椅、手／任务道具、脚／地面），再在保留真实任务控件的 360×320 UI 中选镜头。轮廓和接触稳定后，先做坐下、输入、读书、起身的连续动作，再逐件精修椅子、桌面、书本的材质与道具细节。R4 GLB 当前是姿态烘焙的静态网格，没有 skin 或 animation；Blender 本地骨骼源不等于游戏里已有动作系统。
 
-[#56 的木桌单件对照](https://github.com/johnnyzhang-eng/career-workbench/pull/56)证明来源清楚的 1K 资产能在原 A 显示、且展开态有木纹，但它为塞进原 A 的 3.55 m 桌子而非均匀拉伸，不能当作家具比例方案。初版按节点名只隐藏一条旧桌腿，复查后以网格几何断言隐藏全部四腿和桌面，重新捕获并修正上述数字。[#57 的组合样机](https://github.com/johnnyzhang-eng/career-workbench/pull/57)把桌面/椅面高度约校到 0.80/0.44 m，待开始看全景、明确开始后看桌面，解决固定近镜头裁切待机角色；但桌子宽度仍沿用 3.55 m，占屏的人物在进行中从 R4 的 52.23×77.00 降到 M3 的 38.60×58.21，椅背仍遮挡躯干。它们是试验结果，不是新默认场景。
+[#56 的木桌单件对照](https://github.com/johnnyzhang-eng/career-workbench/pull/56)证明来源清楚的 1K 资产能在原 A 显示、且展开态有木纹，但它为塞进原 A 的 3.55 m 桌子而非均匀拉伸，不能当作家具比例方案。初版按节点名只隐藏一条旧桌腿，复查后以网格几何断言隐藏全部四腿和桌面，重新捕获并修正上述数字。[#57 的组合样机](https://github.com/johnnyzhang-eng/career-workbench/pull/57)把桌面/椅面高度约校到 0.80/0.44 m，待开始看全景、明确开始后以 0.65 秒缓动看桌面，解决固定近镜头裁切待机角色；但[连续短片](https://github.com/johnnyzhang-eng/career-workbench/blob/experiment/scale-contact-m3/prototype/comparison/scale_contact_experiment/captures/m3-camera-transition.mp4)也显示人物仍瞬时从站立占位形象换成静态坐姿。桌子宽度仍沿用 3.55 m，占屏的人物在进行中从 R4 的 52.23×77.00 降到 M3 的 38.60×58.21，椅背仍遮挡躯干。它们是试验结果，不是新默认场景。
 
 | 下一验收门 | 具体产物 | 通过证据 |
 | --- | --- | --- |
