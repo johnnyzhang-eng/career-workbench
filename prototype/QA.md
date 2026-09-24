@@ -23,10 +23,10 @@ Observed on macOS with Godot 4.7 and Blender 5.1.2 on 2026-09-24. This is a play
 
 ## 2D or pixel alternative interface
 
-Keep `fixture/snapshot.json` and the eventual Issue #15 snapshot/command boundary as the sole task source. A 2D or pixel renderer could replace the room and mascot Node3D subtree with Node2D/Sprite2D/AnimatedSprite2D, retain named computer/calendar hotspots, and reuse the same checklist/detail and explicit command intents. The renderer should receive `scheduled`, started, completed and deferred **view states** from the returned snapshot; domain validation, event IDs, real dates and persistence remain with the logic track. This lets Issue #17 compare a 2D scene without rewriting task rules.
+Keep `fixture/snapshot.json` as this job-specific control sample, then adapt the renderer to the general Goal → Plan → Task → Result contract being designed in Issue #21. A 2D or pixel renderer could replace the room and mascot Node3D subtree with Node2D/Sprite2D/AnimatedSprite2D, retain named action hotspots, and reuse the checklist/detail with explicit command intents. The same student and room should be able to show study actions such as practice and review alongside recruiting actions. The renderer should receive task **view states** from the returned snapshot; domain validation, event IDs, real dates, plan versions and persistence remain with the logic track. This lets Issue #17 compare a 2D scene without rewriting task rules.
 
 Windup is useful only as an example workflow for generating and checking original character assets. Its existing character art is not this product's visual target and is not included here. Any outside or existing asset needs a source and reuse-permission check before import.
 
 ## Remaining integration work
 
-The preview loads one static fictional task and keeps state only in memory. It does not send Issue #15 commands, persist events, open an original job page, or label a real application submitted. Those are Issue #17 integration items, not evidence of this prototype's completion.
+The preview loads one static fictional job task and keeps state only in memory. It does not send the future Issue #21 goal/task commands, persist events or plan versions, open an original job page, or label a real application submitted. Those are contract and Issue #17 integration items, not evidence of this prototype's completion.
