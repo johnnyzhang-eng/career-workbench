@@ -1,0 +1,530 @@
+{
+  "purpose": "single-factor A-baseline perspective FOV test",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92"
+  },
+  "settings": {
+    "renderer": "GL Compatibility",
+    "route": "baseline",
+    "state": "idle",
+    "changed_parameter": "Camera3D.fov",
+    "C0_fov_degrees": 45.0,
+    "C1_fov_degrees": 41.0,
+    "unchanged_camera_position": [
+      7.5,
+      6.2,
+      9.0
+    ],
+    "unchanged_ambient_energy": {
+      "day": 0.36,
+      "evening": 0.48
+    },
+    "unchanged_key_energy": {
+      "day": 0.65,
+      "evening": 0.35
+    },
+    "unchanged_key_rotation_degrees": [
+      -55.0,
+      -32.0,
+      0.0
+    ]
+  },
+  "records": [
+    {
+      "variant": "C0",
+      "fov_degrees": 45.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.727,
+      "reported_camera": [
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "C0/baseline-360x320-day-idle.png",
+      "json": "C0/baseline-360x320-day.json",
+      "log": "C0/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 928.229,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "C0",
+      "fov_degrees": 45.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.269,
+      "reported_camera": [
+        [
+          "evening",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "C0/baseline-360x320-evening-idle.png",
+      "json": "C0/baseline-360x320-evening.json",
+      "log": "C0/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 749.331,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "C0",
+      "fov_degrees": 45.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.283,
+      "reported_camera": [
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "C0/baseline-1280x720-day-idle.png",
+      "json": "C0/baseline-1280x720-day.json",
+      "log": "C0/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "62ce89a38b79875a23bf740025f098625aff237be910a16f201be668b668b7cd",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 815.452,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "C0",
+      "fov_degrees": 45.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.246,
+      "reported_camera": [
+        [
+          "evening",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "C0/baseline-1280x720-evening-idle.png",
+      "json": "C0/baseline-1280x720-evening.json",
+      "log": "C0/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "a82ac0c985cf1bc3c7decdfa5f845c37abd4a733579971f4d0f2d896125abd1f",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 802.702,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "C1",
+      "fov_degrees": 41.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.238,
+      "reported_camera": [
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "C1/baseline-360x320-day-idle.png",
+      "json": "C1/baseline-360x320-day.json",
+      "log": "C1/360x320-day.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "55e8c935e19bfc8c49973ae4692ddf990f6a96cef5c24d7809a2877771aaba24",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 730.954,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "C1",
+      "fov_degrees": 41.0,
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.253,
+      "reported_camera": [
+        [
+          "evening",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "C1/baseline-360x320-evening-idle.png",
+      "json": "C1/baseline-360x320-evening.json",
+      "log": "C1/360x320-evening.log",
+      "png_pixels": [
+        720,
+        640
+      ],
+      "png_sha256": "600fb32ce2209b2eb52080cfc92f4714db8100c660439bfdc5e2e19a6def5996",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 721.442,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          360.0,
+          320.0
+        ],
+        "window_pixels": [
+          720,
+          640
+        ]
+      }
+    },
+    {
+      "variant": "C1",
+      "fov_degrees": 41.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.313,
+      "reported_camera": [
+        [
+          "day",
+          "45.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ],
+        [
+          "day",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.64999997615814",
+          "0.36000001430511"
+        ]
+      ],
+      "png": "C1/baseline-1280x720-day-idle.png",
+      "json": "C1/baseline-1280x720-day.json",
+      "log": "C1/1280x720-day.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "0f98e12254b203d27b0f6d0563b582a0391662e6aa3927b79e21d1e727d5afec",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 839.573,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "day",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    },
+    {
+      "variant": "C1",
+      "fov_degrees": 41.0,
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.247,
+      "reported_camera": [
+        [
+          "evening",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ],
+        [
+          "evening",
+          "41.0",
+          "7.5",
+          "6.19999980926514",
+          "9.0",
+          "0.34999999403954",
+          "0.47999998927116"
+        ]
+      ],
+      "png": "C1/baseline-1280x720-evening-idle.png",
+      "json": "C1/baseline-1280x720-evening.json",
+      "log": "C1/1280x720-evening.log",
+      "png_pixels": [
+        2560,
+        1440
+      ],
+      "png_sha256": "19650e04c61464e030020efbdd2c025a3cd0cf0730d6a06d7fb9ae699d2b7fcf",
+      "capture": {
+        "display_scale": 2.0,
+        "elapsed_ms": 802.603,
+        "engine": "4.7-stable (official)",
+        "events": [],
+        "fictional": true,
+        "frame_count": 14,
+        "phase": "evening",
+        "route": "baseline",
+        "viewport": [
+          1280.0,
+          720.0
+        ],
+        "window_pixels": [
+          2560,
+          1440
+        ]
+      }
+    }
+  ]
+}

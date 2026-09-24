@@ -1,0 +1,8 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CAMERA_ACTUAL phase=day fov=45.0 posx=7.5 posy=6.19999980926514 posz=9.0 main_energy=0.64999997615814 ambient=0.36000001430511
+CAMERA_ACTUAL phase=evening fov=41.0 posx=7.5 posy=6.19999980926514 posz=9.0 main_energy=0.34999999403954 ambient=0.47999998927116
+CAMERA_ACTUAL phase=evening fov=41.0 posx=7.5 posy=6.19999980926514 posz=9.0 main_energy=0.34999999403954 ambient=0.47999998927116
+CAPTURE <repo>/prototype/comparison/camera_fov_experiment/C1/baseline-360x320-evening-idle.png
