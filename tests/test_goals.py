@@ -23,7 +23,7 @@ def goal(goal_id="DEMO-CET6"):
 
 
 def item(task_id="DEMO-READ-1", scheduled_at="2026-09-24T20:00:00+08:00"):
-    return {"task_id": task_id, "title": "阅读一组虚构练习", "task_kind": "custom",
+    return {"task_id": task_id, "title": "阅读一组虚构练习", "task_kind": "practice",
             "source_kind": "goal", "source_id": "DEMO-CET6",
             "scheduled_at": scheduled_at, "estimated_minutes": 35,
             "completion_rule": "本人记录完成页数、正确数和错题位置",
@@ -32,7 +32,8 @@ def item(task_id="DEMO-READ-1", scheduled_at="2026-09-24T20:00:00+08:00"):
 
 
 def proposal(proposal_id, base, review_id, items, reason="根据实际结果调整"):
-    return {"id": proposal_id, "goal_id": "DEMO-CET6", "base_version": base,
+    return {"id": proposal_id, "goal_id": "DEMO-CET6", "goal_revision": 1,
+            "base_version": base,
             "review_id": review_id, "reason": reason, "items": items,
             "method": "rule_template" if base == 0 else "ai_suggestion",
             "source_ref": "fictional-template-v1" if base == 0 else None}
@@ -207,8 +208,9 @@ class GoalContractTests(unittest.TestCase):
         self.command("create_goal", "E-OTHER", {"goal": custom})
         manual_item = item("OTHER-TASK")
         manual_item["source_id"] = "DEMO-OTHER"
+        manual_item["task_kind"] = "custom"
         manual = {"id": "OTHER-P-1", "goal_id": "DEMO-OTHER", "base_version": 0,
-                  "review_id": None, "reason": "本人手动列任务", "items": [manual_item],
+                  "goal_revision": 1, "review_id": None, "reason": "本人手动列任务", "items": [manual_item],
                   "method": "manual", "source_ref": None}
         self.command("propose_plan", "E-OTHER-P", {"proposal": manual})
         self.command("decide_plan", "E-OTHER-ACCEPT",
@@ -242,6 +244,67 @@ class GoalContractTests(unittest.TestCase):
         self.command("decide_plan", "E-ALLOWED", auto)
         self.assertEqual([i["task_id"] for i in self.store.snapshot("DEMO-CET6")["plans"][1]["items"]],
                          ["B", "A"])
+
+    def test_practice_source_and_user_goal_revision_invalidate_old_proposal(self):
+        self.command("create_goal", "E-GOAL", {"goal": goal()})
+        initial = item()
+        self.assertEqual(initial["task_kind"], "practice")
+        self.command("propose_plan", "E-OLD",
+                     {"proposal": proposal("P-OLD", 0, None, [initial])})
+        changed_goal = goal()
+        changed_goal["weekly_minutes"] = 300
+        with self.assertRaisesRegex(ValueError, "目标修改需要用户"):
+            self.command("update_goal", "E-SYSTEM-UPDATE",
+                         {"goal": changed_goal, "actor": "system", "reason": "未经本人确认"})
+        self.command("update_goal", "E-USER-UPDATE",
+                     {"goal": changed_goal, "actor": "user", "reason": "本人调整每周可用时间"})
+        snap = self.store.snapshot("DEMO-CET6")
+        self.assertEqual(snap["goal"]["revision"], 2)
+        self.assertEqual(len(snap["goal_revisions"]), 2)
+        self.assertEqual(snap["proposals"][0]["status"], "superseded")
+        with self.assertRaisesRegex(ValueError, "提案不存在或已决策"):
+            self.command("decide_plan", "E-STALE-DECISION",
+                         {"proposal_id": "P-OLD", "decision": "accept", "actor": "user",
+                          "reason": "旧提案", "edited_items": None, "policy_ref": None})
+        updated = proposal("P-NEW", 0, None, [initial])
+        updated["goal_revision"] = 2
+        self.command("propose_plan", "E-NEW", {"proposal": updated})
+        self.command("decide_plan", "E-NEW-ACCEPT",
+                     {"proposal_id": "P-NEW", "decision": "accept", "actor": "user",
+                      "reason": "本人确认新版计划", "edited_items": None, "policy_ref": None})
+        self.assertEqual(self.store.snapshot("DEMO-CET6")["plans"][0]["goal_revision"], 2)
+
+        job_practice = item("JOB-PRACTICE")
+        job_practice.update(source_kind="job", source_id="DEMO-JOB")
+        self.command("record_review", "E-RV-EXTERNAL",
+                     {"review": review("RV-EXTERNAL", "external_event", [], "private/fictional-job-note")})
+        self.command("propose_plan", "E-JOB-PRACTICE",
+                     {"proposal": proposal("P-JOB-PRACTICE", 1, "RV-EXTERNAL", [job_practice]) | {"goal_revision": 2}})
+        bad_apply = item("BAD-APPLY")
+        bad_apply["task_kind"] = "apply_job"
+        with self.assertRaisesRegex(ValueError, "通用目标任务应关联当前 goal"):
+            self.command("propose_plan", "E-BAD-APPLY",
+                         {"proposal": proposal("P-BAD-APPLY", 1, "RV-EXTERNAL", [bad_apply]) | {"goal_revision": 2}})
+        next_goal = goal()
+        next_goal["weekly_minutes"] = 240
+        self.command("update_goal", "E-USER-UPDATE-2",
+                     {"goal": next_goal, "actor": "user", "reason": "虚构周可用时间再次变化"})
+        latest = self.store.snapshot("DEMO-CET6")
+        self.assertEqual(latest["goal"]["active_version"], 1)
+        self.assertTrue(latest["goal"]["needs_replan"])
+        self.assertEqual(latest["plans"][0]["goal_revision"], 2)
+        self.assertEqual(latest["proposals"][-1]["status"], "superseded")
+        self.command("record_review", "E-GOAL-RV",
+                     {"review": review("RV-GOAL-CHANGE", "goal_change", [])})
+        fresh = proposal("P-GOAL-CHANGE", 1, "RV-GOAL-CHANGE", [item("NEXT-PRACTICE")])
+        fresh["goal_revision"] = 3
+        self.command("propose_plan", "E-GOAL-P", {"proposal": fresh})
+        self.command("decide_plan", "E-GOAL-D",
+                     {"proposal_id": "P-GOAL-CHANGE", "decision": "accept", "actor": "user",
+                      "reason": "本人确认可用时间变更后的计划", "edited_items": None, "policy_ref": None})
+        latest = self.store.snapshot("DEMO-CET6")
+        self.assertEqual(latest["goal"]["active_version"], 2)
+        self.assertFalse(latest["goal"]["needs_replan"])
 
 
 if __name__ == "__main__":

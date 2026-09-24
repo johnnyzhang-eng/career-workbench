@@ -5,6 +5,7 @@
 ## 已确认的产品规则
 
 - 首版把秋招和 CET6 做成两条完整路径；其他目标先允许本人手动安排任务。计划从有来源的规则／模板起步，AI 只能提出个性化修改。提案与生效计划严格分开。
+- 本人可修改目标和每周可用时间；目标修订不可覆盖，基于旧目标的待决提案失效。目标改动不会暗中改正在执行的任务，需再提出并确认计划版本。
 - “实时”按系统时间推进。目标自己的时区决定本地日；不让角色动画改变现实截止。未核实的岗位截止、考试时间或外部事件不显示为精确事实。
 - 工作台操作与用户明确连接的工具事件可作为活动线索。工具时长、窗口切换、Codex 任务或代码提交都不能独自证明任务完成、掌握知识、考试通过或投递成功。
 - 未完成和低于预期保留实际结果与原因，给出温和且可解释的调整建议；没有罚分或自动断签逻辑。
@@ -28,12 +29,12 @@ flowchart LR
 
 | 对象 | 核心字段 | 含义和限制 |
 |---|---|---|
-| Goal | ID、标题、领域、IANA 时区、每周分钟、起点文字、本人成功条件、目标时间与可信度 | `target_confidence` 为 `unknown/self_set/estimated/verified`。本人设的目标日不等于官方考试日；`verified` 必须附来源和核验时间。任意自定义目标可创建，不需要岗位 ID。 |
-| PlanProposal | ID、Goal ID、基于版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，`source_ref` 记录规则模板版本或外部来源。提案本身不会安排每日任务。 |
+| Goal | ID、修订号、标题、领域、IANA 时区、每周分钟、起点文字、本人成功条件、目标时间与可信度 | `target_confidence` 为 `unknown/self_set/estimated/verified`。本人设的目标日不等于官方考试日；`verified` 必须附来源和核验时间。`update_goal` 只接受用户操作，旧修订保留；任意自定义目标不需要岗位 ID。 |
+| PlanProposal | ID、Goal ID、基于目标修订和计划版本、复盘 ID、原因、完整任务列表、`method`、来源 | `method=rule_template/ai_suggestion/manual`。初始版本从模板或本人手动任务起步；AI 修改仍是待决策提案，`source_ref` 记录规则模板版本或外部来源。目标更新后旧提案标为 `superseded`。提案本身不会安排每日任务。 |
 | PlanVersion | 递增版本、来源提案、决策、决策时间、完整任务列表、撤销目标版本 | 接受、编辑、受策略约束的自动微调、撤销都会生成新版本；旧版和旧结果不覆盖。 |
-| Plan item | 稳定 task ID、标题、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | CET6 和任意自定义目标用 `source_kind=goal`、`source_id=goal ID`、`task_kind=custom`。求职专属动作可用岗位来源，但目标契约本身不核验岗位真伪。截止可信度独立于安排时间。 |
+| Plan item | 稳定 task ID、标题、任务类型、来源种类与 ID、安排时间、预计分钟、完成条件、可否弹性调整、截止时间与可信度 | CET6 练习用 `source_kind=goal`、`source_id=goal ID`、`task_kind=practice`；其他手动目标可以用 `custom`。求职练习仍可关联岗位，但目标契约本身不核验岗位真伪。截止可信度独立于安排时间。 |
 | Result | 关联生效版本与 task ID、实际分钟、状态、练习指标、证据位置、备注、依据类型 | `self_report` 可记录完成／部分／未做／受阻；`tool_observation` 只能记录 `observed`，不能直接转成完成。`metric` 是记录的测量值，不等于考试通过。 |
-| Review | 目标、当前版本、触发原因、关联结果、发现、外部事件来源 | 支持漏做、低于预期、新外部事件、周期回顾。外部事件必须有引用位置。算法如何提出建议属于后续适配器；此层保留候选和理由。 |
+| Review | 目标、当前版本、触发原因、关联结果、发现、外部事件来源 | 支持漏做、低于预期、新外部事件、本人修改目标、周期回顾。外部事件必须有引用位置。算法如何提出建议属于后续适配器；此层保留候选和理由。 |
 | PlanDecision | `accept/edit/decline/auto_apply`、发起者、原因、策略 ID | 手动决策要求 `actor=user`；自动决策要求系统策略钩子通过，且 diff 只含允许的弹性时段或顺序。`undo_auto` 产生新的恢复版本，不删除审计记录。 |
 
 计划项 `due_confidence=unknown` 时 `due_at=null`。`verified` 必须有 `due_source_ref` 和 `due_checked_at`。由于普通任务的 `scheduled_at` 是内部计划时间，它不会自动变成外部硬截止。
@@ -41,6 +42,7 @@ flowchart LR
 ```mermaid
 erDiagram
   GOAL ||--o{ PLAN_VERSION : has
+  GOAL ||--|{ GOAL_REVISION : preserves
   GOAL ||--o{ PLAN_PROPOSAL : receives
   PLAN_PROPOSAL o|--o| PLAN_VERSION : activates_as
   PLAN_VERSION ||--|{ PLAN_ITEM : contains
@@ -84,7 +86,8 @@ store.close()
 ```json
 {
   "goal": {"id": "DEMO-CET6", "active_version": 1, "timezone": "Asia/Shanghai"},
-  "plans": [{"version": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "DEMO-READ-1", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "custom"}]}],
+  "goal_revisions": [{"revision": 1, "actor": "user", "reason": "创建目标"}],
+  "plans": [{"version": 1, "goal_revision": 1, "from_proposal": "P-1", "decision": "accept", "items": [{"task_id": "DEMO-READ-1", "source_kind": "goal", "source_id": "DEMO-CET6", "task_kind": "practice"}]}],
   "proposals": [{"id": "P-1", "method": "rule_template", "source_ref": "fictional-template-v1", "status": "accepted", "version": 1}],
   "results": [], "reviews": []
 }
@@ -95,7 +98,7 @@ store.close()
 ## 与 #18、求职状态机的连接
 
 1. GoalStore 保存目标、版本、结果、复盘和提案；`DailyStore` 保存任务 schedule/start/complete/defer/block/cancel、跨日和提醒。二者使用同一私有 workspace，但本 draft **尚未执行跨库命令**；#17 集成需要设计一致性与失败恢复，再将生效版本中的新增任务安排到 DailyStore。
-2. CET6 或其他通用目标的计划项适配为 #18 的 `kind=custom`、`source_kind=self`、`source_id=goal ID`。任务详情可用目标 ID 查回 PlanVersion。`DailyStore.complete` 对 custom 要求 `result_ref`，GoalStore 的 Result 保存练习指标和复盘解释；这两条记录需在 #17 对接，不可凭工具观察补造完成命令。
+2. CET6 的计划项在此契约中是 `task_kind=practice`、`source_kind=goal`。#18 当前把 `practice` 限定为岗位任务，不能直接消费这条通用练习；#17 必须扩展 DailyStore 的来源与完成验证适配，支持目标练习的作品／结果引用，同时保留岗位练习的旧 `job_event_seq` 门槛。不得把 CET6 永久伪装成 `custom`。其他通用手动任务可用 `custom`；任务详情通过目标 ID 查回 PlanVersion。GoalStore 的 Result 保存练习指标和复盘解释；工具观察不可补造完成命令。
 3. 岗位任务的 DailyStore `source_kind=job`、`source_id=job ID` 不变；GoalStore 的 plan item 通过稳定 task ID 关联它。`apply_job` 仍由原 `career.py` 的批准、材料和 `submitted` 回执事件验证；PlanVersion、打开链接或 GoalStore 的自述都不能代替旧门槛。
 4. 自动微调在契约层检查 task ID 集合不变、除安排时间外所有字段不变、顺序只涉及弹性且未开始的任务、移动后仍是同一目标时区的同一天；再由外部策略钩子核验策略 ID。**默认没有自动策略，因此不能自动生效。** #17 必须从 DailyStore 读取真实任务状态，并安全同步时段变化。目标、截止、任务增删和完成规则不在这条自动路径里。
 5. 初版模板必须版本化、列明依据；AI 个性化内容带 `method=ai_suggestion` 进入提案区。外部来源仍需人工核验，尤其官方考试日与岗位截止。无来源的通用自定义目标从本人手动任务起步。

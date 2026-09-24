@@ -14,11 +14,11 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 ID = re.compile(r"[A-Za-z0-9_-]{1,80}\Z")
 OUTCOMES = {"completed", "partial", "missed", "blocked", "observed"}
-TRIGGERS = {"weekly", "missed_day", "lower_result", "external_event"}
+TRIGGERS = {"weekly", "missed_day", "lower_result", "external_event", "goal_change"}
 CONFIDENCE = {"unknown", "self_set", "estimated", "verified"}
 KINDS = {"custom", "verify_job", "prepare_materials", "approve_materials",
          "apply_job", "practice", "attend_event", "prepare_interview", "follow_up"}
-JOB_KINDS = {"verify_job", "prepare_materials", "approve_materials", "apply_job", "practice"}
+JOB_KINDS = {"verify_job", "prepare_materials", "approve_materials", "apply_job"}
 
 
 def _need(condition, message):
@@ -101,8 +101,11 @@ def _items(items, goal_id):
         _need(item["source_kind"] in {"goal", "job", "event", "learning"}, "source_kind 无效")
         _id(item["source_id"], "source_id")
         if item["source_kind"] == "goal":
-            _need(item["source_id"] == goal_id and item["task_kind"] == "custom",
-                  "通用目标任务应关联当前 goal，使用 custom 类型")
+            _need(item["source_id"] == goal_id and item["task_kind"] in {"custom", "practice"},
+                  "通用目标任务应关联当前 goal，使用 custom 或 practice 类型")
+        if item["source_kind"] == "learning":
+            _need(item["task_kind"] in {"custom", "practice"},
+                  "学习来源只支持 custom 或 practice 类型")
         if item["task_kind"] in JOB_KINDS:
             _need(item["source_kind"] == "job", "该任务需要岗位来源")
         _stamp(item["scheduled_at"], "scheduled_at")
@@ -167,14 +170,30 @@ class GoalStore:
         return now
 
     def _state(self):
-        state = {"goals": {}, "plans": {}, "proposals": {}, "results": {}, "reviews": {}}
+        state = {"goals": {}, "goal_revisions": {}, "plans": {},
+                 "proposals": {}, "results": {}, "reviews": {}}
         for row in self.db.execute("SELECT at,kind,payload FROM goal_events ORDER BY seq"):
             payload = json.loads(row["payload"])
             kind = row["kind"]
             if kind == "create_goal":
-                goal = {**payload["goal"], "active_version": 0, "created_at": row["at"]}
+                goal = {**payload["goal"], "active_version": 0, "revision": 1,
+                        "created_at": row["at"], "updated_at": row["at"]}
                 state["goals"][goal["id"]] = goal
+                state["goal_revisions"][goal["id"]] = [
+                    {"revision": 1, "at": row["at"], "actor": "user",
+                     "reason": "创建目标", "goal": payload["goal"]}]
                 state["plans"][goal["id"]] = []
+            elif kind == "update_goal":
+                new_goal = payload["goal"]
+                old_goal = state["goals"][new_goal["id"]]
+                revision = old_goal["revision"] + 1
+                state["goals"][new_goal["id"]] = {
+                    **new_goal, "active_version": old_goal["active_version"],
+                    "revision": revision, "created_at": old_goal["created_at"],
+                    "updated_at": row["at"]}
+                state["goal_revisions"][new_goal["id"]].append(
+                    {"revision": revision, "at": row["at"], "actor": payload["actor"],
+                     "reason": payload["reason"], "goal": new_goal})
             elif kind == "propose_plan":
                 proposal = {**payload["proposal"], "status": "pending", "proposed_at": row["at"],
                             "decision_at": None, "decision": None, "decision_reason": None,
@@ -197,6 +216,7 @@ class GoalStore:
                                                     "reason": payload["reason"],
                                                     "policy_ref": payload.get("policy_ref"),
                                                     "items": payload.get("edited_items") or proposal["items"],
+                                                    "goal_revision": proposal["goal_revision"],
                                                     "undid_version": None})
             elif kind == "undo_auto":
                 goal_id = payload["goal_id"]
@@ -211,6 +231,7 @@ class GoalStore:
                                                 "actor": payload["actor"],
                                                 "reason": payload["reason"], "policy_ref": None,
                                                 "items": previous["items"],
+                                                "goal_revision": previous["goal_revision"],
                                                 "undid_version": payload["version"]})
             elif kind == "record_result":
                 result = {**payload["result"], "recorded_at": row["at"]}
@@ -219,8 +240,13 @@ class GoalStore:
                 review = {**payload["review"], "recorded_at": row["at"]}
                 state["reviews"][review["id"]] = review
         for proposal in state["proposals"].values():
-            if proposal["status"] == "pending" and proposal["base_version"] < state["goals"][proposal["goal_id"]]["active_version"]:
+            if (proposal["status"] == "pending"
+                    and (proposal["base_version"] < state["goals"][proposal["goal_id"]]["active_version"]
+                         or proposal["goal_revision"] < state["goals"][proposal["goal_id"]]["revision"])):
                 proposal["status"] = "superseded"
+        for goal_id, goal in state["goals"].items():
+            goal["needs_replan"] = bool(state["plans"][goal_id]
+                                         and state["plans"][goal_id][-1]["goal_revision"] != goal["revision"])
         return state
 
     def snapshot(self, goal_id=None):
@@ -228,14 +254,16 @@ class GoalStore:
         if goal_id is None:
             return state
         _need(goal_id in state["goals"], "目标不存在")
-        return {"goal": state["goals"][goal_id], "plans": state["plans"][goal_id],
+        return {"goal": state["goals"][goal_id],
+                "goal_revisions": state["goal_revisions"][goal_id],
+                "plans": state["plans"][goal_id],
                 "proposals": [p for p in state["proposals"].values() if p["goal_id"] == goal_id],
                 "results": [r for r in state["results"].values() if r["goal_id"] == goal_id],
                 "reviews": [r for r in state["reviews"].values() if r["goal_id"] == goal_id]}
 
     def command(self, kind, event_id, payload, at=None):
         """Validate and append one command; exact event-ID retries are idempotent."""
-        _need(kind in {"create_goal", "propose_plan", "decide_plan", "undo_auto",
+        _need(kind in {"create_goal", "update_goal", "propose_plan", "decide_plan", "undo_auto",
                        "record_result", "record_review"}, "命令无效")
         _id(event_id, "event_id")
         _need(isinstance(payload, dict), "payload 必须是对象")
@@ -270,11 +298,21 @@ class GoalStore:
             _need(set(payload) == {"goal"}, "create_goal 需要 goal")
             _goal(payload["goal"])
             _need(payload["goal"]["id"] not in state["goals"], "目标 ID 已存在")
+        elif kind == "update_goal":
+            _need(set(payload) == {"goal", "actor", "reason"}, "update_goal 字段不符合契约")
+            _need(payload["actor"] == "user", "目标修改需要用户操作")
+            _text(payload["reason"], "update_goal.reason")
+            _goal(payload["goal"])
+            old = state["goals"].get(payload["goal"]["id"])
+            _need(old is not None, "目标不存在")
+            _need(any(payload["goal"][key] != old[key] for key in payload["goal"]),
+                  "目标内容没有变化")
         elif kind == "propose_plan":
             _need(set(payload) == {"proposal"}, "propose_plan 需要 proposal")
             proposal = payload["proposal"]
             _need(isinstance(proposal, dict) and set(proposal) ==
-                  {"id", "goal_id", "base_version", "review_id", "reason", "items", "method", "source_ref"},
+                  {"id", "goal_id", "goal_revision", "base_version", "review_id", "reason",
+                   "items", "method", "source_ref"},
                   "proposal 字段不符合契约")
             _id(proposal["id"], "proposal.id")
             _id(proposal["goal_id"], "goal_id")
@@ -283,6 +321,8 @@ class GoalStore:
             _need(goal is not None, "目标不存在")
             _need(type(proposal["base_version"]) is int
                   and proposal["base_version"] == goal["active_version"], "提案基于过期计划")
+            _need(type(proposal["goal_revision"]) is int
+                  and proposal["goal_revision"] == goal["revision"], "提案基于过期目标")
             if proposal["base_version"] == 0:
                 _need(proposal["review_id"] is None, "初始计划不需要复盘")
             else:
@@ -307,6 +347,7 @@ class GoalStore:
             _need(proposal is not None and proposal["status"] == "pending", "提案不存在或已决策")
             goal = state["goals"][proposal["goal_id"]]
             _need(proposal["base_version"] == goal["active_version"], "不能接受基于旧版的提案")
+            _need(proposal["goal_revision"] == goal["revision"], "不能接受基于旧目标的提案")
             decision = payload["decision"]
             _need(decision in {"accept", "edit", "decline", "auto_apply"}, "计划决策无效")
             _text(payload["reason"], "decision.reason")
@@ -336,6 +377,8 @@ class GoalStore:
                            if plan["version"] == payload["version"]), None)
             _need(target is not None and target > 0 and plans[target]["decision"] == "auto_apply",
                   "只能撤销自动调整版本")
+            _need(plans[target]["goal_revision"] == state["goals"][payload["goal_id"]]["revision"],
+                  "目标已修改，需要新提案确认")
             later = plans[target + 1:]
             _need(all(plan["decision"] == "auto_apply" for plan in later),
                   "之后已有本人决策或撤销，需要新提案确认")
@@ -390,6 +433,6 @@ class GoalStore:
                       "复盘结果必须属于当前目标")
             if review["trigger"] == "external_event":
                 _text(review["source_ref"], "review.source_ref")
-            else:
+            elif review["trigger"] != "goal_change":
                 _need(bool(review["result_ids"]), "此类复盘需要实际结果或观察记录")
             _text(review["finding"], "review.finding")

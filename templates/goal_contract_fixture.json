@@ -28,6 +28,7 @@
         "proposal": {
           "id": "FIXTURE-P-1",
           "goal_id": "FIXTURE-CET6",
+          "goal_revision": 1,
           "base_version": 0,
           "review_id": null,
           "reason": "虚构教学模板的第一天练习",
@@ -37,7 +38,7 @@
             {
               "task_id": "FIXTURE-READ-1",
               "title": "做一组虚构阅读练习",
-              "task_kind": "custom",
+              "task_kind": "practice",
               "source_kind": "goal",
               "source_id": "FIXTURE-CET6",
               "scheduled_at": "2026-09-24T20:00:00+08:00",
