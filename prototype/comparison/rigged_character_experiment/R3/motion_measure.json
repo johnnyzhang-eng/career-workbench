@@ -1,0 +1,22 @@
+{
+  "logical_window": [
+    360,
+    320
+  ],
+  "physical_capture": [
+    720,
+    640
+  ],
+  "crop_physical_xyxy": [
+    320,
+    190,
+    385,
+    260
+  ],
+  "rgb_channel_difference_threshold_exclusive": 16,
+  "changed_pixels_between_typing_peaks": {
+    "R2": 194,
+    "R3": 199
+  },
+  "interpretation": "R3's contact-constrained action changes almost the same small number of pixels as R2; this is not proof of compact-size readability."
+}

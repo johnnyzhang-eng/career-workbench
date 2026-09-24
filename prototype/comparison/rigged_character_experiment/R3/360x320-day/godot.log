@@ -1,0 +1,24 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M5
+
+DISPLAY logical=(360, 320) pixels=(720, 640) scale=2.0
+CHARACTER_POSE idle_static
+CHARACTER_IMPORTED idle_meshes=38 typing_meshes=40 camera_fov=45.0
+CHARACTER_POSE idle_static
+R3_GODOT_IMPORT skeleton_bones=12 animations=["ReachToType", "TypingLoop"] meshes=1 camera_fov=45.0 typing_loop_mode=1
+CHARACTER_POSE idle_static
+R3_VARIANT seat-and-action
+CHARACTER_POSE idle_static
+CHARACTER_POSE typing_static
+R3_FRAME {"animation":"ReachToType","label":"reach-start","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/reach-start-360x320-day.png","seconds":0.0,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.712,1.274,-1.245],"Right":[-1.008,1.274,-1.245]}}
+R3_FRAME {"animation":"ReachToType","label":"reach-mid","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/reach-mid-360x320-day.png","seconds":0.3,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.648,1.329,-1.251],"Right":[-1.072,1.329,-1.251]}}
+R3_LOOP_STARTED
+R3_FRAME {"animation":"ReachToType","label":"reach-end","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/reach-end-360x320-day.png","seconds":0.6,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.61,1.37,-1.25],"Right":[-1.11,1.37,-1.25]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-start","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-start-360x320-day.png","seconds":0.0,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.61,1.37,-1.25],"Right":[-1.11,1.37,-1.25]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-left-down","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-left-down-360x320-day.png","seconds":0.15,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.441,1.369,-1.235],"Right":[-1.047,1.369,-1.247]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-right-down","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-right-down-360x320-day.png","seconds":0.45,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.676,1.369,-1.246],"Right":[-1.282,1.369,-1.235]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-mid","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-mid-360x320-day.png","seconds":0.75,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.438,1.369,-1.235],"Right":[-1.044,1.369,-1.246]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-end","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-end-360x320-day.png","seconds":1.05,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.676,1.369,-1.246],"Right":[-1.282,1.369,-1.235]}}
+R3_FRAME {"animation":"TypingLoop","label":"typing-loop-end","path":"<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/typing-loop-end-360x320-day.png","seconds":1.2,"viewport_pixels":[688,282],"window_pixels":[720,640],"wrists_world":{"Left":[-0.61,1.37,-1.25],"Right":[-1.11,1.37,-1.25]}}
+R3_LOOP_STARTED
+R3_VIDEO_CAPTURE frames=90 elapsed_seconds=3.006 frame_dir=<repo>/prototype/comparison/rigged_character_experiment/R3/360x320-day/video_frames
