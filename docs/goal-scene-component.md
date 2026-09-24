@@ -13,6 +13,7 @@
   renderer="pixel" mode="idle" phase="day" avatar="student"
   room-day-src="/scene-assets/room-day.png"
   room-evening-src="/scene-assets/room-evening.png"
+  desk-front-src="/scene-assets/desk-front.png"
   avatar-idle-src="/scene-assets/avatar-idle.png"
   avatar-desk-src="/scene-assets/avatar-desk.png"
   avatar-study-src="/scene-assets/avatar-study.png"
@@ -21,7 +22,7 @@
 ></goal-room-scene>
 ```
 
-脚本启动时从其 `<script nonce>` 取 nonce，给 Shadow DOM 内 `<style>` 同 nonce；不需要放开 CSP 的 `'unsafe-inline'`。所有图片 URL 必须是同源 `/scene-assets/` 下的 PNG/WebP，拒绝远程地址、参数和 `..`。服务器还应对这 7 个固定文件建 allowlist，不提供任意文件服务。现有页面 CSP 的 `img-src 'self'` 足以显示这些本机图。
+脚本启动时从其 `<script nonce>` 取 nonce，给 Shadow DOM 内 `<style>` 同 nonce；不需要放开 CSP 的 `'unsafe-inline'`。所有图片 URL 必须是同源 `/scene-assets/` 下的 PNG/WebP，拒绝远程地址、参数和 `..`。服务器还应对这 8 个固定文件建 allowlist，不提供任意文件服务。现有页面 CSP 的 `img-src 'self'` 足以显示这些本机图。透明桌沿只在 desk/study/interview 三态盖到人物前面，加载失败时仍显示可用的像素房间。
 
 ## 角色替换口
 
@@ -34,4 +35,5 @@
 - `node --check docs/goal-scene.js`、`python3 -m py_compile scripts/build_goal_pixel_scene.py`；逐张核对 PNG 签名、尺寸及 chunk 清单；在原生 320×180 合成 day/idle、day/study、day/interview、evening/rest 画面作本地视觉检查。
 - 第一轮素材见 Git 提交 `214c051`。第二轮只改了 `avatar-desk.png` 与 `avatar-interview.png`：电脑任务增加椅背、弯腿、伸手和键盘；面试增加正式上衣、耳麦及视频图标。背景和另外三态保持同一文件。`private/qa/scene-*-320.png` 是本机真实 320 CSS px 的五态截图，不随公开仓提交，可从两个提交复现素材对照。
 - 第二轮 320px 截图里，书本、休息椅、电脑任务的坐姿和面试装束有不同轮廓；电脑人物与桌面仍像前景贴片，视频图标也很小。它们仅满足状态草案的可辨性，尚未达到用户参考视频的精修质量。下一轮需将人物坐姿、桌沿和屏幕按同一空间关系重绘，并与授权的高质量像素素材做同尺寸实机对照。
+- 第三轮空间关系实验在同一 320×180 网格增加透明 `desk-front.png`，活动人物上移到桌沿后、待机与休息仍在原位置。学习图把书本抬到胸前，避免被桌沿盖住。真实 320 CSS px 五态截图见本机 `private/qa/scene-mode-320-*.png`：书本、打字坐姿、面试耳麦和休息椅各有可辨轮廓；桌面与人物的遮挡比第二轮自然，但人物与电脑的透视/触碰仍较概括，仍是草案。该层只改变遮挡和构图，不改变活动判断。
 - 这些素材代表一个原创 2D 视觉方向，并不是对用户喜欢的完整游戏开发视频的最终美术对齐。最终角色风格、照片生成和桌面角落窗口的实际透明/置顶/鼠标穿透仍需后续设计与真实窗口验收。

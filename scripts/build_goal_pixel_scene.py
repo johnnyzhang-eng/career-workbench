@@ -352,15 +352,18 @@ def draw_avatar(mode):
         c.rect(16, 53, 21, 61, P["teal"])
         c.rect(43, 51, 51, 64, outline)
         c.rect(45, 53, 50, 61, P["teal"])
-        c.rect(18, 61, 27, 67, skin)
-        c.rect(39, 61, 48, 67, skin)
-        c.rect(18, 62, 33, 75, outline)
-        c.rect(33, 62, 48, 75, outline)
-        c.rect(20, 64, 32, 72, P["paper"])
-        c.rect(34, 64, 46, 72, P["paper"])
-        c.rect(32, 63, 34, 75, "#b39278")
-        for x in (23, 36):
-            c.rect(x, 67, x + 7, 68, "#acb7a5")
+        c.rect(17, 55, 27, 61, skin)
+        c.rect(39, 55, 49, 61, skin)
+        # Open book is held at chest height so the desk foreground cannot
+        # hide the action at a 253 px rendered room width.
+        c.rect(16, 54, 33, 69, outline)
+        c.rect(33, 54, 50, 69, outline)
+        c.rect(18, 56, 32, 66, P["paper"])
+        c.rect(34, 56, 48, 66, P["paper"])
+        c.rect(32, 55, 34, 69, "#b39278")
+        for x in (21, 36):
+            c.rect(x, 59, x + 9, 60, "#acb7a5")
+            c.rect(x + 1, 62, x + 8, 63, "#acb7a5")
         c.rect(22, 23, 24, 39, P["gold"])
         c.rect(42, 23, 44, 39, P["gold"])
         c.rect(24, 17, 42, 20, P["gold"])
@@ -406,10 +409,25 @@ def draw_avatar(mode):
     return c
 
 
+def draw_desk_front():
+    """Transparent foreground panel that puts active poses behind the desk."""
+    c = Canvas(320, 180)
+    # Room desk top ends at y=116. Keep hands and books above this panel.
+    c.rect(108, 116, 261, 119, P["outline"])
+    c.rect(110, 119, 259, 133, "#8b5949")
+    c.rect(110, 119, 259, 122, P["wood_light"])
+    c.rect(111, 123, 258, 126, "#a56d52")
+    c.rect(110, 131, 259, 134, P["outline"])
+    c.rect(113, 125, 116, 131, "#c58a63")
+    c.rect(251, 125, 254, 131, "#6f4c43")
+    return c
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     draw_room(False).save(OUT / "room-day.png")
     draw_room(True).save(OUT / "room-evening.png")
+    draw_desk_front().save(OUT / "desk-front.png")
     for mode in ("idle", "desk", "study", "interview", "rest"):
         draw_avatar(mode).save(OUT / f"avatar-{mode}.png")
     for path in sorted(OUT.glob("*.png")):

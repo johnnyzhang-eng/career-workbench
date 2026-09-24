@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCENE_PNG = tuple("docs/scene-assets/" + name for name in (
     "room-day.png", "room-evening.png", "avatar-idle.png", "avatar-desk.png",
-    "avatar-study.png", "avatar-interview.png", "avatar-rest.png"))
+    "avatar-study.png", "avatar-interview.png", "avatar-rest.png", "desk-front.png"))
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py", "daily.py",
          "workbench/*.py",
          "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py", *SCENE_PNG)

@@ -60,15 +60,16 @@
     .screen-glow { opacity: .48; }
     .scene-edge { fill: none; stroke: rgba(246, 229, 199, .24); stroke-width: 2; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    svg[hidden], .pixel-stage[hidden] { display: none !important; }
+    svg[hidden], .pixel-stage[hidden], .pixel-stage img[hidden] { display: none !important; }
     [data-mode="rest"] .seated-avatar { opacity: 0; }
     .pixel-stage { position: relative; width: 100%; height: 100%; background: #1c2f43; overflow: hidden; }
     .pixel-stage img { position: absolute; display: block; image-rendering: pixelated; image-rendering: crisp-edges; pointer-events: none; user-select: none; }
     .pixel-bg { inset: 0; width: 100%; height: 100%; object-fit: fill; }
+    .pixel-desk-front { inset: 0; width: 100%; height: 100%; object-fit: fill; }
     .pixel-avatar { width: 28%; height: 63%; left: 36%; bottom: 9%; object-fit: contain; object-position: center bottom; }
     .pixel-stage[data-mode="desk"] .pixel-avatar,
     .pixel-stage[data-mode="study"] .pixel-avatar,
-    .pixel-stage[data-mode="interview"] .pixel-avatar { width: 29%; height: 65%; left: 39%; bottom: 8%; }
+    .pixel-stage[data-mode="interview"] .pixel-avatar { width: 29%; height: 65%; left: 39%; bottom: 17%; }
     .pixel-stage[data-mode="rest"] .pixel-avatar { width: 30%; height: 62%; left: 69%; bottom: 7%; }
     @media (max-width: 380px) { :host { border-radius: 12px; box-shadow: 0 8px 18px rgba(22,44,62,.15); } }
     @media (prefers-reduced-motion: no-preference) {
@@ -273,7 +274,8 @@
     static get observedAttributes() {
       return ['mode', 'phase', 'timezone', 'avatar', 'renderer', 'room-src',
               'room-day-src', 'room-evening-src', 'avatar-src', 'avatar-idle-src',
-              'avatar-desk-src', 'avatar-study-src', 'avatar-interview-src', 'avatar-rest-src'];
+              'avatar-desk-src', 'avatar-study-src', 'avatar-interview-src', 'avatar-rest-src',
+              'desk-front-src'];
     }
 
     constructor() {
@@ -297,7 +299,12 @@
       avatar.className = 'pixel-avatar';
       avatar.alt = '';
       avatar.setAttribute('aria-hidden', 'true');
-      pixel.append(background, avatar);
+      const deskFront = document.createElement('img');
+      deskFront.className = 'pixel-desk-front';
+      deskFront.alt = '';
+      deskFront.hidden = true;
+      deskFront.setAttribute('aria-hidden', 'true');
+      pixel.append(background, avatar, deskFront);
       stage.append(pixel);
       root.append(stage);
       this._svg = stage.querySelector('svg');
@@ -305,6 +312,7 @@
       this._pixel = pixel;
       this._pixelBg = background;
       this._pixelAvatar = avatar;
+      this._pixelDeskFront = deskFront;
       this._lastPhase = '';
       this._clockTimer = null;
       this._failedAssets = new Set();
@@ -312,6 +320,12 @@
       avatar.addEventListener('error', () => this._pixelFallback(avatar.getAttribute('src')));
       background.addEventListener('load', () => this._sync());
       avatar.addEventListener('load', () => this._sync());
+      deskFront.addEventListener('load', () => this._sync());
+      deskFront.addEventListener('error', () => {
+        const failedSrc = deskFront.getAttribute('src');
+        if (failedSrc) this._failedAssets.add(failedSrc);
+        this._sync();
+      });
     }
 
     connectedCallback() {
@@ -350,9 +364,19 @@
       this._desc.textContent = descriptions[mode] + (phase === 'day' ? '，白天窗光' : '，傍晚暖灯');
       const room = localAsset(this.getAttribute(`room-${phase}-src`)) || localAsset(this.getAttribute('room-src'));
       const avatar = localAsset(this.getAttribute(`avatar-${mode}-src`)) || localAsset(this.getAttribute('avatar-src'));
+      const bundledRoom = room === '/scene-assets/room-day.png' || room === '/scene-assets/room-evening.png';
+      const deskFront = localAsset(this.getAttribute('desk-front-src'))
+        || (bundledRoom ? '/scene-assets/desk-front.png' : null);
       const configured = this.getAttribute('renderer') === 'pixel' && room && avatar;
       if (configured && this._pixelBg.getAttribute('src') !== room) this._pixelBg.setAttribute('src', room);
       if (configured && this._pixelAvatar.getAttribute('src') !== avatar) this._pixelAvatar.setAttribute('src', avatar);
+      if (configured && deskFront && this._pixelDeskFront.getAttribute('src') !== deskFront) {
+        this._pixelDeskFront.setAttribute('src', deskFront);
+      }
+      const frontReady = deskFront && !this._failedAssets.has(deskFront)
+        && this._pixelDeskFront.complete && this._pixelDeskFront.naturalWidth > 0;
+      this._pixelDeskFront.hidden = !(configured && frontReady
+        && (mode === 'desk' || mode === 'study' || mode === 'interview'));
       const pixelReady = configured && !this._failedAssets.has(room) && !this._failedAssets.has(avatar)
         && this._pixelBg.complete && this._pixelAvatar.complete
         && this._pixelBg.naturalWidth > 0 && this._pixelAvatar.naturalWidth > 0;
