@@ -4,7 +4,7 @@ import hashlib
 import json
 import re
 from contextlib import contextmanager
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -37,6 +37,23 @@ def _operation(payload):
 def _stable_id(prefix, *parts):
     material = json.dumps(parts, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return prefix + hashlib.sha256(material.encode("utf-8")).hexdigest()[:40].upper()
+
+
+def _review_time(value, original, zone_name, now=None):
+    """Interpret a user's HH:MM choice in the goal's local day, not the browser zone."""
+    if not isinstance(value, str) or not re.fullmatch(r"(?:[01][0-9]|2[0-3]):[0-5][0-9]", value):
+        raise ValueError("新时段需要 HH:MM")
+    zone = ZoneInfo(zone_name)
+    before = datetime.fromisoformat(original.replace("Z", "+00:00")).astimezone(zone)
+    hour, minute = map(int, value.split(":"))
+    after = datetime.combine(before.date(), time(hour, minute), zone)
+    if after.astimezone(timezone.utc).astimezone(zone).replace(fold=after.fold) != after:
+        raise ValueError("目标时区的这一时刻不存在")
+    if now is not None and after <= now.astimezone(zone):
+        raise ValueError("只能选择未来的时段")
+    if after == before:
+        raise ValueError("新时段与原计划相同")
+    return after.isoformat()
 
 
 def _result_fields(payload):
@@ -228,19 +245,62 @@ class GoalApp:
         operation = _operation(payload)
         proposal_id = _required_text(payload.get("proposal_id"), "提案 ID", 80)
         decision = payload.get("decision")
-        if decision not in {"accept", "decline"}:
-            raise ValueError("仅支持本人接受或拒绝计划")
-        with self._stores() as (goals, _daily, _bridge):
+        if decision not in {"accept", "decline", "edit"}:
+            raise ValueError("仅支持本人接受、拒绝或确认改期")
+        with self._stores() as (goals, daily, bridge):
             all_state = goals.snapshot()
             proposal = all_state["proposals"].get(proposal_id)
             if proposal is None:
                 raise ValueError("提案不存在")
-            subject = "首版计划" if proposal["base_version"] == 0 else "复盘提案"
-            goals.command("decide_plan", "E-D-" + operation,
-                          {"proposal_id": proposal_id, "decision": decision, "actor": "user",
-                           "reason": "本人在本地工作台" + ("接受" if decision == "accept" else "拒绝") + subject,
-                           "edited_items": None, "policy_ref": None})
             goal_id = proposal["goal_id"]
+            event_id = "E-D-" + operation
+            previous = goals.db.execute("SELECT payload FROM goal_events WHERE event_id=?", (event_id,)).fetchone()
+            if previous is not None:
+                recorded = json.loads(previous["payload"])
+                if recorded["proposal_id"] != proposal_id or recorded["decision"] != decision:
+                    raise ValueError("operation_id 已用于不同决策")
+                if decision == "edit":
+                    changed = [(old, new) for old, new in zip(proposal["items"], recorded["edited_items"])
+                               if old != new]
+                    if (len(changed) != 1 or changed[0][0]["task_id"] != payload.get("task_id")
+                            or _review_time(payload.get("local_time"), changed[0][0]["scheduled_at"],
+                                            all_state["goals"][goal_id]["timezone"]) != changed[0][1]["scheduled_at"]):
+                        raise ValueError("operation_id 已用于不同改期")
+                    bridge.sync(goal_id)
+                return self.state(goal_id)
+            subject = "首版计划" if proposal["base_version"] == 0 else "复盘提案"
+            edited_items = None
+            if decision == "edit":
+                if proposal["base_version"] == 0 or proposal["review_id"] is None:
+                    raise ValueError("此入口只修改本人复盘提案")
+                if proposal["status"] != "pending" or proposal["base_version"] != all_state["goals"][goal_id]["active_version"]:
+                    raise ValueError("提案已变化，请重新审阅")
+                active = all_state["plans"][goal_id][-1]
+                if proposal["items"] != active["items"]:
+                    raise ValueError("提案已有其他修改，此入口只支持一次同日时段调整")
+                if bridge.status(goal_id)["state"] != "applied":
+                    raise ValueError("每日清单尚未同步或存在冲突，不能确认改期")
+                task_id = _required_text(payload.get("task_id"), "任务 ID", 80)
+                item = next((item for item in proposal["items"] if item["task_id"] == task_id), None)
+                task = daily._tasks().get(task_id)
+                if item is None or task is None or task["state"] != "scheduled" or not item["flexible"] or item["due_at"] is not None:
+                    raise ValueError("只能修改尚未开始、无截止时间的弹性任务")
+                if task.get("flexible") is not True or type(task.get("display_order")) is not int:
+                    raise ValueError("这项任务由旧版清单创建，暂不能安全改期；原计划仍保留")
+                original = datetime.fromisoformat(item["scheduled_at"].replace("Z", "+00:00"))
+                if original <= self.clock() or task["scheduled_at"] != item["scheduled_at"]:
+                    raise ValueError("原时段已过去或每日任务已另行更改")
+                scheduled_at = _review_time(payload.get("local_time"), item["scheduled_at"],
+                                            all_state["goals"][goal_id]["timezone"], self.clock())
+                edited_items = [{**entry, "scheduled_at": scheduled_at} if entry["task_id"] == task_id else entry
+                                for entry in proposal["items"]]
+            reason = ("本人查看前后时段并确认复盘改期" if decision == "edit" else
+                      "本人在本地工作台" + ("接受" if decision == "accept" else "拒绝") + subject)
+            goals.command("decide_plan", event_id,
+                          {"proposal_id": proposal_id, "decision": decision, "actor": "user",
+                           "reason": reason, "edited_items": edited_items, "policy_ref": None})
+            if decision == "edit":
+                bridge.sync(goal_id)
         return self.state(goal_id)
 
     def sync_plan(self, payload):
@@ -347,7 +407,7 @@ class GoalApp:
                 "partial": "这次只完成一部分；下次可从剩余内容继续。不会扣分。",
                 "blocked": "这次遇到阻碍；先确认阻碍是否仍在，再决定下一步。不会扣分。",
             }[result["outcome"]]
-            reason = "建议暂保留现有七日任务与时段；若要改期，请另行审阅具体安排。"
+            reason = "当前计划暂保留；可在审阅时为未来未开始的弹性任务选择同日新时段，确认后才写入每日清单。"
             source_ref = "self:" + result_id
             review_id = _stable_id("RV-", goal_id, active["version"], result_id)
             proposal_id = _stable_id("PR-", goal_id, active["version"], result_id)

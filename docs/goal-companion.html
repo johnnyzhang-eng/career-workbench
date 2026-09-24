@@ -55,12 +55,14 @@
     let selectedReportTask = null;
     let selectedResultTask = null;
     let selectedCorrectionResult = null;
+    let reviewPreview = null;
     let showNewGoal = false;
     let photoStatus = {present:false,generated_avatar:false};
     let photoPreview = null;
     const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const id = () => crypto.randomUUID().replaceAll('-', '');
     const dateLabel = stamp => stamp ? stamp.slice(5,10).replace('-', '月') + '日' : '日期待定';
+    const localClock = stamp => new Intl.DateTimeFormat('en-GB',{timeZone:state.selected.goal.timezone,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(stamp));
     const stateLabel = key => ({scheduled:'未开始',in_progress:'进行中',deferred:'已顺延',blocked:'受阻',completed:'已记录完成',cancelled:'已取消',not_scheduled:'待同步'})[key] || key;
     const outcomeLabel = key => ({completed:'已完成',missed:'未做',partial:'部分完成',blocked:'受阻'})[key] || key;
     const badge = (value, label) => '<span class="status ' + esc(value) + '">' + esc(label) + '</span>';
@@ -135,8 +137,16 @@
         const review=selected.reviews.find(item=>item.id===proposal.review_id);
         const revised=proposal.base_version>0;
         const stale=proposal.base_version!==selected.goal.active_version || proposal.goal_revision!==selected.goal.revision;
-        const items=proposal.items.map((item,index)=>`<div class="proposal-item"><h3>${index+1}. ${esc(item.title)} <span class="muted small">${dateLabel(item.scheduled_at)} · ${item.estimated_minutes} 分钟</span></h3><p>${esc(item.reason)}</p><p class="source">依据：${esc(item.source_ref)}</p><p class="small">完成时记录：${esc(item.completion_rule)}</p></div>`).join('');
-        return `<section class="panel" id="proposal-panel"><div class="section-head"><h2>${revised?'温和复盘提案':'待你决定的七日计划'}</h2>${badge(stale?'conflict':'pending',stale?'基于旧版':'尚未生效')}</div>${review?`<p class="note small">${esc(review.finding)}</p>`:''}<p class="proposal-intro small">${esc(proposal.reason)}</p>${revised?'<p class="form-note">这一版保留当前任务与时段；不会自动改期。接受后的清单状态仍以实际同步结果为准。</p>':''}<div class="proposal-list">${items}</div>${stale?'<p class="form-note">目标或计划已变化，这份提案不能直接接受；请基于当前版本重新审阅。</p>':`<div class="actions"><button class="primary" data-action="accept" data-id="${esc(proposal.id)}">接受提案</button><button class="danger" data-action="decline" data-id="${esc(proposal.id)}">拒绝此版</button></div>`}<p class="form-note">接受后以清单同步状态为准；冲突不会显示为已安排。</p></section>`;
+        const items=proposal.items.map((item,index)=>`<div class="proposal-item"><h3>${index+1}. ${esc(item.title)} <span class="muted small">${dateLabel(item.scheduled_at)} ${localClock(item.scheduled_at)} · ${item.estimated_minutes} 分钟</span></h3><p>${esc(item.reason)}</p><p class="source">依据：${esc(item.source_ref)}</p><p class="small">完成时记录：${esc(item.completion_rule)}</p></div>`).join('');
+        const eligible=revised&&!stale&&selected.sync.state==='applied'?proposal.items.filter(item=>{
+          const current=selected.active_plan?.items.find(row=>row.task_id===item.task_id);
+          const synced=selected.sync.items.find(row=>row.task_id===item.task_id);
+          return item.flexible&&!item.due_at&&current?.daily_state==='scheduled'&&synced?.state==='applied'&&!synced?.legacy_schedule&&new Date(item.scheduled_at)>new Date(selected.as_of||state.as_of);
+        }):[];
+        const chosen=eligible.find(item=>item.task_id===reviewPreview?.taskId);
+        const preview=reviewPreview?.proposalId===proposal.id&&chosen?`<div class="note" role="status"><strong>请核对改期差异</strong><p>${esc(chosen.title)}：${dateLabel(chosen.scheduled_at)} ${localClock(chosen.scheduled_at)} → ${dateLabel(chosen.scheduled_at)} ${esc(reviewPreview.localTime)}（${esc(selected.goal.timezone)}）</p><p class="small">只改这一项时段；任务内容、原计划与实际结果记录保留。确认后才写入每日清单。</p><button class="primary" data-action="confirm-review-edit" data-id="${esc(proposal.id)}">确认这次改期</button></div>`:'';
+        const editForm=eligible.length?`<form data-form="review-edit" data-id="${esc(proposal.id)}"><p class="form-note">可为未来未开始、无截止时间的弹性任务调整<strong>同一天</strong>的时段。跨天调整暂不支持。</p><div class="form-grid"><div class="field"><label>选择一项任务</label><select name="task_id">${eligible.map(item=>`<option value="${esc(item.task_id)}" ${chosen?.task_id===item.task_id?'selected':''}>${esc(item.title)} · ${dateLabel(item.scheduled_at)} ${localClock(item.scheduled_at)}</option>`).join('')}</select></div><div class="field"><label>新时段（目标本地时间）</label><input name="local_time" type="time" value="${esc(chosen?reviewPreview.localTime:'')}" required></div></div><button class="plain-button" type="submit">预览前后差异</button></form>${preview}`:revised?'<p class="form-note">当前没有可安全改时段的未来弹性任务。已开始、含截止时间、旧版清单或不同步的任务仍保留原安排。</p>':'';
+        return `<section class="panel" id="proposal-panel"><div class="section-head"><h2>${revised?'温和复盘提案':'待你决定的七日计划'}</h2>${badge(stale?'conflict':'pending',stale?'基于旧版':'尚未生效')}</div>${review?`<p class="note small">${esc(review.finding)}</p>`:''}<p class="proposal-intro small">${esc(proposal.reason)}</p><div class="proposal-list">${items}</div>${stale?'<p class="form-note">目标或计划已变化，这份提案不能直接接受；请基于当前版本重新审阅。</p>':`${editForm}<div class="actions"><button class="primary" data-action="accept" data-id="${esc(proposal.id)}">${revised?'保持当前时段':'接受提案'}</button><button class="danger" data-action="decline" data-id="${esc(proposal.id)}">拒绝此版</button></div>`}<p class="form-note">计划版本只有在本人确认后才变化；清单状态以实际同步结果为准。</p></section>`;
       }).join('');
     }
     function evidenceForm(item) {
@@ -165,7 +175,7 @@
       const control=startable?`<button class="quiet" data-action="start" data-id="${esc(item.task_id)}">开始行动</button>`:
         ownsAction&&action.state==='active'?`<button class="quiet" data-action="pause" data-id="${esc(item.task_id)}">暂停</button><button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:
         ownsAction&&['paused','stale'].includes(action.state)?`${action.can_resume?`<button class="quiet" data-action="resume" data-id="${esc(item.task_id)}">继续行动</button>`:''}<button class="quiet" data-action="stop" data-id="${esc(item.task_id)}">结束这次行动</button>`:'';
-      return `<article class="task"><div class="task-title"><div><h3>${esc(item.title)}</h3><div class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</div></div>${badge(status,stateLabel(item.daily_state))}</div><p>${esc(item.reason)}</p><p class="rule">完成条件：${esc(item.completion_rule)}</p><p class="source">依据：${esc(item.source_ref)}</p>${item.daily_state==='deferred'?'<p class="small">延期原因：'+esc(item.carryover_reason)+'</p>':''}<div class="task-actions">${control}${completable?`<button class="quiet" data-action="evidence" data-id="${esc(item.task_id)}">${selectedTask===item.task_id?'收起依据':'记录完成依据'}</button>`:''}${reportable?`<button class="quiet" data-action="report" data-id="${esc(item.task_id)}">${selectedReportTask===item.task_id?'收起实际情况':'记录未完成／受阻'}</button>`:''}</div>${completable?evidenceForm(item):''}${reportable?reportForm(item.task_id):''}${item.sync_state==='conflict'?'<p class="small">同步存在冲突，请在完整工作台查看并处理。</p>':''}</article>`;
+      return `<article class="task"><div class="task-title"><div><h3>${esc(item.title)}</h3><div class="task-meta">${dateLabel(item.current_scheduled_at||item.scheduled_at)} ${localClock(item.current_scheduled_at||item.scheduled_at)} · ${esc(item.estimated_minutes)} 分钟</div></div>${badge(status,stateLabel(item.daily_state))}</div><p>${esc(item.reason)}</p><p class="rule">完成条件：${esc(item.completion_rule)}</p><p class="source">依据：${esc(item.source_ref)}</p>${item.daily_state==='deferred'?'<p class="small">延期原因：'+esc(item.carryover_reason)+'</p>':''}<div class="task-actions">${control}${completable?`<button class="quiet" data-action="evidence" data-id="${esc(item.task_id)}">${selectedTask===item.task_id?'收起依据':'记录完成依据'}</button>`:''}${reportable?`<button class="quiet" data-action="report" data-id="${esc(item.task_id)}">${selectedReportTask===item.task_id?'收起实际情况':'记录未完成／受阻'}</button>`:''}</div>${completable?evidenceForm(item):''}${reportable?reportForm(item.task_id):''}${item.sync_state==='conflict'?'<p class="small">同步存在冲突，请在完整工作台查看并处理。</p>':''}</article>`;
     }
     function todayPanel(selected) {
       const plan=selected.active_plan;
@@ -179,7 +189,7 @@
     function planPanel(selected) {
       const plan=selected.active_plan;
       if(!plan) return `<section class="panel" id="plan-panel"><h2>计划如何生效</h2><p class="muted">创建目标 → 查看有来源的建议 → 本人决定 → 安排每日任务。没有确认前不会自动执行。</p></section>`;
-      const rows=plan.items.map((item,index)=>`<div class="day"><div class="day-date">${dateLabel(item.current_scheduled_at||item.scheduled_at)}</div><div><h3>${index+1}. ${esc(item.title)}</h3><p>${esc(item.reason)} · ${item.estimated_minutes} 分钟</p><p class="source">${esc(item.source_ref)}</p>${badge(item.daily_state==='completed'?'done':item.sync_state==='conflict'?'conflict':'',stateLabel(item.daily_state))}</div></div>`).join('');
+      const rows=plan.items.map((item,index)=>`<div class="day"><div class="day-date">${dateLabel(item.current_scheduled_at||item.scheduled_at)}<br>${localClock(item.current_scheduled_at||item.scheduled_at)}</div><div><h3>${index+1}. ${esc(item.title)}</h3><p>${esc(item.reason)} · ${item.estimated_minutes} 分钟</p><p class="source">${esc(item.source_ref)}</p>${badge(item.daily_state==='completed'?'done':item.sync_state==='conflict'?'conflict':'',stateLabel(item.daily_state))}</div></div>`).join('');
       return `<section class="panel" id="plan-panel"><div class="section-head"><h2>七日计划</h2>${badge('done','第 '+plan.version+' 版')}</div><div class="timeline">${rows}</div></section>`;
     }
     function recordsPanel(selected) {
@@ -240,7 +250,14 @@
         if(action==='confirm-result'){selectedResultTask=selectedResultTask===button.dataset.id?null:button.dataset.id;render()}
         if(action==='correct-result'){selectedCorrectionResult=selectedCorrectionResult===button.dataset.id?null:button.dataset.id;render()}
         if(action==='review-result'){await write('/api/reviews/propose',{goal_id:state.selected_goal_id,result_id:button.dataset.id});notify('温和复盘与待决定提案已保存')}
-        if(action==='accept'||action==='decline'){await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
+        if(action==='accept'||action==='decline'){reviewPreview=null;await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
+        if(action==='confirm-review-edit'){
+          if(!reviewPreview||reviewPreview.proposalId!==button.dataset.id) throw Error('请先预览改期差异');
+          const preview=reviewPreview;
+          await write('/api/plans/decide',{proposal_id:preview.proposalId,decision:'edit',task_id:preview.taskId,local_time:preview.localTime});
+          reviewPreview=null;
+          notify(state.selected.sync.state==='applied'?'新时段已写入每日清单':'计划决策已保存；每日清单尚未同步，请查看冲突或重试');
+        }
         if(action==='sync'){await write('/api/plans/sync',{goal_id:state.selected_goal_id})}
         if(['start','pause','resume','stop'].includes(action)){await write('/api/actions/'+action,{goal_id:state.selected_goal_id,task_id:button.dataset.id})}
         if(action==='delete-photo'){await photoWrite('/api/avatar/photo/delete',{});notify('本机原照已删除')}
@@ -258,6 +275,12 @@
           showNewGoal=false;render();notify('目标已保存在本机');
         }
         if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
+        if(form.dataset.form==='review-edit'){
+          const proposal=state.selected.pending_proposals.find(item=>item.id===form.dataset.id);
+          const chosen=proposal?.items.find(item=>item.task_id===fields.task_id);
+          if(!chosen||!fields.local_time||fields.local_time===localClock(chosen.scheduled_at)) throw Error('请选择不同的同日新时段');
+          reviewPreview={proposalId:form.dataset.id,taskId:fields.task_id,localTime:fields.local_time};render();
+        }
         if(form.dataset.form==='complete'){await write('/api/tasks/complete',{goal_id:state.selected_goal_id,task_id:form.dataset.id,evidence:fields});notify('Daily 完成依据已保存；实际结果仍待本人确认')}
         if(form.dataset.form==='confirm-result'){await write('/api/results/confirm',{goal_id:state.selected_goal_id,task_id:form.dataset.id,actual_minutes:Number(fields.actual_minutes),metric:formMetric(fields),evidence_ref:fields.evidence_ref||null,note:fields.note||'',correct:form.dataset.correct==='true'});notify('本人实际结果已保存；不据此判定掌握或考试结果')}
         if(form.dataset.form==='report-result'){await write('/api/results/report',{goal_id:state.selected_goal_id,task_id:form.dataset.id,outcome:fields.outcome,actual_minutes:Number(fields.actual_minutes),metric:formMetric(fields),evidence_ref:fields.evidence_ref||null,note:fields.note});notify('实际情况已记录；每日任务未被自动标为完成')}

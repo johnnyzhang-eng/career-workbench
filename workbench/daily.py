@@ -107,6 +107,11 @@ class DailyStore:
                 task["state"] = "deferred"
                 task["scheduled_at"] = payload["scheduled_at"]
                 task["latest_reason"] = payload["reason"]
+            elif command == "reschedule":
+                task["scheduled_at"] = payload["scheduled_at"]
+                task["display_order"] = payload["display_order"]
+                task["plan_version"] = payload["plan_version"]
+                task["latest_reschedule_reason"] = payload["reason"]
             elif command == "block":
                 task["state"] = "blocked"
                 task["latest_reason"] = payload["reason"]
@@ -152,7 +157,12 @@ class DailyStore:
             require(checked is None, "未核实截止不能设置 due_verified_at")
         require(set(task) <= {"id", "title", "kind", "source_kind", "source_id", "reason",
                              "scheduled_at", "due_at", "due_verified", "due_verified_at",
-                             "goal_id", "plan_version"}, "task 含未知字段")
+                             "goal_id", "plan_version", "flexible", "display_order"}, "task 含未知字段")
+        if "flexible" in task:
+            require(type(task["flexible"]) is bool, "flexible 必须是布尔值")
+        if "display_order" in task:
+            require(type(task["display_order"]) is int and task["display_order"] >= 0,
+                    "display_order 必须是非负整数")
 
     def _job_event(self, task, evidence, occurred):
         require(isinstance(evidence, dict) and type(evidence.get("job_event_seq")) is int,
@@ -251,7 +261,7 @@ class DailyStore:
 
     def command(self, command, event_id, task_id, payload=None, at=None):
         """Apply an explicit command; duplicate event IDs return the original task."""
-        require(command in {"schedule", "start", "complete", "defer", "block", "cancel"}, "命令无效")
+        require(command in {"schedule", "start", "complete", "defer", "block", "cancel", "reschedule"}, "命令无效")
         require(nonempty(event_id) and ID.fullmatch(event_id), "事件 ID 无效")
         require(nonempty(task_id) and ID.fullmatch(task_id), "任务 ID 无效")
         payload = {} if payload is None else payload
@@ -289,6 +299,35 @@ class DailyStore:
                     require(stamp(payload.get("scheduled_at"), "scheduled_at") > occurred,
                             "延期时间必须晚于事件时间")
                     require(set(payload) == {"reason", "scheduled_at"}, "defer 参数无效")
+                elif command == "reschedule":
+                    require(set(payload) == {"reason", "scheduled_at", "display_order",
+                                             "plan_version", "prior_plan_version", "timezone",
+                                             "prior_scheduled_at", "prior_display_order"},
+                            "计划改期参数无效")
+                    require(task["state"] == "scheduled" and task.get("flexible") is True,
+                            "只有未开始的弹性任务可改期")
+                    require(task.get("goal_id") and task.get("due_at") is None,
+                            "目标任务有截止时间或缺少目标归属，不可改期")
+                    require(task.get("plan_version") == payload["prior_plan_version"]
+                            and type(payload["prior_plan_version"]) is int
+                            and type(payload["plan_version"]) is int
+                            and payload["plan_version"] > payload["prior_plan_version"],
+                            "计划版本与每日任务不一致")
+                    require(task["scheduled_at"] == payload["prior_scheduled_at"]
+                            and type(task.get("display_order")) is int
+                            and type(payload["prior_display_order"]) is int
+                            and task["display_order"] == payload["prior_display_order"],
+                            "每日任务已被更改，不能覆盖")
+                    require(nonempty(payload["reason"]), "计划改期需要原因")
+                    require(type(payload["display_order"]) is int and payload["display_order"] >= 0,
+                            "display_order 必须是非负整数")
+                    viewing_zone = zone(payload["timezone"])
+                    before = stamp(task["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
+                    after = stamp(payload["scheduled_at"], "scheduled_at").astimezone(viewing_zone)
+                    require(before.date() == after.date(), "计划改期只能在同一个本地日期")
+                    require(task["scheduled_at"] != payload["scheduled_at"]
+                            or task["display_order"] != payload["display_order"],
+                            "计划改期必须实际更改时间或顺序")
                 elif command in {"block", "cancel"}:
                     require(nonempty(payload.get("reason")) and set(payload) == {"reason"},
                             "该命令需要原因")
@@ -328,6 +367,7 @@ class DailyStore:
                 "state": task["state"], "source_kind": task["source_kind"],
                 "source_id": task["source_id"], "reason": task["reason"],
                 "goal_id": task.get("goal_id"), "plan_version": task.get("plan_version"),
+                "display_order": task.get("display_order"),
                 "scheduled_at": task["scheduled_at"], "due_at": task.get("due_at"),
                 "due_verified": task["due_verified"], "completion_rule": KINDS[task["kind"]],
                 "evidence_state": task["evidence_state"],
@@ -335,9 +375,24 @@ class DailyStore:
                 "carryover_reason": carryover, "due_verified_at": task.get("due_verified_at"),
             })
         visible.extend(self._suggestions(now, tasks))
-        visible.sort(key=lambda item: (item["state"] in TERMINAL,
-                                       stamp(item["scheduled_at"], "scheduled_at").timestamp(),
-                                       item["id"]))
+        group_start = {}
+        for item in visible:
+            if item.get("goal_id") and item.get("display_order") is not None:
+                day = stamp(item["scheduled_at"], "scheduled_at").astimezone(viewing_zone).date()
+                key = (item["goal_id"], day)
+                at = stamp(item["scheduled_at"], "scheduled_at").timestamp()
+                group_start[key] = min(group_start.get(key, at), at)
+
+        def display_key(item):
+            planned = stamp(item["scheduled_at"], "scheduled_at")
+            day = planned.astimezone(viewing_zone).date()
+            group = (item.get("goal_id"), day)
+            time_key = group_start.get(group, planned.timestamp())
+            within_group = (item["display_order"] if item.get("display_order") is not None
+                            else planned.timestamp())
+            return item["state"] in TERMINAL, day, time_key, group[0] or item["id"], within_group, item["id"]
+
+        visible.sort(key=display_key)
         return {"schema_version": 0, "as_of": now.isoformat(), "timezone": timezone_name,
                 "today": today.isoformat(), "tasks": visible}
 
