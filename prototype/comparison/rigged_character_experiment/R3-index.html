@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R3 角色原尺寸对照</title>
+<style>
+body{margin:0;padding:24px;background:#f7f4ea;color:#283630;font:16px/1.55 system-ui,-apple-system,sans-serif}
+main{max-width:1280px;margin:auto}h1,h2{line-height:1.25}p{max-width:920px}.warning{background:#fff3df;border-left:4px solid #c77b3f;padding:12px 16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}figure{margin:0;background:white;border:1px solid #deddd3;padding:12px;width:max-content;max-width:100%;box-sizing:border-box}figcaption{font-size:14px;margin-bottom:8px}img.small,video{display:block;width:360px;max-width:100%;height:auto}img.large{display:block;width:640px;max-width:100%;height:auto}
+a{color:#315b65}@media(max-width:820px){.grid{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>R2 → R3：角色接点和动作</h1>
+<p>以下小窗画面均按 <strong>360 CSS 像素</strong>显示，和预期角落窗同宽；PNG/视频来自 Godot 4.7 实窗的 Retina 2× 像素采集。原 A 房间、镜头、光照、任务 UI 不变。<a href="R3-README.md">实验说明与复现</a> · <a href="R3/manifest.json">采集数据</a></p>
+<p class="warning">R3 静态髋部接点改善，但手部动作在原 A 小窗里仍弱；起始已经坐着，不能称作完整站坐动画。图中的任务是虚构演示。</p>
+<h2>360×320 白天：左手动作峰值</h2><div class="grid">
+<figure><figcaption>R2 原骨骼控制</figcaption><img class="small" src="R2/360x320-day/typing-left-down-360x320-day.png"></figure>
+<figure><figcaption>R3 椅面与肘部调整</figcaption><img class="small" src="R3/360x320-day/typing-left-down-360x320-day.png"></figure>
+</div><h2>360×320 夜晚：右手动作峰值</h2><div class="grid">
+<figure><figcaption>R2 原骨骼控制</figcaption><img class="small" src="R2/360x320-evening/typing-right-down-360x320-evening.png"></figure>
+<figure><figcaption>R3 椅面与肘部调整</figcaption><img class="small" src="R3/360x320-evening/typing-right-down-360x320-evening.png"></figure>
+</div><h2>真实窗口短片</h2><div class="grid">
+<figure><figcaption>R2：落座/打字（旧命名，已坐着）</figcaption><video controls loop playsinline src="R2/sit-and-type-360x320-day.mp4"></video></figure>
+<figure><figcaption>R3：伸手/打字，腕骨仍在键盘投影内</figcaption><video controls loop playsinline src="R3/reach-and-type-360x320-day.mp4"></video></figure>
+</div><h2>1280×720 白天：座椅与袖口</h2><div class="grid">
+<figure><figcaption>R2 · <a href="R2/1280x720-day/typing-left-down-1280x720-day.png">原始 PNG</a></figcaption><img class="large" src="R2/1280x720-day/typing-left-down-1280x720-day.png"></figure>
+<figure><figcaption>R3 · <a href="R3/1280x720-day/typing-left-down-1280x720-day.png">原始 PNG</a></figcaption><img class="large" src="R3/1280x720-day/typing-left-down-1280x720-day.png"></figure>
+</div><p>被否决的“大幅落座”起始帧见<a href="rejected-r3-hover-start-1280x720-day.png">鞋底悬空证据</a>，没有混入正式短片。</p>
+</main></body></html>
