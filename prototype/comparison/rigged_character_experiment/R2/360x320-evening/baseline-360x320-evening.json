@@ -1,0 +1,24 @@
+{
+  "display_scale": 2.0,
+  "elapsed_ms": 1085.827,
+  "engine": "4.7-stable (official)",
+  "events": [
+    {
+      "action": "start",
+      "state": "in_progress",
+      "task": "DEMO-TASK-001"
+    }
+  ],
+  "fictional": true,
+  "frame_count": 23,
+  "phase": "evening",
+  "route": "baseline",
+  "viewport": [
+    360.0,
+    320.0
+  ],
+  "window_pixels": [
+    720,
+    640
+  ]
+}
