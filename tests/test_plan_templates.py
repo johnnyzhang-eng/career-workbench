@@ -95,6 +95,45 @@ class PlanTemplateTests(unittest.TestCase):
         self.assertEqual(snap["goal"]["active_version"], 0)
         self.assertEqual(snap["proposals"][0]["status"], "declined")
 
+    def test_selected_study_joins_recruiting_without_replacing_application_gates(self):
+        record = self.create("DEMO-STUDY-HIRE", "recruiting", 300)
+        job = {"id": "DEMO-JOB", "source_ref": "https://example.com/fictional-job"}
+        bundle = build_first_plan(record, "recruiting", START, "P-STUDY-HIRE", job=job,
+                                  study_focus=["algorithms", "sql", "python"])
+        items = bundle["proposal"]["items"]
+        self.assertEqual(len(items), 14)
+        self.assertEqual(sum(item["estimated_minutes"] for item in items), 300)
+        recruiting = [item for item in items if item["task_id"].rsplit("-", 1)[-1].startswith("R")]
+        self.assertEqual([item["task_kind"] for item in recruiting],
+                         ["verify_job", "custom", "custom", "prepare_materials",
+                          "approve_materials", "apply_job", "custom"])
+        study = [item for item in items if item["task_kind"] == "practice"]
+        self.assertEqual([item["scheduled_at"] for item in items], sorted(item["scheduled_at"] for item in items))
+        self.assertTrue(all(item["task_kind"] == "practice" and item["source_kind"] == "goal"
+                            and item["source_id"] == record["id"] for item in study))
+        self.assertEqual([item["scheduled_at"][11:16] for item in study], ["21:00"] * 7)
+        self.assertTrue(any("SQL" in item["title"] for item in study))
+        self.assertTrue(any("Python" in item["title"] for item in study))
+        self.assertTrue(any("算法" in item["title"] for item in study))
+        self.assertTrue(all("首次" in item["completion_rule"] and item["source_ref"]
+                            for item in study))
+        self.assertEqual(bundle["proposal"]["base_version"], 0)
+        self.store.command("propose_plan", "E-P-STUDY-HIRE", {"proposal": bundle["proposal"]})
+        self.assertEqual(self.store.snapshot(record["id"])["goal"]["active_version"], 0)
+
+    def test_study_focus_requires_explicit_selection_and_enough_budget(self):
+        record = self.create("DEMO-LOW-STUDY", "recruiting", 209)
+        with self.assertRaises(InsufficientTimeError) as shortage:
+            build_first_plan(record, "recruiting", START, "P-LOW-STUDY",
+                             study_focus=["sql", "python", "algorithms"])
+        self.assertEqual(shortage.exception.required_minutes, 210)
+        with self.assertRaisesRegex(ValueError, "study_focus"):
+            build_first_plan(record, "recruiting", START, "P-DUP-STUDY",
+                             study_focus=["sql", "sql"])
+        with self.assertRaisesRegex(ValueError, "CET6"):
+            study = self.create("DEMO-CET6-STUDY", "learning", 300)
+            build_first_plan(study, "cet6", START, "P-BAD-STUDY", study_focus=["sql"])
+
     def test_missing_job_and_missing_official_source_remain_explicit(self):
         hire = self.create("DEMO-NO-JOB", "recruiting")
         generic = build_first_plan(hire, "recruiting", START, "P-NO-JOB")

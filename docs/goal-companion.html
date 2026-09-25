@@ -161,7 +161,10 @@
     }
     function proposalPanel(selected) {
       const pending=selected.pending_proposals;
-      if(!selected.active_plan && !pending.length) return `<section class="panel" id="proposal-panel"><h2>先看七日建议</h2><p class="muted">模板会根据你填写的时间生成可审阅的任务。每天 20:00 只是建议时段；不会直接安排进清单。</p><form data-form="proposal" class="actions"><div class="field"><label for="start_on">从哪天开始</label><input id="start_on" name="start_on" type="date" required></div><button class="primary" type="submit">生成首版计划</button></form></section>`;
+      if(!selected.active_plan && !pending.length) {
+        const study=selected.goal.domain==='recruiting'? `<div class="field wide"><label>同时练习（按需勾选）</label><label><input type="checkbox" name="study_sql"> SQL 基础与独立复测</label><label><input type="checkbox" name="study_python"> Python 小函数与边界测试</label><label><input type="checkbox" name="study_algorithms"> 算法基础与复杂度说明</label><span class="hint">保留七项求职任务；练习额外占用周预算。所有计划项都要你审阅后才生效。</span></div>`:'';
+        return `<section class="panel" id="proposal-panel"><h2>先看七日建议</h2><p class="muted">模板会根据你填写的时间生成可审阅的任务。求职任务 20:00、可选学习任务 21:00 都只是建议时段；不会直接安排进清单。</p><form data-form="proposal" class="actions"><div class="field"><label for="start_on">从哪天开始</label><input id="start_on" name="start_on" type="date" required></div>${study}<button class="primary" type="submit">生成首版计划</button></form></section>`;
+      }
       return pending.map(proposal=>{
         const review=selected.reviews.find(item=>item.id===proposal.review_id);
         const revised=proposal.base_version>0;
@@ -183,16 +186,17 @@
       if(item.task_kind==='practice') return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>材料或来源位置</label><input name="material_ref" maxlength="1000" placeholder="本机路径或你保存的来源" required></div><div class="field"><label>本人产物或基线记录位置</label><input name="first_attempt_ref" maxlength="1000" placeholder="首次作答、基线测量或核对记录" required></div><div class="field"><label>观察、错因或后续问题位置</label><input name="reflection_ref" maxlength="1000" placeholder="记录尚不会的部分或下一步" required></div><p class="form-note">这里只记录依据，不判断你已掌握，也不等于考试通过。</p><button class="primary" type="submit">保存完成依据</button></form>`;
       return `<form data-form="complete" data-id="${esc(item.task_id)}"><div class="field"><label>行动产物位置</label><input name="result_ref" maxlength="1000" placeholder="你实际写下或保存的结果" required></div><button class="primary" type="submit">保存完成依据</button></form>`;
     }
-    function scoreFields(metric) {
-      if(state.selected.goal.domain!=='learning') return '';
+    function scoreFields(metric, taskId) {
+      const task=state.selected.active_plan?.items.find(item=>item.task_id===taskId);
+      if(task?.task_kind!=='practice') return '';
       return `<div class="form-grid"><div class="field"><label>首次作答正确数（可选）</label><input name="correct" type="number" min="0" max="10000" value="${esc(metric?.correct??'')}"></div><div class="field"><label>总题数（填写成绩时必填）</label><input name="total" type="number" min="1" max="10000" value="${esc(metric?.total??'')}"></div><div class="field"><label>本人原先预期正确数（可选）</label><input name="expected" type="number" min="0" max="10000" value="${esc(metric?.expected??'')}"></div></div>`;
     }
     function resultForm(taskId, previous) {
-      return `<form data-form="confirm-result" data-id="${esc(taskId)}" data-correct="${previous?'true':'false'}"><p class="form-note">Daily 完成依据已保存；请单独确认实际耗时与本人观察。成绩不等于掌握或考试结果。</p><div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" value="${esc(previous?.actual_minutes??'')}" required></div>${scoreFields(previous?.metric)}<div class="field"><label>结果依据位置（可选）</label><input name="evidence_ref" maxlength="1000" value="${esc(previous?.evidence_ref??'')}"></div><div class="field"><label>本人备注（可选）</label><textarea name="note" maxlength="1000">${esc(previous?.note??'')}</textarea></div><button class="primary" type="submit">${previous?'追加更正记录':'本人确认实际结果'}</button></form>`;
+      return `<form data-form="confirm-result" data-id="${esc(taskId)}" data-correct="${previous?'true':'false'}"><p class="form-note">Daily 完成依据已保存；请单独确认实际耗时与本人观察。成绩不等于掌握或考试结果。</p><div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" value="${esc(previous?.actual_minutes??'')}" required></div>${scoreFields(previous?.metric,taskId)}<div class="field"><label>结果依据位置（可选）</label><input name="evidence_ref" maxlength="1000" value="${esc(previous?.evidence_ref??'')}"></div><div class="field"><label>本人备注（可选）</label><textarea name="note" maxlength="1000">${esc(previous?.note??'')}</textarea></div><button class="primary" type="submit">${previous?'追加更正记录':'本人确认实际结果'}</button></form>`;
     }
     function reportForm(taskId) {
       if(selectedReportTask!==taskId) return '';
-      return `<form data-form="report-result" data-id="${esc(taskId)}"><p class="form-note">这是本人实际情况记录，不会把每日任务标为完成，也不会扣分。</p><div class="field"><label>实际情况</label><select name="outcome"><option value="missed">这次未做</option><option value="partial">只完成一部分</option><option value="blocked">遇到阻碍</option></select></div><div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" required></div>${scoreFields(null)}<div class="field"><label>依据位置（可选）</label><input name="evidence_ref" maxlength="1000"></div><div class="field"><label>实际情况与原因</label><textarea name="note" maxlength="1000" required></textarea></div><button class="primary" type="submit">保存本人实际情况</button></form>`;
+      return `<form data-form="report-result" data-id="${esc(taskId)}"><p class="form-note">这是本人实际情况记录，不会把每日任务标为完成，也不会扣分。</p><div class="field"><label>实际情况</label><select name="outcome"><option value="missed">这次未做</option><option value="partial">只完成一部分</option><option value="blocked">遇到阻碍</option></select></div>${scoreFields(null,taskId)}<div class="field"><label>实际分钟（本人填写）</label><input name="actual_minutes" type="number" min="0" max="10080" required></div><div class="field"><label>依据位置（可选）</label><input name="evidence_ref" maxlength="1000"></div><div class="field"><label>实际情况与原因</label><textarea name="note" maxlength="1000" required></textarea></div><button class="primary" type="submit">保存本人实际情况</button></form>`;
     }
     function taskCard(item) {
       const completable=item.sync_state==='applied' && ['practice','custom'].includes(item.task_kind) && !['completed','cancelled'].includes(item.daily_state);
@@ -321,7 +325,11 @@
           history.replaceState(null,'',location.pathname+'?goal_id='+encodeURIComponent(state.selected_goal_id));
           showNewGoal=false;render();notify('目标已保存在本机');
         }
-        if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
+        if(form.dataset.form==='proposal'){
+          const study_focus=[['study_sql','sql'],['study_python','python'],['study_algorithms','algorithms']]
+            .filter(([name])=>fields[name]==='on').map(([,skill])=>skill);
+          await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on,study_focus});
+        }
         if(form.dataset.form==='review-edit'){
           const proposal=state.selected.pending_proposals.find(item=>item.id===form.dataset.id);
           const chosen=proposal?.items.find(item=>item.task_id===fields.task_id);
