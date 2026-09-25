@@ -9,6 +9,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from .daily import DailyStore
+from .discovery_candidates import get_candidate, list_candidates
 from .goal_daily_bridge import GoalDailyBridge
 from .goal_result_bridge import GoalResultBridge
 from .goals import GoalStore
@@ -85,6 +86,9 @@ class GoalApp:
     def __init__(self, workspace, clock=None):
         self.workspace = Path(workspace).expanduser().resolve()
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+
+    def candidates(self):
+        return list_candidates(self.workspace)
 
     @contextmanager
     def _stores(self):
@@ -237,8 +241,13 @@ class GoalApp:
         with self._stores() as (goals, _daily, _bridge):
             goal = goals.snapshot(goal_id)["goal"]
             path = "cet6" if goal["domain"] == "learning" else "recruiting"
+            candidate_id = payload.get("candidate_id")
+            if candidate_id not in (None, "") and path != "recruiting":
+                raise ValueError("只有秋招目标可以选择岗位候选")
+            candidate = get_candidate(self.workspace, candidate_id) if candidate_id not in (None, "") else None
             proposal = build_first_plan(goal, path, start_on, "P-" + operation,
-                                        study_focus=payload.get("study_focus"))["proposal"]
+                                        study_focus=payload.get("study_focus"),
+                                        candidate=candidate)["proposal"]
             goals.command("propose_plan", "E-P-" + operation, {"proposal": proposal})
         return self.state(goal_id)
 

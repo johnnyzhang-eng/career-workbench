@@ -145,7 +145,7 @@ def _item(task_id, title, task_kind, source_kind, source_id,
 
 
 def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_sources=None,
-                     study_focus=None):
+                     study_focus=None, candidate=None):
     """Return ``{proposal, explanations, unknowns, budget}`` deterministically.
 
     ``goal`` is a GoalStore snapshot goal, ``start_on`` is a local date, and
@@ -155,6 +155,8 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
     recruiting practice topics. ``official_sources`` can override the cached
     official CET6 source registry, including with an empty mapping to make
     missing-source behavior explicit. Every return value is JSON serializable.
+    ``candidate`` is a selected, unverified discovery record, never a job-state
+    record and never a basis for an apply_job task.
     """
     _need(isinstance(goal, dict), "goal 必须是 GoalStore 目标快照")
     _need(path in {"recruiting", "cet6"}, "仅支持秋招与 CET6 首版模板；其他目标请手动建任务")
@@ -185,8 +187,19 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
     if path == "cet6":
         _need(domain in {"learning", "cet6"}, "CET6 模板需要 learning 或 cet6 领域")
         _need(job is None, "CET6 计划不能依赖岗位 ID")
+        _need(candidate is None, "CET6 计划不能绑定求职候选")
     else:
         _need(domain in {"recruiting", "career", "job_search"}, "秋招模板需要求职领域")
+        _need(candidate is None or job is None, "待核查候选不能作为已核验岗位")
+        if candidate is not None:
+            _need(isinstance(candidate, dict)
+                  and isinstance(candidate.get("id"), str)
+                  and isinstance(candidate.get("title"), str)
+                  and isinstance(candidate.get("job_url"), str)
+                  and isinstance(candidate.get("origin_observed_at"), str)
+                  and isinstance(candidate.get("unknowns"), list)
+                  and candidate.get("verification_state") == "待核查",
+                  "候选记录无效或尚未标记待核查")
 
     _need(study_focus is None or isinstance(study_focus, list), "study_focus 必须是列表")
     raw_focus = study_focus or []
@@ -277,8 +290,14 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
         else:
             job_id = None
             deadline = None
-            unknowns.append({"field": "job_record", "reason":
-                             "尚无具体岗位记录；不能提议某岗位已核验、已批准或已投递"})
+            if candidate is None:
+                unknowns.append({"field": "job_record", "reason":
+                                 "尚无具体岗位记录；不能提议某岗位已核验、已批准或已投递"})
+            else:
+                unknowns.append({"field": "candidate_verification", "reason":
+                                 "选择了待核查候选；原页、资格和申请状态仍须本人核对"})
+                for item in candidate["unknowns"]:
+                    unknowns.append({"field": "candidate_unknown", "reason": item})
         if deadline is None:
             unknowns.append({"field": "job_deadline", "reason":
                              "没有已核对的岗位截止；不生成倒计时或硬截止"})
@@ -326,6 +345,13 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
                      "列出准备材料与缺项；不得宣称材料已获特定岗位批准",
                      "保存原始申请入口与截止来源；未知截止保持未知，打开链接不是投递",
                      "区分线索、核验结果、材料和实际回执，写下下一步"]
+            if candidate is not None:
+                titles[0] = "核对候选来源并找到官方岗位页"
+                titles[1] = "核对所选候选的申请资格与入口"
+                titles[2] = "记录候选的已确认字段和未知项"
+                rules[0] = "打开候选来源链接并寻找官方岗位页，记录访问日期、在招状态与岗位编号；发现记录不等于官网核验"
+                rules[1] = "逐项核对届别、城市、经验、专业与申请入口；未知保持未知，不自动判定合格"
+                rules[2] = "保存逐项来源、观察时间、仍未知的条件和本人结论；不得据此标记已投递"
         reasons = ["先确认目标约束与具体来源", "未知资格必须补查",
                    "材料主张需要证据", "按当前要求准备材料", "材料版本由本人确认",
                    "申请事实只能由真实回执支持" if not deadline_conflict else "外部截止与内部时段冲突需本人处理",
@@ -335,6 +361,10 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
             reasons[3] = "保留通用材料准备，不冒充该岗位仍可按模板时段申请"
             reasons[4] = "需本人决策新目标或时段，不自动移动外部截止"
         source_ref = f"{TEMPLATE_VERSION}:recruiting;workflow:docs/workflow.md"
+        if candidate is not None:
+            candidate_ref = (f"candidate:{candidate['id']};{candidate['job_url']};"
+                             f"observed:{candidate['origin_observed_at']};status:unverified")
+            source_ref += ";" + candidate_ref
         for index in range(7):
             task_id = _task_id(goal_id, "R", index + 1)
             kind = kinds[index]
@@ -342,6 +372,7 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
                                                        "approve_materials", "apply_job"} else "goal"
             is_apply = kind == "apply_job" and deadline is not None
             item_source = (job["source_ref"] if has_job and source_kind == "job"
+                           else candidate_ref if candidate is not None
                            else "docs/workflow.md#state-machine")
             item = _item(task_id, titles[index], kind, source_kind,
                          job_id if source_kind == "job" else goal_id,
