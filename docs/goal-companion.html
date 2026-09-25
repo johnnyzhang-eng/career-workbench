@@ -72,6 +72,7 @@
     let selectedReportTask = null;
     let selectedResultTask = null;
     let selectedCorrectionResult = null;
+    let editInterviewId = null;
     let reviewPreview = null;
     let showNewGoal = false;
     let photoStatus = {present:false,generated_avatar:false};
@@ -111,7 +112,7 @@
       const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf_token},body:JSON.stringify(op(payload))});
       const data=await response.json();
       if(!response.ok) throw Error(data.error || '操作没有保存');
-      state=data;selectedTask=null;selectedReportTask=null;selectedResultTask=null;selectedCorrectionResult=null;render();
+      state=data;selectedTask=null;selectedReportTask=null;selectedResultTask=null;selectedCorrectionResult=null;editInterviewId=null;render();
     }
     async function fetchPhotoPreview(){
       const response=await fetch('/api/avatar/photo/image',{headers:{'X-CSRF-Token':state.csrf_token},cache:'no-store'});
@@ -254,6 +255,46 @@
       const reviews=selected.reviews.map(r=>`<div class="result"><strong>温和复盘：</strong>${esc(r.finding)}<p class="source">依据：${esc(r.source_ref)}</p></div>`).join('');
       return `<section class="panel" id="records-panel"><h2>实际结果与复盘</h2>${pendingRows?`<div class="note caution"><strong>${pending.length} 项结果待本人确认</strong><p>任务完成事件与实际结果是两条记录；请填本人实际耗时。</p></div>${pendingRows}`:''}${conflictRows}${results||reviews?results+reviews:'<p class="muted small">当前还没有本人确认的结果或复盘。</p>'}<p class="form-note">活动线索和任务打勾不代表考试通过、能力掌握或岗位已投递。</p></section>`;
     }
+    function interviewFields(note) {
+      const value=(key,fallback='')=>esc(note?.[key]??fallback);
+      const observation=note?.observation||{};
+      const source=observation.evidence_source||{};
+      const option=(current,key,label)=>`<option value="${key}" ${current===key?'selected':''}>${label}</option>`;
+      const field=(label,control,wide=false)=>`<div class="field${wide?' wide':''}"><label>${label}</label>${control}</div>`;
+      const controls=[
+        field('面试日期',`<input type="date" name="interview_date" value="${value('interview_date')}" required>`),
+        field('公司',`<input name="company" maxlength="120" value="${value('company')}" required>`),
+        field('岗位',`<input name="role" maxlength="120" value="${value('role')}" required>`),
+        field('输入类型',`<select name="input_kind">${option(observation.input_kind||'question','question','面试官提问')}${option(observation.input_kind,'feedback','面试反馈')}</select>`),
+        field('问题或反馈（可转述）',`<textarea name="interviewer_input" maxlength="2000" required>${esc(observation.interviewer_input||'')}</textarea>`,true),
+        field('原话保真度',`<select name="input_fidelity">${option(observation.input_fidelity||'uncertain','uncertain','尚未核对原话')}${option(observation.input_fidelity,'paraphrase','本人转述')}${option(observation.input_fidelity,'verbatim','已核对原话')}</select>`),
+        field('观察把握',`<select name="observation_confidence">${option(observation.confidence||'low','low','低')}${option(observation.confidence,'medium','中')}${option(observation.confidence,'high','高')}</select>`),
+        field('我实际怎样回答／哪里卡住',`<textarea name="self_observed_answer_or_problem" maxlength="2000" required>${esc(observation.self_observed_answer_or_problem||'')}</textarea>`,true),
+        field('证据类型',`<select name="source_kind">${option(source.kind||'local_path','local_path','本机工作区文件')}${option(source.kind,'url','HTTPS 页面')}</select>`),
+        field('证据位置',`<input name="source_value" maxlength="1000" value="${esc(source.value||'')}" placeholder="private 工作区内已存在的相对路径" required>`),
+        field('记录状态',`<select name="status">${option(observation.status||'needs_review','needs_review','待本人复核')}${option(observation.status,'unverified','未核对')}${option(observation.status,'user_checked','本人已核对来源')}</select>`),
+        field('关联技能 ID',`<input name="linked_skill_target" maxlength="80" value="${value('linked_skill_target','sql-foundations')}" list="interview-skills" required><datalist id="interview-skills"><option value="sql-foundations"><option value="python-foundations"><option value="algorithms-foundations"><option value="data-warehouse"><option value="spark"><option value="clickhouse"><option value="project-story"></datalist>`),
+        field('本人推断（可空）',`<textarea name="inference" maxlength="1000" placeholder="这是我的假设，不代表面试官评价">${esc(note?.inference?.hypothesis||'')}</textarea>`,true),
+        field('推断把握',`<select name="inference_confidence">${option(note?.inference?.confidence||'low','low','低')}${option(note?.inference?.confidence,'medium','中')}${option(note?.inference?.confidence,'high','高')}</select>`),
+        field('下一次可验证的练习',`<textarea name="next_practice_step" maxlength="1000" required>${value('next_practice_step')}</textarea>`,true)
+      ];
+      return `<div class="form-grid">${controls.join('')}</div><p class="form-note">本机文件必须已在当前 private 工作区内。观察和推断分开保存；练习建议不会自动写入已生效计划或简历。</p>`;
+    }
+    function interviewPanel(selected) {
+      if(selected.goal.domain!=='recruiting') return '';
+      const data=selected.interviews||{state:'private_workspace_required',records:[]};
+      if(data.state!=='ready') return `<section class="panel" id="interview-panel"><h2>面试线索</h2><p class="muted">请使用本机 private 工作区保存面试证据。</p></section>`;
+      const confidenceLabel={low:'低',medium:'中',high:'高'};
+      const skillLabel={'sql-foundations':'SQL 基础','python-foundations':'Python 基础','algorithms-foundations':'算法基础','data-warehouse':'数仓建模',spark:'Spark',clickhouse:'ClickHouse','project-story':'项目讲述'};
+      const cards=data.records.map(record=>{
+        const note=record.note, observation=note.observation;
+        const fidelity={verbatim:'已核对原话',paraphrase:'本人转述',uncertain:'原话未核对'}[observation.input_fidelity]||'待核对';
+        const status={user_checked:'本人核过来源',needs_review:'待本人复核',unverified:'尚未核对'}[observation.status]||'待核对';
+        const edit=editInterviewId===record.record_id?`<form data-form="correct-interview" data-id="${esc(record.record_id)}" data-version="${record.version}"><h3>更正这条观察</h3><div class="field"><label>更正原因</label><input name="reason" maxlength="500" required></div>${interviewFields(note)}<button class="primary" type="submit">保存新版本</button></form>`:'';
+        return `<article class="proposal-item"><h3>${esc(note.company)} · ${esc(note.role)} <span class="small muted">${esc(note.interview_date)} · 第 ${record.version} 版</span></h3><p class="small">${fidelity} · ${status} · 观察把握 ${confidenceLabel[observation.confidence]||'待核对'}</p><p><strong>${observation.input_kind==='feedback'?'反馈':'提问'}：</strong>${esc(observation.interviewer_input)}</p><p><strong>我的观察：</strong>${esc(observation.self_observed_answer_or_problem)}</p>${note.inference?`<p class="note small"><strong>本人假设（把握${confidenceLabel[note.inference.confidence]||'待核对'}）：</strong>${esc(note.inference.hypothesis)}</p>`:''}<p><strong>下次验证：</strong>${esc(note.next_practice_step)}</p><p class="source">技能 ${esc(skillLabel[note.linked_skill_target]||note.linked_skill_target)} · 来源 ${esc(observation.evidence_source.value)} · 能力仍未测</p><button class="plain-button" type="button" data-action="edit-interview" data-id="${esc(record.record_id)}">${edit?'收起更正':'更正记录'}</button>${edit}</article>`;
+      }).join('');
+      return `<section class="panel" id="interview-panel"><h2>面试线索与待验证能力</h2><p class="muted small">面试原话、本人作答和推断分别保存。记录可以更正，旧版本保留；下次练习由你决定是否排进清单。</p>${cards||'<p class="muted">这个目标还没有面试观察。可以从过去的转写或复盘中录入一条，先标“待本人复核”。</p>'}<details><summary>新增面试观察</summary><form data-form="add-interview">${interviewFields(null)}<button class="primary" type="submit">仅存本机</button></form></details></section>`;
+    }
     function render() {
       const selected=state.selected,goal=selected?.goal;
       if(shellMode==='collapsed') {app.innerHTML=mast(goal,'');return}
@@ -266,9 +307,13 @@
       const compactBody=goal ? (selected.active_plan ? compactActionPanel(selected)+compactResultPrompt :
         `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
         `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
-      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
+      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+interviewPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
       const hero=compact?'':`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section>`;
       app.innerHTML=mast(goal,goalOptions)+hero+`<div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
+      app.querySelectorAll('#interview-panel .field').forEach((field,index)=>{
+        const label=field.querySelector('label'),control=field.querySelector('input,select,textarea');
+        if(label&&control){control.id=`interview-field-${index}`;label.htmlFor=control.id}
+      });
       const start=document.getElementById('start_on');
       if(start&&!start.value){
         const localHour=Number(selected.local_time.slice(11,13));
@@ -286,6 +331,17 @@
       if(fields.expected!=='') metric.expected=Number(fields.expected);
       return metric;
     }
+    function interviewNote(fields) {
+      return {interview_date:fields.interview_date,company:fields.company,role:fields.role,
+        input_kind:fields.input_kind,interviewer_input:fields.interviewer_input,
+        input_fidelity:fields.input_fidelity,self_observed_answer_or_problem:fields.self_observed_answer_or_problem,
+        evidence_source:{kind:fields.source_kind,value:fields.source_value},
+        observation_confidence:fields.observation_confidence,status:fields.status,
+        inference:fields.inference?.trim()||null,
+        inference_confidence:fields.inference?.trim()?fields.inference_confidence:null,
+        linked_skill_target:fields.linked_skill_target,next_practice_step:fields.next_practice_step,
+        linked_goal_id:state.selected_goal_id};
+    }
     app.addEventListener('click',async event=>{
       const button=event.target.closest('[data-action]');if(!button)return;
       const action=button.dataset.action;button.disabled=true;
@@ -295,6 +351,7 @@
         if(action==='report'){selectedReportTask=selectedReportTask===button.dataset.id?null:button.dataset.id;render()}
         if(action==='confirm-result'){selectedResultTask=selectedResultTask===button.dataset.id?null:button.dataset.id;render()}
         if(action==='correct-result'){selectedCorrectionResult=selectedCorrectionResult===button.dataset.id?null:button.dataset.id;render()}
+        if(action==='edit-interview'){editInterviewId=editInterviewId===button.dataset.id?null:button.dataset.id;render()}
         if(action==='review-result'){await write('/api/reviews/propose',{goal_id:state.selected_goal_id,result_id:button.dataset.id});notify('温和复盘与待决定提案已保存')}
         if(action==='accept'||action==='decline'){reviewPreview=null;await write('/api/plans/decide',{proposal_id:button.dataset.id,decision:action})}
         if(action==='confirm-review-edit'){
@@ -321,6 +378,16 @@
           history.replaceState(null,'',location.pathname+'?goal_id='+encodeURIComponent(state.selected_goal_id));
           showNewGoal=false;render();notify('目标已保存在本机');
         }
+        if(form.dataset.form==='add-interview'){
+          await write('/api/interviews/add',{goal_id:state.selected_goal_id,note:interviewNote(fields)});
+          notify('面试观察已存本机；能力仍待独立验证');
+        }
+        if(form.dataset.form==='correct-interview'){
+          await write('/api/interviews/correct',{goal_id:state.selected_goal_id,
+            record_id:form.dataset.id,expected_version:Number(form.dataset.version),
+            reason:fields.reason,note:interviewNote(fields)});
+          notify('更正已追加为新版本，原记录仍保留');
+        }
         if(form.dataset.form==='proposal'){await write('/api/plans/propose',{goal_id:state.selected_goal_id,start_on:fields.start_on})}
         if(form.dataset.form==='review-edit'){
           const proposal=state.selected.pending_proposals.find(item=>item.id===form.dataset.id);
@@ -340,7 +407,7 @@
       }catch(error){notify(error.message)}finally{submit.disabled=false}
     });
     setInterval(tick,1000);
-    setInterval(()=>{if(!selectedTask)load(state?.selected_goal_id).catch(error=>notify(error.message))},60000);
+    setInterval(()=>{if(!selectedTask&&!app.querySelector('details[open] form[data-form="add-interview"], form[data-form="correct-interview"]'))load(state?.selected_goal_id).catch(error=>notify(error.message))},60000);
     load(new URLSearchParams(location.search).get('goal_id')).catch(error=>{app.textContent='无法读取本机工作台：'+error.message});
   })();
 </script>
