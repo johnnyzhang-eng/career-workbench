@@ -168,6 +168,14 @@
       const summary=match?`<p class="source">候选线索 · 待核查 · <a href="${esc(match[1])}" target="_blank" rel="noopener noreferrer">查看来源页</a> · 观察于 ${esc(match[2])}</p>`:'';
       return `${summary}<details class="source"><summary>查看完整依据与假设</summary><p>${esc(item.source_ref)}</p></details>`;
     }
+    function recruitingContextPanel(selected) {
+      if(selected.goal.domain!=='recruiting') return '';
+      const count=selected.interviews?.records?.length||0;
+      const candidates=candidateState.candidates||[];
+      const candidateRows=candidates.map(row=>`<p class="small"><a href="${esc(row.job_url)}" target="_blank" rel="noopener noreferrer">${esc(row.title)}</a> · 待核查 · 观察于 ${esc(row.origin_observed_at)}${row.unknowns.length?` · 未知：${esc(row.unknowns.join('；'))}`:''}</p>`).join('');
+      const candidateText=candidateState.state==='missing'?'当前工作区尚无岗位候选库。':candidateState.state==='unavailable'?'候选库暂不可读，请检查本机发现数据。':`${candidates.length} 条本机发现的候选线索；官网资格和申请入口仍须逐条核对。`;
+      return `<section class="panel" id="recruiting-context"><h2>秋招判断依据</h2><p class="small">已有 <a href="#interview-panel">${count} 条面试观察</a>（仍待本人核对）和 <a href="#candidate-list">${candidates.length} 条岗位候选</a>。建议先看依据，再决定七日提案。</p><details id="candidate-list"><summary>${candidateText}</summary>${candidateRows||'<p class="muted small">还没有可展示的候选。</p>'}</details></section>`;
+    }
     function proposalPanel(selected) {
       const pending=selected.pending_proposals;
       if(!selected.active_plan && !pending.length) {
@@ -322,7 +330,7 @@
       const compactBody=goal ? (selected.active_plan ? compactActionPanel(selected)+compactResultPrompt :
         `<section class="panel"><h2>${selected.pending_proposals.length?'计划等待你审阅':'先建立七日计划'}</h2><p class="compact-prompt">完整工作台会展示每项依据、未知日期和确认入口。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`) :
         `<section class="panel"><h2>先设一个目标</h2><p class="compact-prompt">秋招与 CET6 路径可在完整工作台创建。</p><a class="mini-link" href="${routeLink('/')}">打开完整工作台</a></section>`;
-      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?proposalPanel(selected)+todayPanel(selected)+interviewPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
+      const expandedBody=`${!goal||showNewGoal?goalForm():''}${goal?todayPanel(selected)+recruitingContextPanel(selected)+proposalPanel(selected)+interviewPanel(selected)+recordsPanel(selected)+planPanel(selected):'<section class="panel"><h2>先从真实情况出发</h2><p class="muted">CET6 和秋招有首版七日模板。每个任务都会给出安排理由与来源；官方考试日、岗位截止与投递结果仍需单独核实。</p></section>'}`;
       const hero=compact?'':`<section class="hero"><div class="hero-copy"><p class="eyebrow">${goal?'今天 · '+esc(selected.today):'从一个可执行的目标开始'}</p><h1 class="page-title">${title}</h1><p class="lede">${lede}</p></div>${picker}</section>`;
       app.innerHTML=mast(goal,goalOptions)+hero+`<div class="shell-grid"><div class="scene-column">${scenePanel(goal,selected)}${compact?'':photoPanel()}</div><div class="workbench-column">${compact?compactBody:expandedBody}</div></div><p class="privacy">功能试用界面，三层展开与视觉方向待一起评审。数据仅本机保存；网页不具备系统级置顶、透明或鼠标穿透。房间画面不代表任务已完成。</p>`;
       app.querySelectorAll('#interview-panel .field').forEach((field,index)=>{
