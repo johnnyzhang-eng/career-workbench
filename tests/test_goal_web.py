@@ -17,6 +17,7 @@ from pathlib import Path
 from workbench.avatar_photo import AvatarPhotoStore
 from workbench.daily import DailyStore
 from workbench.goal_web import GoalHTTPServer
+from workbench.interview_evidence import InterviewEvidenceStore
 
 
 class GoalWebTests(unittest.TestCase):
@@ -27,7 +28,7 @@ class GoalWebTests(unittest.TestCase):
         self.start_server()
 
     def start_server(self):
-        self.server = GoalHTTPServer(("127.0.0.1", 0), self.temp.name, self.clock)
+        self.server = GoalHTTPServer(("127.0.0.1", 0), getattr(self, "workspace", self.temp.name), self.clock)
         self.port = self.server.server_address[1]
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -115,6 +116,50 @@ class GoalWebTests(unittest.TestCase):
         self.assertEqual(len(items), 7)
         self.assertTrue(all(item["source_kind"] == "goal" for item in items))
         self.assertIn(url, items[0]["source_ref"])
+    def test_private_interview_note_correction_and_goal_isolation(self):
+        self.stop_server()
+        self.workspace = Path(self.temp.name) / "private" / "fictional"
+        self.workspace.mkdir(parents=True)
+        (self.workspace / "fictional-note.txt").write_text("fictional source only", encoding="utf-8")
+        self.start_server()
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id = self.goal(token, "I" * 24, "recruiting")["selected_goal_id"]
+        note = {"interview_date": "2026-10-01", "company": "虚构甲公司", "role": "虚构分析实习",
+                "input_kind": "question", "interviewer_input": "请解释 SQL 如何筛选数据？",
+                "input_fidelity": "uncertain", "self_observed_answer_or_problem": "记得回答了 WHERE，尚未核对原话",
+                "evidence_source": {"kind": "local_path", "value": "fictional-note.txt"},
+                "observation_confidence": "low", "status": "needs_review",
+                "inference": "可能要练习空值条件", "inference_confidence": "low",
+                "linked_skill_target": "sql-foundations", "next_practice_step": "用新数据独立写三条筛选查询"}
+        status, denied, _ = self.request("POST", "/api/interviews/add", {
+            "operation_id": "J" * 24, "goal_id": goal_id, "note": note},
+            origin=f"http://127.0.0.1:{self.port}", content_type="application/json")
+        self.assertEqual(status, 403, denied)
+        status, saved, _ = self.post("/api/interviews/add", {
+            "operation_id": "J" * 24, "goal_id": goal_id, "note": note}, token)
+        self.assertEqual(status, 200, saved)
+        record = saved["selected"]["interviews"]["records"][0]
+        self.assertEqual(record["version"], 1)
+        self.assertEqual(record["note"]["observation"]["input_fidelity"], "uncertain")
+        self.assertEqual(record["note"]["mastery_status"], "not_assessed")
+        self.assertIsNone(saved["selected"]["active_plan"])
+        revised = {**note, "interviewer_input": "核对后：还问了 NULL 的行为", "input_fidelity": "paraphrase"}
+        status, corrected, _ = self.post("/api/interviews/correct", {
+            "operation_id": "K" * 24, "goal_id": goal_id,
+            "record_id": record["record_id"], "expected_version": 1,
+            "reason": "对照源笔记补正", "note": revised}, token)
+        self.assertEqual(status, 200, corrected)
+        self.assertEqual(corrected["selected"]["interviews"]["records"][0]["version"], 2)
+        self.stop_server()
+        self.start_server()
+        after_restart = self.request("GET", "/api/state?goal_id=" + goal_id)[1]
+        self.assertEqual(after_restart["selected"]["interviews"]["records"][0]["version"], 2)
+        with InterviewEvidenceStore(self.workspace, self.clock) as evidence:
+            history = evidence.get(record["record_id"], include_history=True)["history"]
+        self.assertEqual([item["version"] for item in history], [1, 2])
+        other_id = self.goal(after_restart["csrf_token"], "L" * 24, "recruiting")["selected_goal_id"]
+        other = self.request("GET", "/api/state?goal_id=" + other_id)[1]
+        self.assertEqual(other["selected"]["interviews"]["records"], [])
 
     def test_cet6_proposal_is_inactive_until_accept_and_sync_then_survives_restart(self):
         status, initial, headers = self.request("GET", "/api/state")
