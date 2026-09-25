@@ -12,6 +12,7 @@ from .daily import DailyStore
 from .goal_daily_bridge import GoalDailyBridge
 from .goal_result_bridge import GoalResultBridge
 from .goals import GoalStore
+from .interview_evidence import InterviewEvidenceStore
 from .plan_templates import build_first_plan
 from .scene_state import scene_state
 from .scene_actions import SceneActionStore
@@ -86,6 +87,48 @@ class GoalApp:
         self.workspace = Path(workspace).expanduser().resolve()
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
+    def _interview_workspace_ready(self):
+        return "private" in self.workspace.parts[2:]
+
+    def _check_interview_goal(self, goal_id):
+        with self._stores() as (goals, _daily, _bridge):
+            goal = goals.snapshot(goal_id)["goal"]
+        if goal["domain"] != "recruiting":
+            raise ValueError("面试观察只能关联秋招目标")
+
+    def add_interview(self, payload):
+        operation = _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        self._check_interview_goal(goal_id)
+        if not self._interview_workspace_ready():
+            raise ValueError("面试观察需要本机 private 工作区")
+        raw = payload.get("note")
+        if not isinstance(raw, dict) or raw.get("linked_goal_id") not in (None, goal_id):
+            raise ValueError("面试观察必须关联当前目标")
+        note = {**raw, "linked_goal_id": goal_id}
+        with InterviewEvidenceStore(self.workspace, self.clock) as store:
+            store.add({"operation_id": operation, "note": note})
+        return self.state(goal_id)
+
+    def correct_interview(self, payload):
+        operation = _operation(payload)
+        goal_id = _required_text(payload.get("goal_id"), "目标 ID", 80)
+        self._check_interview_goal(goal_id)
+        if not self._interview_workspace_ready():
+            raise ValueError("面试观察需要本机 private 工作区")
+        raw = payload.get("note")
+        if not isinstance(raw, dict) or raw.get("linked_goal_id") not in (None, goal_id):
+            raise ValueError("面试更正必须关联当前目标")
+        note = {**raw, "linked_goal_id": goal_id}
+        with InterviewEvidenceStore(self.workspace, self.clock) as store:
+            old = store.get(payload.get("record_id"))
+            if old["note"]["linked_goal_id"] != goal_id:
+                raise ValueError("面试记录不属于当前目标")
+            store.correct({"operation_id": operation, "record_id": payload.get("record_id"),
+                           "expected_version": payload.get("expected_version"),
+                           "reason": payload.get("reason"), "note": note})
+        return self.state(goal_id)
+
     @contextmanager
     def _stores(self):
         goals = GoalStore(self.workspace, self.clock)
@@ -154,6 +197,14 @@ class GoalApp:
                                   "today_tasks": today_tasks, "feedback": feedback,
                                   "results": snapshot["results"], "reviews": snapshot["reviews"],
                                   "result_status": GoalResultBridge(goals, daily).status(goal_id)}
+            if goal["domain"] == "recruiting":
+                if self._interview_workspace_ready():
+                    with InterviewEvidenceStore(self.workspace, self.clock) as interviews:
+                        records = interviews.list(goal_id=goal_id)
+                    result["selected"]["interviews"] = {"state": "ready", "records": records}
+                else:
+                    result["selected"]["interviews"] = {"state": "private_workspace_required",
+                                                         "records": []}
             actions = SceneActionStore(self.workspace, self.clock)
             try:
                 action = actions.snapshot(goal_id)
