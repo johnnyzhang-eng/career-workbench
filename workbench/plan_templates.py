@@ -14,6 +14,12 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 TEMPLATE_VERSION = "first-plan-v1"
 SOURCE_CHECKED_AT = "2026-09-24"
 CET6_STRUCTURE_URL = "https://cet.neea.edu.cn/html1/report/16123/201-1.htm"
+STUDY_SOURCE_CHECKED_AT = "2026-09-25"
+STUDY_SOURCES = {
+    "sql": "https://sqlbolt.com/lesson/1",
+    "python": "https://docs.python.org/zh-cn/3/tutorial/controlflow.html",
+    "algorithms": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+}
 MINUTES_PER_DAY = 15
 _ID = re.compile(r"[A-Za-z0-9_-]{1,80}\Z")
 
@@ -35,6 +41,43 @@ def _need(condition, message):
 def _local_stamp(day, zone):
     # This is a suggested slot, not a claim about the user's availability.
     return datetime.combine(day, time(20, 0), zone).isoformat()
+
+
+def _study_stamp(day, zone):
+    # A separate suggested slot; neither slot claims to know the user's calendar.
+    return datetime.combine(day, time(21, 0), zone).isoformat()
+
+
+def _study_specs(focus):
+    if not focus:
+        return []
+    specs = [
+        (0, "sql", "SQL：读表并独立写第一条查询", 25,
+         "保存题目来源、首次 SELECT 查询、运行结果与错因；看过答案不算独立通过",
+         "用表、列与查询建立本人数据处理起点"),
+        (1, "python", "Python：独立写岗位列表筛选函数", 25,
+         "保存首次代码、空列表与缺字段的运行结果、求助方式及解释",
+         "用可运行的小函数检查本人数据处理基础"),
+        (2, "algorithms", "算法：重复项查找与边界说明", 20,
+         "保存首次思路或代码、空输入和无重复样例、复杂度解释与求助方式",
+         "先验证数组与集合的基础，不从中等题起跳"),
+        (3, "sql", "SQL：换数据独立复测筛选与排序", 25,
+         "保留首次查询和错误，不照抄第一天答案；注明是否独立完成变式",
+         "用新数据复测，避免把订正结果当成掌握"),
+        (4, "python", "Python：处理缺失字段并写边界测试", 25,
+         "保存首次实现、至少两个边界测试及失败原因；记录 AI 或提示帮助",
+         "将能读懂示例与能独立处理脏数据区分开"),
+        (5, "algorithms", "算法：用新输入复测查重方法", 20,
+         "保存未见过的输入、首次结果、复杂度和与原解法的差异",
+         "隔日复测是否能独立迁移方法"),
+    ]
+    chosen = [spec for spec in specs if spec[1] in focus]
+    names = {"sql": "SQL", "python": "Python", "algorithms": "算法"}
+    title = "、".join(names[key] for key in focus)
+    chosen.append((6, None, f"{title}：首次答案与下周练习复盘", 25,
+                   "列出本周首次答案、求助程度、复测结果与仍不会的点；下周内容须本人决定",
+                   "用真实练习证据决定下一版计划，不自动判定掌握"))
+    return chosen
 
 
 def _task_id(goal_id, path_letter, index):
@@ -101,13 +144,15 @@ def _item(task_id, title, task_kind, source_kind, source_id,
             "due_checked_at": deadline_checked if deadline else None}
 
 
-def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_sources=None):
+def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_sources=None,
+                     study_focus=None):
     """Return ``{proposal, explanations, unknowns, budget}`` deterministically.
 
     ``goal`` is a GoalStore snapshot goal, ``start_on`` is a local date, and
     ``path`` is either ``recruiting`` or ``cet6``. An optional ``job`` can name
     a *local* job record; this function does not verify its eligibility or
-    perform an application. ``official_sources`` can override the cached
+    perform an application. ``study_focus`` adds only explicitly selected
+    recruiting practice topics. ``official_sources`` can override the cached
     official CET6 source registry, including with an empty mapping to make
     missing-source behavior explicit. Every return value is JSON serializable.
     """
@@ -143,8 +188,19 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
     else:
         _need(domain in {"recruiting", "career", "job_search"}, "秋招模板需要求职领域")
 
+    _need(study_focus is None or isinstance(study_focus, list), "study_focus 必须是列表")
+    raw_focus = study_focus or []
+    _need(all(isinstance(skill, str) and skill in STUDY_SOURCES for skill in raw_focus)
+          and len(raw_focus) == len(set(raw_focus)), "study_focus 只能选择不重复的 SQL、Python、算法")
+    _need(path == "recruiting" or not raw_focus, "CET6 模板不能加入秋招技能练习")
+    focus = [skill for skill in STUDY_SOURCES if skill in raw_focus]
+    study_specs = _study_specs(focus)
+    if study_specs and target_value is not None:
+        study_final_slot = datetime.combine(start_on + timedelta(days=6), time(21, 0), zone)
+        _need(study_final_slot <= target, "学习复盘时段超出本人目标日期，请修改首日或目标日期")
+
     weights = [30, 45, 40, 45, 45, 50, 45] if path == "cet6" else [30, 45, 35, 50, 45, 50, 45]
-    durations = _minutes(weekly, weights)
+    durations = _minutes(weekly, weights + [spec[3] for spec in study_specs])
     unknowns = []
     explanations = []
     items = []
@@ -302,10 +358,30 @@ def build_first_plan(goal, path, start_on, proposal_id, *, job=None, official_so
                                  "source_ref": item["source_ref"],
                                  "assumption_ref": "goal.baseline;goal.weekly_minutes;20:00 suggested slot"})
 
+        for offset, (day, skill, title, _weight, rule, reason) in enumerate(study_specs):
+            task_id = _task_id(goal_id, "S", day + 1)
+            links = [STUDY_SOURCES[skill]] if skill else [STUDY_SOURCES[key] for key in focus]
+            sources = ",".join(f"{url}#checked={STUDY_SOURCE_CHECKED_AT}" for url in links)
+            source = (f"recruiting-study-v1;{sources};self:study_focus;"
+                      "assumption:goal.baseline,goal.weekly_minutes,21:00-slot")
+            item = _item(task_id, title, "practice", "goal", goal_id,
+                         _study_stamp(start_on + timedelta(days=day), zone),
+                         durations[7 + offset], rule, reason, source)
+            items.append(item)
+            explanations.append({"task_id": task_id, "reason": reason,
+                                 "source_ref": source,
+                                 "assumption_ref": "goal.baseline;goal.weekly_minutes;21:00 suggested slot"})
+        if study_specs:
+            source_ref += ";recruiting-study-v1;self:study_focus"
+            items.sort(key=lambda item: (item["scheduled_at"], item["task_id"]))
+            item_order = {item["task_id"]: index for index, item in enumerate(items)}
+            explanations.sort(key=lambda item: item_order[item["task_id"]])
+
     proposal = {"id": proposal_id, "goal_id": goal_id,
                 "goal_revision": goal["revision"], "base_version": 0,
                 "review_id": None,
-                "reason": "七日首版建议；每日 20:00 仅是待本人编辑的默认时段，执行前需确认。"
+                "reason": ("七日首版建议；求职任务 20:00、学习任务 21:00 都是待本人编辑的默认时段，执行前需确认。"
+                           if study_specs else "七日首版建议；每日 20:00 仅是待本人编辑的默认时段，执行前需确认。")
                           + "；".join(unknown["reason"] for unknown in unknowns),
                 "items": items, "method": "rule_template", "source_ref": source_ref}
     return {"proposal": proposal, "explanations": explanations, "unknowns": unknowns,

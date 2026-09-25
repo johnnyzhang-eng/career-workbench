@@ -153,6 +153,44 @@ class GoalWebTests(unittest.TestCase):
         self.assertIn("location.pathname === '/compact'", full_html)
         self.assertIn("frame-ancestors 'none'", compact_headers["Content-Security-Policy"])
 
+    def test_recruiting_study_choices_remain_pending_until_user_accepts(self):
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id = self.goal(token, "L" * 24, "recruiting")["selected_goal_id"]
+        status, proposed, _ = self.post("/api/plans/propose", {
+            "operation_id": "M" * 24, "goal_id": goal_id, "start_on": "2026-10-05",
+            "study_focus": ["sql", "python", "algorithms"]}, token)
+        self.assertEqual(status, 200, proposed)
+        selected = proposed["selected"]
+        self.assertEqual(selected["goal"]["active_version"], 0)
+        self.assertEqual(selected["sync"]["state"], "no_plan")
+        self.assertEqual(len(selected["pending_proposals"][0]["items"]), 14)
+        self.assertEqual(sum(item["task_kind"] == "practice"
+                             for item in selected["pending_proposals"][0]["items"]), 7)
+        proposal_id = selected["pending_proposals"][0]["id"]
+        accepted = self.post("/api/plans/decide", {
+            "operation_id": "N" * 24, "proposal_id": proposal_id, "decision": "accept"}, token)[1]
+        self.assertEqual(accepted["selected"]["sync"]["state"], "sync_pending")
+        synced = self.post("/api/plans/sync", {
+            "operation_id": "O" * 24, "goal_id": goal_id}, token)[1]
+        self.assertEqual(synced["selected"]["sync"]["state"], "applied")
+        practice = next(item for item in synced["selected"]["today_tasks"]
+                        if item["task_kind"] == "practice")
+        task_id = practice["task_id"]
+        completed = self.post("/api/tasks/complete", {
+            "operation_id": "P" * 24, "goal_id": goal_id, "task_id": task_id,
+            "evidence": {"material_ref": "虚构教材", "first_attempt_ref": "虚构首次答案",
+                         "reflection_ref": "虚构错因"}}, token)[1]
+        self.assertEqual(next(item for item in completed["selected"]["active_plan"]["items"]
+                              if item["task_id"] == task_id)["daily_state"], "completed")
+        result = self.post("/api/results/confirm", {
+            "operation_id": "Q" * 24, "goal_id": goal_id, "task_id": task_id,
+            "actual_minutes": 20, "metric": {"correct": 2, "total": 3},
+            "evidence_ref": "虚构首次答案", "note": "仅确认本次首次结果"}, token)[1]
+        self.assertEqual(result["selected"]["results"][0]["metric"]["correct"], 2)
+        status, html, _ = self.request("GET", "/")
+        self.assertEqual(status, 200)
+        self.assertIn('name="study_sql"', html)
+
     def test_host_origin_csrf_and_content_type_gates(self):
         token = self.request("GET", "/api/state")[1]["csrf_token"]
         self.assertEqual(self.request("GET", "/api/state", host="evil.example")[0], 403)

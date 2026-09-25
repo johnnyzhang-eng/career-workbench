@@ -237,7 +237,8 @@ class GoalApp:
         with self._stores() as (goals, _daily, _bridge):
             goal = goals.snapshot(goal_id)["goal"]
             path = "cet6" if goal["domain"] == "learning" else "recruiting"
-            proposal = build_first_plan(goal, path, start_on, "P-" + operation)["proposal"]
+            proposal = build_first_plan(goal, path, start_on, "P-" + operation,
+                                        study_focus=payload.get("study_focus"))["proposal"]
             goals.command("propose_plan", "E-P-" + operation, {"proposal": proposal})
         return self.state(goal_id)
 
