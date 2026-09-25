@@ -19,7 +19,7 @@ prototype/macos/build.sh
 open private/CareerWorkbenchCompanion.app
 ```
 
-现实目标、时间和外部来源仍需本人核对。房间动作、工具活动和每日任务完成不代表岗位已投递或考试通过。虚构复核路径见[首日集成记录](docs/qa/compact-first-day-integration.md)，原生窗口边界见[小窗说明](prototype/macos/README.md)。
+现实目标、时间和外部来源仍需本人核对。房间动作、工具活动和每日任务完成不代表岗位已投递或考试通过。虚构复核路径见[首日集成记录](docs/qa/compact-first-day-integration.md)与[桌宠首日合流](docs/qa/pet-first-day-integration.md)，原生窗口边界见[小窗说明](prototype/macos/README.md)。
 
 ## 先看图，再跑通
 
