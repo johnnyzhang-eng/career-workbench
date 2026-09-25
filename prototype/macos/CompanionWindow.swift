@@ -174,6 +174,12 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         opacityTimer?.invalidate()
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication,
+                                       hasVisibleWindows flag: Bool) -> Bool {
+        if !flag { showCompanion() }
+        return true
+    }
+
     private func installStatusMenu() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.title = "⌂"

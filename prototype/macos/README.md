@@ -16,6 +16,8 @@ open private/CareerWorkbenchCompanion.app
 
 Web 页的「收起／展开工作台／角落小窗」改变路由；原生窗口跟随路由切成 74×74 桌宠、360×480 角落面板或最大 1100×760 工作台。桌宠态用可替换的透明房间画面，里面有人在书桌前；它是静态空闲预览，不从图像推断任务完成。点击一次进入角落面板，窗口尺寸变化后内容淡入；指针靠近时仅做一次轻微放大，没有循环动画。系统启用「减少动态效果」时跳过这些过渡。初始桌宠态延迟加载 WebView，直到点击展开。角落面板闲置六秒且指针在窗外时透明度降到 0.82。无边框窗口左上角（桌宠态右上角）有可见的关闭按钮，关闭后从菜单栏 ⌂ 的「打开角落小窗」恢复；菜单栏「退出应用」才会终止窗口进程。窗口保持浮在普通窗口之上，跟随所有 Spaces；菜单栏还可切换整个窗口的鼠标穿透。穿透开启后需用菜单栏恢复点击，不能点窗口本身恢复。
 
+对已隐藏的小屋再次执行 `open private/CareerWorkbenchCompanion.app` 也会恢复角落面板，且复用原有窗口进程。这个入口适合菜单栏状态项一时找不到时使用；退出仍需从菜单栏选择「退出应用」。
+
 桌宠素材在 `Resources/pet-room-idle.png`，其生成说明和替换门槛见 [ART_ASSET.md](ART_ASSET.md)。这张图只用于初始空闲态。未来换成 2D 像素或精修 3D 时，只要保持透明方形画布与小尺寸可辨性，窗口逻辑无需改动。
 
 这些选择是可替换的交互实验。Apple 的 [NSWindow](https://developer.apple.com/documentation/appkit/nswindow) 提供窗口透明度和鼠标穿透，[NSWindow CollectionBehavior](https://developer.apple.com/documentation/appkit/nswindow/collectionbehavior-swift.struct) 控制 Spaces/全屏行为，[WKWebView](https://developer.apple.com/documentation/webkit/wkwebview) 负责本机页面；这些 API 的存在不代表跨应用体验已验收。
