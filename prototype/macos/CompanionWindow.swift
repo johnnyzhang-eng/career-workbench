@@ -1,5 +1,6 @@
 import AppKit
 import WebKit
+import QuartzCore
 
 // This is an experiment for the existing loopback goal companion, not a packaged app.
 // All data and task writes still pass through the Python service.
@@ -41,6 +42,35 @@ private final class FirstClickButton: NSButton {
     override var mouseDownCanMoveWindow: Bool { false }
 }
 
+// The still artwork is a replaceable asset. Motion is only triggered by a pointer
+// entering or leaving the pet, so the collapsed window has no animation loop.
+private final class PetHouseButton: NSButton {
+    private var hoverArea: NSTrackingArea?
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
+
+    override func updateTrackingAreas() {
+        if let hoverArea { removeTrackingArea(hoverArea) }
+        hoverArea = NSTrackingArea(rect: .zero,
+                                 options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+                                 owner: self, userInfo: nil)
+        if let hoverArea { addTrackingArea(hoverArea) }
+        super.updateTrackingAreas()
+    }
+
+    override func mouseEntered(with event: NSEvent) { setHoverScale(1.055) }
+    override func mouseExited(with event: NSEvent) { setHoverScale(1) }
+
+    private func setHoverScale(_ scale: CGFloat) {
+        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else { return }
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.18)
+        layer?.transform = CATransform3DMakeScale(scale, scale, 1)
+        CATransaction.commit()
+    }
+}
+
 private final class CompanionContentView: NSView {
     override var mouseDownCanMoveWindow: Bool { false }
 }
@@ -50,7 +80,7 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
     private let initialURL: URL
     private var panel: CompanionPanel!
     private var webView: ActiveWebView!
-    private var collapsedButton: FirstClickButton!
+    private var collapsedButton: PetHouseButton!
     private var closeButton: FirstClickButton!
     private var statusItem: NSStatusItem!
     private var clickThroughItem: NSMenuItem!
@@ -80,16 +110,17 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         webView.frame = NSRect(x: 0, y: 0, width: content.bounds.width,
                                height: content.bounds.height - 28)
         content.addSubview(webView)
-        collapsedButton = FirstClickButton(frame: content.bounds)
+        collapsedButton = PetHouseButton(frame: content.bounds)
         collapsedButton.autoresizingMask = [.width, .height]
         collapsedButton.isBordered = false
-        collapsedButton.image = NSImage(systemSymbolName: "house.fill", accessibilityDescription: "展开今日房间")
+        collapsedButton.image = Bundle.main.url(forResource: "pet-room-idle", withExtension: "png")
+            .flatMap(NSImage.init(contentsOf:))
+            ?? NSImage(systemSymbolName: "house.fill", accessibilityDescription: "展开今日房间")
         collapsedButton.imageScaling = .scaleProportionallyDown
-        collapsedButton.contentTintColor = .white
-        collapsedButton.setAccessibilityLabel("展开今日房间")
+        collapsedButton.setAccessibilityLabel("展开今日房间：房间里有人在书桌前")
+        collapsedButton.toolTip = "展开今日房间"
         collapsedButton.wantsLayer = true
-        collapsedButton.layer?.backgroundColor = NSColor(red: 0.10, green: 0.40, blue: 0.43, alpha: 1).cgColor
-        collapsedButton.layer?.cornerRadius = 18
+        collapsedButton.layer?.backgroundColor = NSColor.clear.cgColor
         collapsedButton.target = self
         collapsedButton.action = #selector(showCompanion)
         collapsedButton.isHidden = true
@@ -98,10 +129,13 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         closeButton = FirstClickButton(frame: NSRect(x: 8, y: content.bounds.height - 26,
                                                      width: 22, height: 22))
         closeButton.isBordered = false
-        closeButton.image = NSImage(systemSymbolName: "xmark.circle.fill",
+        closeButton.image = NSImage(systemSymbolName: "xmark",
                                     accessibilityDescription: "关闭小房间")
         closeButton.imageScaling = .scaleProportionallyDown
-        closeButton.contentTintColor = NSColor.darkGray
+        closeButton.contentTintColor = .white
+        closeButton.wantsLayer = true
+        closeButton.layer?.backgroundColor = NSColor(white: 0.10, alpha: 0.78).cgColor
+        closeButton.layer?.cornerRadius = 11
         closeButton.toolTip = "关闭小房间；可从菜单栏 ⌂ 重新打开"
         closeButton.setAccessibilityLabel("关闭小房间")
         closeButton.target = self
@@ -125,7 +159,11 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         panel.makeKeyAndOrderFront(nil)
         resize(for: CompanionMode(path: initialURL.path), animated: false)
         installStatusMenu()
-        webView.load(URLRequest(url: initialURL))
+        // In the default 74 pt pet state, the browser has no visible work.
+        // Defer its first load until the person opens the room.
+        if initialURL.path != "/collapsed" {
+            webView.load(URLRequest(url: initialURL))
+        }
 
         opacityTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.updateOpacity()
@@ -188,6 +226,8 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
     }
 
     private func resize(for newMode: CompanionMode, animated: Bool = true) {
+        let wasCollapsed: Bool
+        if case .collapsed = mode { wasCollapsed = true } else { wasCollapsed = false }
         mode = newMode
         let isCollapsed: Bool
         if case .collapsed = newMode {
@@ -208,14 +248,28 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
             width: width,
             height: height
         )
-        panel.setFrame(frame, display: true, animate: animated)
+        let showMotion = animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        panel.setFrame(frame, display: true, animate: showMotion)
         if let content = panel.contentView {
             let bounds = content.bounds
             webView.frame = NSRect(x: 0, y: 0, width: bounds.width,
                                    height: bounds.height - (isCollapsed ? 0 : 28))
             collapsedButton.frame = bounds
-            closeButton.frame = NSRect(x: isCollapsed ? bounds.width - 25 : 8,
-                                       y: bounds.height - 26, width: 22, height: 22)
+            let closeSize: CGFloat = isCollapsed ? 17 : 22
+            closeButton.frame = NSRect(x: isCollapsed ? bounds.width - closeSize - 2 : 8,
+                                       y: bounds.height - closeSize - 4,
+                                       width: closeSize, height: closeSize)
+            closeButton.layer?.cornerRadius = closeSize / 2
+        }
+        if wasCollapsed && !isCollapsed && showMotion {
+            webView.alphaValue = 0
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.22
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                webView.animator().alphaValue = 1
+            }
+        } else {
+            webView.alphaValue = 1
         }
         lastPointerInside = Date()
         updateOpacity()
@@ -253,7 +307,7 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
 
 private func companionURL() -> URL? {
     let args = CommandLine.arguments
-    let requested = args.count == 1 ? "http://127.0.0.1:8794/compact" :
+    let requested = args.count == 1 ? "http://127.0.0.1:8794/collapsed" :
         (args.count == 3 && args[1] == "--url" ? args[2] : "")
     guard let url = URL(string: requested),
           url.scheme == "http", url.host == "127.0.0.1", url.port != nil,

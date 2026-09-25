@@ -16,11 +16,12 @@ COMPARISON_PNG = tuple("prototype/comparison/compact_ui_hierarchy/" + name for n
     "baseline-360x480-first-screen.png", "expanded-1100x760.png",
     "improved-360x480-first-screen.png", "native-360x480-retina-active.png",
     "native-360x480-retina-idle.png", "native-360x480-retina-paused.png"))
+PUBLIC_PNG = (*SCENE_PNG, *COMPARISON_PNG, "prototype/macos/Resources/pet-room-idle.png")
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py", "daily.py",
          "workbench/*.py",
          "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py",
          "prototype/macos/CompanionWindow.swift", "prototype/macos/build.sh", "prototype/macos/README.md",
-         *SCENE_PNG, *COMPARISON_PNG)
+         "prototype/macos/ART_ASSET.md", *PUBLIC_PNG)
 RULES = {
     "email": re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"),
     "mobile": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
@@ -95,7 +96,7 @@ def main():
         if path.is_symlink() or not path.is_file() or path.stat().st_size > 2_000_000:
             failures.append((relative, ["symlink_missing_or_oversized"]))
             continue
-        if relative in SCENE_PNG or relative in COMPARISON_PNG:
+        if relative in PUBLIC_PNG:
             hits = png_findings(path.read_bytes())
         else:
             try:
