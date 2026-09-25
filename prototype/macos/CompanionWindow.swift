@@ -51,6 +51,7 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
     private var panel: CompanionPanel!
     private var webView: ActiveWebView!
     private var collapsedButton: FirstClickButton!
+    private var closeButton: FirstClickButton!
     private var statusItem: NSStatusItem!
     private var clickThroughItem: NSMenuItem!
     private var mode: CompanionMode = .compact
@@ -76,8 +77,8 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         let content = CompanionContentView(frame: NSRect(origin: .zero, size: CompanionMode.compact.size))
         content.wantsLayer = true
         content.layer?.backgroundColor = NSColor.clear.cgColor
-        webView.frame = content.bounds
-        webView.autoresizingMask = [.width, .height]
+        webView.frame = NSRect(x: 0, y: 0, width: content.bounds.width,
+                               height: content.bounds.height - 28)
         content.addSubview(webView)
         collapsedButton = FirstClickButton(frame: content.bounds)
         collapsedButton.autoresizingMask = [.width, .height]
@@ -93,6 +94,19 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         collapsedButton.action = #selector(showCompanion)
         collapsedButton.isHidden = true
         content.addSubview(collapsedButton)
+
+        closeButton = FirstClickButton(frame: NSRect(x: 8, y: content.bounds.height - 26,
+                                                     width: 22, height: 22))
+        closeButton.isBordered = false
+        closeButton.image = NSImage(systemSymbolName: "xmark.circle.fill",
+                                    accessibilityDescription: "关闭小房间")
+        closeButton.imageScaling = .scaleProportionallyDown
+        closeButton.contentTintColor = NSColor.darkGray
+        closeButton.toolTip = "关闭小房间；可从菜单栏 ⌂ 重新打开"
+        closeButton.setAccessibilityLabel("关闭小房间")
+        closeButton.target = self
+        closeButton.action = #selector(hideCompanion)
+        content.addSubview(closeButton)
 
         panel = CompanionPanel(
             contentRect: NSRect(origin: .zero, size: CompanionMode.compact.size),
@@ -129,11 +143,14 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
         let showItem = NSMenuItem(title: "打开角落小窗", action: #selector(showCompanion), keyEquivalent: "")
         showItem.target = self
         menu.addItem(showItem)
+        let hideItem = NSMenuItem(title: "关闭小房间", action: #selector(hideCompanion), keyEquivalent: "w")
+        hideItem.target = self
+        menu.addItem(hideItem)
         clickThroughItem = NSMenuItem(title: "鼠标穿透", action: #selector(toggleClickThrough), keyEquivalent: "")
         clickThroughItem.target = self
         menu.addItem(clickThroughItem)
         menu.addItem(.separator())
-        let quitItem = NSMenuItem(title: "退出窗口实验", action: #selector(quit), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "退出应用", action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
         statusItem.menu = menu
@@ -142,9 +159,22 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
     @objc private func showCompanion() {
         panel.ignoresMouseEvents = false
         clickThroughItem.state = .off
-        let url = origin.appendingPathComponent("compact")
-        webView.load(URLRequest(url: url))
+        webView.load(URLRequest(url: compactURL()))
         panel.orderFrontRegardless()
+    }
+
+    @objc private func hideCompanion() {
+        panel.orderOut(nil)
+    }
+
+    private func compactURL() -> URL {
+        var target = URLComponents(url: origin.appendingPathComponent("compact"), resolvingAgainstBaseURL: false)!
+        let current = URLComponents(url: webView.url ?? initialURL, resolvingAgainstBaseURL: false)
+        if let goalID = current?.queryItems?.first(where: { $0.name == "goal_id" })?.value,
+           !goalID.isEmpty {
+            target.queryItems = [URLQueryItem(name: "goal_id", value: goalID)]
+        }
+        return target.url!
     }
 
     @objc private func toggleClickThrough() {
@@ -159,10 +189,13 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
 
     private func resize(for newMode: CompanionMode, animated: Bool = true) {
         mode = newMode
+        let isCollapsed: Bool
         if case .collapsed = newMode {
+            isCollapsed = true
             webView.isHidden = true
             collapsedButton.isHidden = false
         } else {
+            isCollapsed = false
             webView.isHidden = false
             collapsedButton.isHidden = true
         }
@@ -176,6 +209,14 @@ private final class CompanionApp: NSObject, NSApplicationDelegate, WKNavigationD
             height: height
         )
         panel.setFrame(frame, display: true, animate: animated)
+        if let content = panel.contentView {
+            let bounds = content.bounds
+            webView.frame = NSRect(x: 0, y: 0, width: bounds.width,
+                                   height: bounds.height - (isCollapsed ? 0 : 28))
+            collapsedButton.frame = bounds
+            closeButton.frame = NSRect(x: isCollapsed ? bounds.width - 25 : 8,
+                                       y: bounds.height - 26, width: 22, height: 22)
+        }
         lastPointerInside = Date()
         updateOpacity()
     }
