@@ -12,9 +12,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SCENE_PNG = tuple("docs/scene-assets/" + name for name in (
     "room-day.png", "room-evening.png", "avatar-idle.png", "avatar-desk.png",
     "avatar-study.png", "avatar-interview.png", "avatar-rest.png", "desk-front.png"))
+COMPARISON_PNG = tuple("prototype/comparison/compact_ui_hierarchy/" + name for name in (
+    "baseline-360x480-first-screen.png", "expanded-1100x760.png",
+    "improved-360x480-first-screen.png", "native-360x480-retina-active.png",
+    "native-360x480-retina-idle.png", "native-360x480-retina-paused.png"))
 ALLOW = ("README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", ".gitignore", "career.py", "daily.py",
          "workbench/*.py",
-         "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py", *SCENE_PNG)
+         "docs/*.md", "docs/*.html", "docs/goal-scene.js", "docs/product/*.md", "docs/product/*.html", "templates/*.json", "scripts/*.py", "tests/*.py",
+         "prototype/macos/CompanionWindow.swift", "prototype/macos/build.sh", "prototype/macos/README.md",
+         *SCENE_PNG, *COMPARISON_PNG)
 RULES = {
     "email": re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"),
     "mobile": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
@@ -77,7 +83,7 @@ def main():
         if path.is_file() or path.is_symlink():
             files.add(relative.as_posix())
     # Include tracked ignored files: .gitignore cannot protect an already tracked secret.
-    if (ROOT / ".git").is_dir():
+    if (ROOT / ".git").exists():
         result = subprocess.run(["git", "-C", str(ROOT), "ls-files", "-z"], capture_output=True, check=True)
         files.update(x for x in result.stdout.decode().split("\0") if x)
     failures = []
@@ -89,7 +95,7 @@ def main():
         if path.is_symlink() or not path.is_file() or path.stat().st_size > 2_000_000:
             failures.append((relative, ["symlink_missing_or_oversized"]))
             continue
-        if relative in SCENE_PNG:
+        if relative in SCENE_PNG or relative in COMPARISON_PNG:
             hits = png_findings(path.read_bytes())
         else:
             try:
