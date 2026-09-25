@@ -21,6 +21,8 @@ open private/CareerWorkbenchCompanion.app
 
 现实目标、时间和外部来源仍需本人核对。房间动作、工具活动和每日任务完成不代表岗位已投递或考试通过。虚构复核路径见[首日集成记录](docs/qa/compact-first-day-integration.md)与[桌宠首日合流](docs/qa/pet-first-day-integration.md)，原生窗口边界见[小窗说明](prototype/macos/README.md)。
 
+学习资源切片可单独试用：先运行 `python3 scripts/demo_learning_resources.py --workspace private/learning-demo`，再运行 `python3 scripts/serve_learning_companion.py --workspace private/learning-demo --port 8795`。它从本人确认的岗位要求指向具体外部章节，并在本机记录学习状态；操作与证据边界见[学习资源说明](docs/learning-resources.md)。
+
 ## 先看图，再跑通
 
 打开 [完整流程图](docs/workflow.html)，再读 [阶段与验收](docs/workflow.md)。
