@@ -8,6 +8,8 @@ import threading
 import time
 import unittest
 import base64
+import hashlib
+import sqlite3
 from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
@@ -81,6 +83,38 @@ class GoalWebTests(unittest.TestCase):
                                              "goal_id": goal_id}, token)[1]
         self.assertEqual(state["selected"]["sync"]["state"], "applied")
         return goal_id, state["selected"]["today_tasks"][0]["task_id"]
+
+    def test_candidate_endpoint_and_recruiting_proposal_recheck_selected_record(self):
+        status, missing, _ = self.request("GET", "/api/candidates")
+        self.assertEqual((status, missing), (200, {"state": "missing", "candidates": []}))
+        url = "https://careers.example.org/jobs/fictional-17"
+        candidate_id = hashlib.sha256(url.encode()).hexdigest()
+        with sqlite3.connect(Path(self.temp.name) / "discovery.sqlite3") as db:
+            db.execute("""CREATE TABLE discovery_jobs(source TEXT, board TEXT, source_job_id TEXT,
+                          payload TEXT, first_seen_at TEXT, last_seen_at TEXT, present_latest INTEGER)""")
+            payload = {"id": candidate_id, "title": "虚构数据岗位", "job_url": url,
+                       "origin_observed_at": "2026-10-01T10:00:00+08:00", "unknowns": ["资格待查"]}
+            db.execute("INSERT INTO discovery_jobs VALUES (?,?,?,?,?,?,?)",
+                       ("agent", "local", candidate_id, json.dumps(payload, ensure_ascii=False),
+                        "2026-10-01T10:00:00+08:00", "2026-10-01T10:00:00+08:00", 1))
+        status, listing, _ = self.request("GET", "/api/candidates")
+        self.assertEqual(status, 200)
+        self.assertEqual(listing["candidates"][0]["verification_state"], "待核查")
+        token = self.request("GET", "/api/state")[1]["csrf_token"]
+        goal_id = self.goal(token, "K" * 24, "recruiting")["selected_goal_id"]
+        status, invalid, _ = self.post("/api/plans/propose", {
+            "operation_id": "L" * 24, "goal_id": goal_id,
+            "start_on": "2026-10-05", "candidate_id": "evil"}, token)
+        self.assertEqual(status, 400)
+        self.assertIn("候选 ID 无效", invalid["error"])
+        status, proposed, _ = self.post("/api/plans/propose", {
+            "operation_id": "M" * 24, "goal_id": goal_id,
+            "start_on": "2026-10-05", "candidate_id": candidate_id}, token)
+        self.assertEqual(status, 200, proposed)
+        items = proposed["selected"]["pending_proposals"][0]["items"]
+        self.assertEqual(len(items), 7)
+        self.assertTrue(all(item["source_kind"] == "goal" for item in items))
+        self.assertIn(url, items[0]["source_ref"])
 
     def test_cet6_proposal_is_inactive_until_accept_and_sync_then_survives_restart(self):
         status, initial, headers = self.request("GET", "/api/state")

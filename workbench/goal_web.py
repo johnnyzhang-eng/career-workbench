@@ -109,6 +109,8 @@ class GoalHandler(BaseHTTPRequestHandler):
                 state = self.server.app.state(goal_id)
                 state["csrf_token"] = self.server.csrf_token
                 self._send(200, state)
+            elif parsed.path == "/api/candidates" and not parsed.query:
+                self._send(200, self.server.app.candidates())
             elif parsed.path == "/api/avatar/photo/status" and not parsed.query:
                 self._send(200, self.server.avatar_photo.status())
             elif parsed.path == "/api/avatar/photo/image" and not parsed.query:
