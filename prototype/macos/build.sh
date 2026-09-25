@@ -4,9 +4,10 @@ set -eu
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 repo_dir=$(CDPATH= cd -- "$script_dir/../.." && pwd)
 bundle_dir="$repo_dir/private/CareerWorkbenchCompanion.app"
-mkdir -p "$bundle_dir/Contents/MacOS"
+mkdir -p "$bundle_dir/Contents/MacOS" "$bundle_dir/Contents/Resources"
 
 swiftc -O "$script_dir/CompanionWindow.swift" -o "$bundle_dir/Contents/MacOS/CompanionWindow"
+cp "$script_dir/Resources/pet-room-idle.png" "$bundle_dir/Contents/Resources/pet-room-idle.png"
 cat > "$bundle_dir/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
