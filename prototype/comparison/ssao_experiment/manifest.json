@@ -1,0 +1,230 @@
+{
+  "purpose": "single-toggle SSAO on original A 3D scene",
+  "godot_version": "4.7.stable.official.5b4e0cb0f",
+  "renderer": "Godot 4.7 GL Compatibility",
+  "variable": "Environment.ssao_enabled false to true; default radius and intensity",
+  "source_sha256": {
+    "prototype/godot/main.gd": "7cdc245f8211f27d162abc683bac405822e3d7858ed665bf2f8aeac0a2c4056d",
+    "prototype/godot/comparison/room_3d.gd": "8ba4bb1c723103ae961be5a1f719c6481dae2af7ec69069e410ac5188e96c1ab",
+    "prototype/godot/comparison/comparison.gd": "8ec3bd024c90eb6f94cfadf9ca33c86782290bd590eec1087934c0b3b9ed0bd5",
+    "prototype/godot/project.godot": "5466be1432315db1e4a230316d754a3870e1675ce2016363bee56c177f7d2f92",
+    "prototype/godot/comparison/ssao_room.gd": "d03f2e0b8aa4a2630a06491096f2baf8c5d2a4e6ce6f1ad4d656ebbfeade8fc4",
+    "prototype/godot/comparison/ssao_experiment.gd": "08795be1c085725a6daafbc03d471cef62690e4ae10e5d95b2028d2f7aae7888"
+  },
+  "records": [
+    {
+      "variant": "S0",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.312,
+      "png": "S0/baseline-360x320-day-idle.png",
+      "capture": "S0/baseline-360x320-day.json",
+      "log": "S0/360x320-day.log",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "44f9f795b87767e969d269cd08a68dbd486c1467202c7853875fb1f7509fb6ec"
+    },
+    {
+      "variant": "S0",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.3,
+      "png": "S0/baseline-360x320-evening-idle.png",
+      "capture": "S0/baseline-360x320-evening.json",
+      "log": "S0/360x320-evening.log",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "89a23560f9c9de6e7e8da3394456047bfa30e8b779bc86570e2fa3385036630c"
+    },
+    {
+      "variant": "S0",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.32,
+      "png": "S0/baseline-1280x720-day-idle.png",
+      "capture": "S0/baseline-1280x720-day.json",
+      "log": "S0/1280x720-day.log",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "fced90c8db9b692226676b854c8a5440cc32b8913b23cd71d76054ccac42c576"
+    },
+    {
+      "variant": "S0",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.228,
+      "png": "S0/baseline-1280x720-evening-idle.png",
+      "capture": "S0/baseline-1280x720-evening.json",
+      "log": "S0/1280x720-evening.log",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "322784b282a9c45cf516f82e26e0c17cb7765cfdf8080b9c6feb5daf2bee0a0a"
+    },
+    {
+      "variant": "S1",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.277,
+      "png": "S1/baseline-360x320-day-idle.png",
+      "capture": "S1/baseline-360x320-day.json",
+      "log": "S1/360x320-day.log",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "acc55beb39708b04bb0a9f24e77f326b30b251b024fd31fcff2a51e32676009e"
+    },
+    {
+      "variant": "S1",
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.299,
+      "png": "S1/baseline-360x320-evening-idle.png",
+      "capture": "S1/baseline-360x320-evening.json",
+      "log": "S1/360x320-evening.log",
+      "physical_pixels": [
+        720,
+        640
+      ],
+      "sha256": "f061a0e59f7c9733fed7ae0648f20fd8b710bf37777d52f647af703aaa42c8dd"
+    },
+    {
+      "variant": "S1",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "ok": true,
+      "wall_seconds": 1.352,
+      "png": "S1/baseline-1280x720-day-idle.png",
+      "capture": "S1/baseline-1280x720-day.json",
+      "log": "S1/1280x720-day.log",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "dbbf5a62f1a50c13709fd13da16de966e87a326d44e64304f7abb5e6801a68a0"
+    },
+    {
+      "variant": "S1",
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "ok": true,
+      "wall_seconds": 1.296,
+      "png": "S1/baseline-1280x720-evening-idle.png",
+      "capture": "S1/baseline-1280x720-evening.json",
+      "log": "S1/1280x720-evening.log",
+      "physical_pixels": [
+        2560,
+        1440
+      ],
+      "sha256": "2163996f656b59a363b20295d8a6f315e6860367d2a5079e2daef1c1fd8ad1de"
+    }
+  ],
+  "scene_difference": [
+    {
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "day",
+      "crop_physical_xywh": [
+        16,
+        92,
+        688,
+        282
+      ],
+      "mean_absolute_rgb_0_255": 0.0971,
+      "pixels_changed_at_least_3": 950,
+      "crop_pixels": 194016,
+      "changed_percent": 0.49
+    },
+    {
+      "logical_size": [
+        360,
+        320
+      ],
+      "phase": "evening",
+      "crop_physical_xywh": [
+        16,
+        92,
+        688,
+        282
+      ],
+      "mean_absolute_rgb_0_255": 0.7962,
+      "pixels_changed_at_least_3": 1077,
+      "crop_pixels": 194016,
+      "changed_percent": 0.555
+    },
+    {
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "day",
+      "crop_physical_xywh": [
+        32,
+        188,
+        1844,
+        1100
+      ],
+      "mean_absolute_rgb_0_255": 0.1346,
+      "pixels_changed_at_least_3": 12601,
+      "crop_pixels": 2028400,
+      "changed_percent": 0.621
+    },
+    {
+      "logical_size": [
+        1280,
+        720
+      ],
+      "phase": "evening",
+      "crop_physical_xywh": [
+        32,
+        188,
+        1844,
+        1100
+      ],
+      "mean_absolute_rgb_0_255": 0.8038,
+      "pixels_changed_at_least_3": 14868,
+      "crop_pixels": 2028400,
+      "changed_percent": 0.733
+    }
+  ]
+}

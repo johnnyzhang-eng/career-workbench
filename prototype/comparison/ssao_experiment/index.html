@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原 3D · SSAO 开关对照</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#344742;background:#f6efdf}body{margin:24px auto;max-width:1100px;padding:0 16px}h1{font-size:25px;margin:0 0 12px}p{line-height:1.55}select{font:inherit;padding:6px;margin-right:12px}main{display:flex;gap:20px;overflow:auto;padding:20px 0}.card{flex:none;border:1px solid #cbd2c2;border-radius:10px;background:#fff9ec;padding:10px}.card h2{margin:0 0 9px;font-size:17px}.card img{display:block;object-fit:contain;max-width:none}.note{font-size:14px;color:#597069}
+</style>
+<h1>原 A 3D · 只切换 Godot 4.7 SSAO</h1>
+<p>S0 关闭，S1 开启；相机、房间、角色、光照、UI 保持原样。图片按逻辑窗口原大显示，浏览器请用 100% 缩放。</p>
+<label>尺寸 <select id="size"><option>360x320</option><option>1280x720</option></select></label>
+<label>时间 <select id="phase"><option value="day">白天</option><option value="evening">夜晚</option></select></label>
+<main id="cards"></main>
+<p class="note">实验日志、像素差分口径及限制见 <a href="README.md">README</a>。默认 SSAO 在此小窗的观感差异很轻；本页不决定正式视觉路线。</p>
+<script>
+const size=document.querySelector('#size'),phase=document.querySelector('#phase'),cards=document.querySelector('#cards');
+function draw(){const width=size.value.split('x')[0];cards.innerHTML=['S0','S1'].map((variant,index)=>`<article class="card"><h2>${variant} · SSAO ${index?'开启':'关闭'}</h2><img width="${width}" alt="${variant} ${size.value} ${phase.value}" src="${variant}/baseline-${size.value}-${phase.value}-idle.png"></article>`).join('')}
+size.onchange=draw;phase.onchange=draw;draw();
+</script></html>
