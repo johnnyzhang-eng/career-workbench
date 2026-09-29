@@ -1,5 +1,7 @@
 # Career Workbench
 
+想在自己的 Codex 中整理全部事项、建立任务对话并持续推进，直接读[从这里开始](docs/start-here.md)。使用者填写自己的任务；小屋子软件的交付范围见[当前状态](docs/method-delivery-status.md)。
+
 Career Workbench 正在构建一个面向求职学生的岗位目标驱动学习平台：找到并比较一个或多个目标方向，从真实岗位要求看见共通与专属的能力缺口，借助现成学习资源、短练习与复测积累证据，最后回到真实岗位入口和人工投递反馈。学习与投递可以并行，不需要等到“学完”才投。
 
 这份目标产品仍处于[产品定义草案](docs/product/README.md)阶段；[边界图](docs/product/boundary-map-draft.html)和[架构基线](docs/product/architecture.md)区分了已有底座、设计建议和待确认事项。个性化补差计划支持用户自带模型，但模型只提出可复核的建议，不替代独立练习。当前可运行的是本地命令行求职记录底座，还没有岗位推荐或职位发现、缺口评估、模型接入、资源聚合、学习导航与证据验证，也没有网站界面。请不要把草案当作已上线功能。真实个人记录保存在被 Git 忽略的 `private/`；公开仓库只放通用方法、代码、测试、空模板和虚构示例。
@@ -44,6 +46,10 @@ python3 career.py practice 1 --evidence '自己写的代码与测试位置' --in
 ```
 
 `practice` 只记录本人声明的独立练习证据，不自动判定掌握。延迟复测另建任务。
+
+## 用 Codex 整理任务与持续推进
+
+第一次使用见[从这里开始](docs/start-here.md)。[任务、Project 与独立对话的方法指南](docs/codex-task-project-method.md)记录了从零散事项到共享任务清单的实践过程，附[可复制提示词](docs/codex-task-project-prompts.md)、[虚构示例](docs/codex-task-project-example.md)和[演进记录](docs/codex-task-project-evolution.md)。另附[长对话与进度回传协议](docs/codex-context-management.md)和短交接模板。先用对话与本地清单就能尝试；小屋子和自动化集成的边界另行标明。每位同学填写自己的约束与事实，个人记录留在 `private/`。
 
 ## 协作方式
 
