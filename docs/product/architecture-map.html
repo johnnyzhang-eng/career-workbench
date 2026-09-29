@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Career Workbench · 2026-09-17 架构评审旧图</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#2d3142;font-family:Geist,'PingFang SC',sans-serif}main{max-width:1120px;margin:auto;padding:24px}svg{display:block;width:100%;height:auto}a{color:#2e5aa8}p{line-height:1.8}section{border-top:1px solid #bfc0c0;padding:20px 0}h2{font-size:20px}table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd} .diagram{overflow:auto}@media(max-width:720px){main{padding:12px}svg{min-width:880px}}</style>
+</head>
+<body>
+<main>
+<p><strong>历史设计图（2026-09-17）：</strong>图中的“第一切片”已由 2026-09-19 的产品决定替换。当前先做 <a href="https://github.com/johnnyzhang-eng/career-workbench/issues/9">#9 每人本地 agent 找岗、受控导入与原站投递入口</a>；公开招聘接口为补充来源。图示外部课程导航在 <a href="https://github.com/johnnyzhang-eng/career-workbench/issues/8">#8 后续切片</a>；以 <a href="mvp.md">MVP 规格</a>为准。</p>
+<div class="diagram">
+<svg viewBox="0 0 1040 640" role="img" aria-labelledby="architecture-map-title architecture-map-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="architecture-map-title">从岗位要求进入已有课程，再带回学习记录</title>
+<desc id="architecture-map-desc">拟建工作台把岗位要求映射到技能并推荐具体外部章节，用户在原站学习后记录进度；能力证据仍待验证，原岗位入口并行保留。当前只有 CLI 记录底座，图中工作台节点均待实现。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+<path d="M0 0 L8 4 L0 8 Z" fill="#4f5d75"/>
+</marker>
+</defs>
+<rect width="1040" height="640" fill="#f5f5f5"/>
+<text x="48" y="48" font-size="12" fill="#4f5d75">CAREER WORKBENCH / ARCHITECTURE REVIEW / 2026-09-17</text>
+<text x="48" y="96" font-size="32" font-family="'Instrument Serif','Songti SC',serif">把岗位需求连接到已有课程</text>
+<text x="48" y="128" font-size="16" fill="#4f5d75">第一条切片：选对章节、开始学习、找回记录；自报学完仍待验证。</text>
+<path d="M312 224 H388" fill="none" stroke="#4f5d75" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M652 224 H728" fill="none" stroke="#4f5d75" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M860 280 V372" fill="none" stroke="#4f5d75" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M728 428 H652" fill="none" stroke="#4f5d75" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M388 428 H312" fill="none" stroke="#4f5d75" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="868" y="312" width="112" height="20" fill="#f5f5f5"/>
+<text x="876" y="328" font-size="12" fill="#4f5d75">打开原站</text>
+<g>
+<rect x="48" y="168" width="264" height="112" rx="8" fill="#fff" stroke="#bfc0c0"/>
+<text x="64" y="196" font-size="12" fill="#4f5d75">N1 · 拟建</text>
+<text x="64" y="228" font-size="20" font-weight="600">具体岗位要求</text>
+<text x="64" y="256" font-size="12" fill="#4f5d75">原始链接 · 快照 · 人工核对</text>
+</g>
+<g>
+<rect x="388" y="168" width="264" height="112" rx="8" fill="#fff" stroke="#bfc0c0"/>
+<text x="404" y="196" font-size="12" fill="#4f5d75">N2 · 拟建</text>
+<text x="404" y="228" font-size="20" font-weight="600">统一技能与前置</text>
+<text x="404" y="256" font-size="12" fill="#4f5d75">共通 SQL · 专属项保留未知</text>
+</g>
+<g>
+<rect x="728" y="168" width="264" height="112" rx="8" fill="#fff5ed" stroke="#eb6c36"/>
+<text x="744" y="196" font-size="12" fill="#4f5d75">N3 · 首片重点</text>
+<text x="744" y="228" font-size="20" font-weight="600">匹配具体外部章节</text>
+<text x="744" y="256" font-size="12" fill="#4f5d75">理由 · 语言 · 条件 · 替代项</text>
+</g>
+<g>
+<rect x="728" y="372" width="264" height="112" rx="8" fill="#e9edf1" stroke="#bfc0c0"/>
+<text x="744" y="400" font-size="12" fill="#4f5d75">E1 · 外部网站</text>
+<text x="744" y="432" font-size="20" font-weight="600">已有课程与题库</text>
+<text x="744" y="460" font-size="12" fill="#4f5d75">用户主动打开原站学习</text>
+</g>
+<g>
+<rect x="388" y="372" width="264" height="112" rx="8" fill="#fff5ed" stroke="#eb6c36"/>
+<text x="404" y="400" font-size="12" fill="#4f5d75">N4 · 首片重点</text>
+<text x="404" y="432" font-size="20" font-weight="600">学习进度与证据引用</text>
+<text x="404" y="460" font-size="12" fill="#4f5d75">本人返回记录 · 能力待验证</text>
+</g>
+<g>
+<rect x="48" y="372" width="264" height="112" rx="8" fill="#fff" stroke="#bfc0c0"/>
+<text x="64" y="400" font-size="12" fill="#4f5d75">N5 · 拟建</text>
+<text x="64" y="432" font-size="20" font-weight="600">回到目标与下一步</text>
+<text x="64" y="460" font-size="12" fill="#4f5d75">能力待验证 · 岗位入口保留</text>
+</g>
+<line x1="48" y1="536" x2="992" y2="536" stroke="#bfc0c0"/>
+<text x="48" y="568" font-size="16">已有：CLI / SQLite 投递记录　　拟建：N1–N5　　外部：E1</text>
+<text x="48" y="600" font-size="12" fill="#4f5d75">待验证：章节适配与使用效果。模型、自动采集、自建课程及判题/复测引擎不进入首片。</text>
+</svg>
+</div>
+<section>
+<h2>审架构的四个落点</h2>
+<table>
+<tr>
+<th>编号</th>
+<th>问题</th>
+<th>当前处理</th>
+</tr>
+<tr>
+<td>R1</td>
+<td>技能 ID 与来源版本未统一</td>
+<td>明确要求—技能—资源的有出处映射</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>资源只作练习失败后的退路</td>
+<td>具体外部章节成为学习主路径</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>旧学习任务依附已投递后的复盘</td>
+<td>学习事件独立，进度与能力状态分开</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>第一切片接近整个 Alpha</td>
+<td>先交付章节导航与本地记录</td>
+</tr>
+</table>
+</section>
+<section>
+<h2>GitHub 开发流程</h2>
+<p>提案 proposal → 明确决策 → FullSpec / MiniSpec → 关联 Issue 的实现 PR → 验收 → 用户文档。Proposal-Accepted 需要明确决定；Documented 只表示已实现功能的用户文档完成。</p>
+<p>首片可以使用 SQLBolt 或 SQLZoo 的具体章节作为资源候选；需要分别核验语言、前置与访问条件。链接能打开不等于已验证适合用户。</p>
+<p>
+<a href="https://sqlbolt.com/lesson/select_queries_introduction">SQLBolt：SELECT 入门</a> · <a href="https://sqlzoo.net/wiki/SELECT_basics/zh">SQLZoo：中文 SELECT 基础</a>
+</p>
+</section>
+<p>
+<a href="https://github.com/johnnyzhang-eng/career-workbench/issues/6">架构评审 #6</a> · <a href="https://github.com/johnnyzhang-eng/career-workbench/pull/7">PR #7</a> · <a href="https://github.com/johnnyzhang-eng/career-workbench/labels">开发标签</a>
+</p>
+</main>
+</body>
+</html>
