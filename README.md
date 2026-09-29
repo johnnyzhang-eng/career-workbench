@@ -43,6 +43,10 @@ python3 career.py practice 1 --evidence '自己写的代码与测试位置' --in
 
 `practice` 只记录本人声明的独立练习证据，不自动判定掌握。延迟复测另建任务。
 
+## 用 Codex 整理任务与持续推进
+
+[任务、Project 与独立对话的方法指南](docs/codex-task-project-method.md)记录了从零散事项到共享任务清单的实践过程，附[可复制提示词](docs/codex-task-project-prompts.md)、[虚构示例](docs/codex-task-project-example.md)和[演进记录](docs/codex-task-project-evolution.md)。先用对话与本地清单就能尝试；小屋子和自动化集成的边界另行标明。每位同学填写自己的约束与事实，个人记录留在 `private/`。
+
 ## 协作方式
 
 - 主负责人处理目标、取舍、事实冲突和验收；执行者按小任务提交产物与证据。
