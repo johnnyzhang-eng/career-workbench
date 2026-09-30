@@ -4,6 +4,8 @@
 
 首次使用见[从这里开始](start-here.md)。当前同学版只用 Codex 侧边栏、总览、独立对话与本地 Markdown 清单；不安装或启动小屋子和后台监测。配套材料：[可复制提示词](codex-task-project-prompts.md)、[虚构的一天](codex-task-project-example.md)、[演进记录](codex-task-project-evolution.md)。
 
+第一次只验一个当前任务能否产生实际结果并留下下一步。已有可用入口就进去做事；没有入口时，先建或复用一个。清单查漏、长期方向的入口和 Project 分组可以随后渐进完成，不以左侧入口数量作为首次成功标准。
+
 ## 先区分三种东西
 
 | 名称 | 负责什么 | 什么时候拆出来 |
